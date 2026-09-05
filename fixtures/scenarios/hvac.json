@@ -1,0 +1,148 @@
+[
+  {
+    "id": "hvac-01",
+    "title": "Cracked heat exchanger found on a free tune-up, decide today",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "hvac",
+    "issueSummary": "The free furnace tune-up turned into a replacement quote",
+    "offer": {
+      "description": "Replace the furnace, they say the heat exchanger is cracked and they have shut the furnace off and red-tagged it",
+      "companyName": "Peoplestown Climate",
+      "quotedPrice": 7400,
+      "depositRequested": 3700,
+      "context": {
+        "contractorFoundBy": "MARKETPLACE",
+        "decisionRequestedBy": "TODAY",
+        "urgencyClaim": "they have shut it off and say it is unsafe to run",
+        "damageShownToCustomer": false
+      }
+    },
+    "expectAttention": ["conditions.immediate_decision", "conditions.deposit_share"]
+  },
+  {
+    "id": "hvac-02",
+    "title": "Condenser fan capacitor, called them, small job",
+    "kind": "ORDINARY",
+    "trade": "hvac",
+    "issueSummary": "The outdoor unit hums but the fan does not turn",
+    "offer": {
+      "description": "Replace the run capacitor on the condenser and test the fan motor amperage",
+      "companyName": "Willamette Comfort Systems",
+      "quotedPrice": 285,
+      "context": { "contractorFoundBy": "SEARCH", "decisionRequestedBy": "THIS_WEEK", "damageShownToCustomer": true, "paymentMethodsRequested": ["CARD"] }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "hvac-03",
+    "title": "Refrigerant leak, door knock, cash",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "hvac",
+    "issueSummary": "Someone offering free AC checks in the street said we are low on refrigerant",
+    "offer": {
+      "description": "Replace the evaporator coil and recharge the system, they say the coil is leaking",
+      "companyName": "Ellery Street Mechanical",
+      "quotedPrice": 3100,
+      "context": { "contractorFoundBy": "DOOR_KNOCK", "paymentMethodsRequested": ["CASH"] }
+    },
+    "expectAttention": ["conditions.unsolicited", "conditions.payment_method"]
+  },
+  {
+    "id": "hvac-04",
+    "title": "Heat pump replacement, referred, staged payments",
+    "kind": "ORDINARY",
+    "trade": "hvac",
+    "issueSummary": "The heat pump is nineteen years old and the compressor has failed",
+    "offer": {
+      "description": "Remove the existing heat pump and air handler, install a new matched system, new line set, new thermostat, commission and test",
+      "companyName": "Porter Air and Heat",
+      "quotedPrice": 11400,
+      "depositRequested": 2000,
+      "context": { "contractorFoundBy": "REFERRAL", "decisionRequestedBy": "THIS_WEEK", "damageShownToCustomer": true }
+    },
+    "answers": { "writtenScopeProvided": true, "licenceNumberProvided": true, "insuranceEvidenceProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "hvac-05",
+    "title": "Duct cleaning upsell at the door",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "hvac",
+    "issueSummary": "A van in the street offered duct cleaning and then said we have mould",
+    "offer": {
+      "description": "Clean all the ductwork and apply an antimicrobial treatment, they say there is mould in the supply trunk",
+      "companyName": "Peoplestown Climate",
+      "quotedPrice": 1650,
+      "context": { "contractorFoundBy": "DOOR_KNOCK", "decisionRequestedBy": "TODAY" }
+    },
+    "expectAttention": ["conditions.unsolicited", "conditions.immediate_decision"]
+  },
+  {
+    "id": "hvac-06",
+    "title": "Independent load calculation before buying",
+    "kind": "ORDINARY",
+    "trade": "hvac",
+    "issueSummary": "Two contractors quoted different sizes so we want it worked out properly",
+    "offer": {
+      "description": "Carry out a room by room load calculation, measure the ductwork, and write a sizing report",
+      "companyName": "Southside Load Calculation",
+      "quotedPrice": 325,
+      "context": { "contractorFoundBy": "SEARCH", "decisionRequestedBy": "NO_DEADLINE" }
+    },
+    "answers": { "writtenScopeProvided": true, "licenceNumberProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "hvac-07",
+    "title": "Condensate overflow, repeat firm, no deposit",
+    "kind": "ORDINARY",
+    "trade": "hvac",
+    "issueSummary": "There is water on the floor under the air handler",
+    "offer": {
+      "description": "Clear the condensate drain line, replace the trap and the float switch, flush the pan",
+      "companyName": "Willamette Comfort Systems",
+      "quotedPrice": 210,
+      "context": { "contractorFoundBy": "REPEAT", "decisionRequestedBy": "THIS_WEEK", "damageShownToCustomer": true }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "hvac-08",
+    "title": "Furnace replacement with the whole price up front",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "hvac",
+    "issueSummary": "The furnace stopped in a cold snap",
+    "offer": {
+      "description": "Replace the furnace with an eighty per cent efficiency unit, new flue liner, new thermostat",
+      "companyName": "Ellery Street Mechanical",
+      "quotedPrice": 5600,
+      "depositRequested": 5600,
+      "context": { "contractorFoundBy": "SEARCH", "decisionRequestedBy": "THIS_WEEK", "damageShownToCustomer": true }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": ["conditions.deposit_share"]
+  },
+  {
+    "id": "hvac-09",
+    "title": "Blower motor, gas company confirmed the shutdown",
+    "kind": "ORDINARY",
+    "trade": "hvac",
+    "issueSummary": "The gas company red-tagged the furnace and told us to have it looked at",
+    "offer": {
+      "description": "Replace the blower motor and the limit switch, test the combustion and restart the furnace",
+      "companyName": "Somerville Heat Exchange Testing",
+      "quotedPrice": 890,
+      "context": {
+        "contractorFoundBy": "REFERRAL",
+        "decisionRequestedBy": "THIS_WEEK",
+        "urgencyClaim": "the gas company tagged it as unsafe to operate",
+        "independentUrgencyConfirmation": true,
+        "damageShownToCustomer": true
+      }
+    },
+    "answers": { "writtenScopeProvided": true, "licenceNumberProvided": true },
+    "expectAttention": []
+  }
+]

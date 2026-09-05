@@ -1,0 +1,6 @@
+.state/
+dist/
+demo_video/
+cdk.out/
+.git/
+node_modules/

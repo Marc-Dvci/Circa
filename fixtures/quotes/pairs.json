@@ -1,0 +1,272 @@
+{
+  "_notice": "Fourteen labelled quote pairs. Every document here is written for this corpus; none is a real business's estimate. The labels are the ground truth for two metrics: which components the engine aligns, and whether it correctly refuses to attribute the price difference. The refusals are the harder half — a comparison engine that always produces a number scores zero on them.",
+  "pairs": [
+    {
+      "id": "qp-01",
+      "title": "Spoken lump sum against an itemised second opinion",
+      "trade": "roofing",
+      "a": {
+        "contractorName": "Apex Exteriors",
+        "spoken": {
+          "description": "The flashing around the chimney has failed and the shingles near it need replacing, and the decking underneath is probably gone too",
+          "total": 6500
+        }
+      },
+      "b": {
+        "contractorName": "Nine Elms Exterior Surveys",
+        "text": "Remove and replace chimney step and counter flashing ............ $1,200.00\nReplace 8 damaged shingles at the chimney ...................... $  400.00\nSeal penetrations and haul away debris ......................... $  250.00\nExclusions: decking replacement, gutters\nTotal: $1,850.00"
+      },
+      "expect": {
+        "verdict": "NOT_COMPARABLE",
+        "identifiable": false,
+        "reason": "LUMP_SUM"
+      }
+    },
+    {
+      "id": "qp-02",
+      "title": "Both itemised, one includes decking",
+      "trade": "roofing",
+      "a": {
+        "contractorName": "Apex Exteriors",
+        "text": "Remove and replace chimney step and counter flashing ........... $1,450.00\nReplace 8 damaged shingles at the chimney ..................... $  520.00\nReplace roof decking, 6 sheets ................................ $4,030.00\nSeal penetrations ............................................. $  200.00\nDisposal and dumpster ......................................... $  300.00\nTotal: $6,500.00"
+      },
+      "b": {
+        "contractorName": "Nine Elms Exterior Surveys",
+        "text": "Remove and replace chimney step and counter flashing ........... $1,200.00\nReplace 8 damaged shingles at the chimney ..................... $  400.00\nSeal penetrations and haul away debris ........................ $  250.00\nExclusions: decking replacement\nTotal: $1,850.00"
+      },
+      "expect": {
+        "verdict": "SCOPE_DIFFERS",
+        "identifiable": true,
+        "headlineComponent": "roof.decking",
+        "sharedComponents": ["roof.chimney_flashing", "roof.shingles"],
+        "onlyAComponents": ["roof.decking"]
+      }
+    },
+    {
+      "id": "qp-03",
+      "title": "An inspection priced against a repair",
+      "trade": "roofing",
+      "a": {
+        "contractorName": "Buckman Roofworks",
+        "text": "Replace all roof flashings and 40 shingles ..................... $2,900.00\nTotal: $2,900.00"
+      },
+      "b": {
+        "contractorName": "Ladds Addition Building Science",
+        "text": "Inspect roof covering, flashings and decking .................. $  300.00\nTotal: $300.00"
+      },
+      "expect": {
+        "verdict": "NOT_COMPARABLE",
+        "identifiable": false,
+        "reason": "DIFFERENT_KIND_OF_WORK"
+      }
+    },
+    {
+      "id": "qp-04",
+      "title": "Same work, different price, both fully itemised",
+      "trade": "plumbing",
+      "a": {
+        "contractorName": "Sunnyside Water Heater Co",
+        "text": "Remove existing water heater and haul away .................... $  250.00\nInstall 50 gallon water heater ................................ $1,900.00\nInstall new expansion tank .................................... $  180.00\nTotal: $2,330.00"
+      },
+      "b": {
+        "contractorName": "Belmont Plumbing Works",
+        "text": "Remove existing water heater and haul away .................... $  200.00\nInstall 50 gallon water heater ................................ $1,500.00\nInstall new expansion tank .................................... $  150.00\nTotal: $1,850.00"
+      },
+      "expect": {
+        "verdict": "COMPARABLE",
+        "identifiable": true,
+        "sharedComponents": ["plumb.water_heater", "plumb.expansion_tank", "gen.disposal"]
+      }
+    },
+    {
+      "id": "qp-05",
+      "title": "A full roof replacement against eight shingles",
+      "trade": "roofing",
+      "a": {
+        "contractorName": "Cascade Ridge Roofing",
+        "text": "Full roof replacement, tear off and replace ................... $17,900.00\nTotal: $17,900.00"
+      },
+      "b": {
+        "contractorName": "West End Roof Services",
+        "text": "Replace 8 damaged shingles on the south slope ................. $  380.00\nReseal 2 pipe boots ........................................... $  120.00\nTotal: $500.00"
+      },
+      "expect": {
+        "verdict": "SCOPE_DIFFERS",
+        "identifiable": false,
+        "reason": "LUMP_SUM",
+        "note": "The container contains the leaves, so these two documents do describe the same job — one of them describes eight more components of it. That is a scope difference, not a category error. The money still cannot be split, because the whole roof is one priced line.",
+        "sharedComponents": ["roof.shingles", "roof.pipe_boot"]
+      }
+    },
+    {
+      "id": "qp-06",
+      "title": "Partly itemised: half the total sits on no line at all",
+      "trade": "hvac",
+      "a": {
+        "contractorName": "Peoplestown Climate",
+        "text": "Furnace, installed .............................................. $3,200.00\nThermostat ..................................................... $  180.00\nLabour, permits and miscellaneous\nTotal: $7,400.00"
+      },
+      "b": {
+        "contractorName": "Porter Air and Heat",
+        "text": "Remove existing furnace and haul away .......................... $  350.00\nInstall new furnace ............................................ $4,100.00\nInstall new thermostat ......................................... $  220.00\nInstall new flue liner ......................................... $  600.00\nPermit ......................................................... $  180.00\nTotal: $5,450.00"
+      },
+      "expect": {
+        "verdict": "SCOPE_DIFFERS",
+        "identifiable": false,
+        "reason": "INSUFFICIENT_ATTRIBUTION"
+      }
+    },
+    {
+      "id": "qp-07",
+      "title": "Panel replacement, one includes the grounding electrode",
+      "trade": "electrical",
+      "a": {
+        "contractorName": "Longfellow Electric",
+        "text": "Replace electrical panel, 200 amp ............................. $2,800.00\nInstall 2 ground rods and bond water pipe ..................... $  620.00\nPermit and inspection ......................................... $  240.00\nTotal: $3,660.00"
+      },
+      "b": {
+        "contractorName": "Division Street Wiring",
+        "text": "Replace electrical panel, 200 amp ............................. $2,400.00\nPermit ........................................................ $  180.00\nExclusions: grounding electrode upgrade\nTotal: $2,580.00"
+      },
+      "expect": {
+        "verdict": "SCOPE_DIFFERS",
+        "identifiable": true,
+        "headlineComponent": "elec.grounding",
+        "sharedComponents": ["elec.panel", "gen.permit"],
+        "onlyAComponents": ["elec.grounding"]
+      }
+    },
+    {
+      "id": "qp-08",
+      "title": "Two sewer quotes describing entirely different work",
+      "trade": "plumbing",
+      "a": {
+        "contractorName": "Oakland City Plumbing",
+        "text": "Excavate and replace sewer line to street ..................... $12,400.00\nRestore driveway trench ....................................... $ 2,100.00\nTotal: $14,500.00"
+      },
+      "b": {
+        "contractorName": "Sylvan Road Drain and Sewer",
+        "text": "Snake branch drain line ....................................... $  280.00\nReplace P-trap under kitchen sink ............................. $  140.00\nTotal: $420.00"
+      },
+      "expect": {
+        "verdict": "NOT_COMPARABLE",
+        "identifiable": false,
+        "reason": "NO_COMMON_SCOPE"
+      }
+    },
+    {
+      "id": "qp-09",
+      "title": "Conditional decking: 'if required' is not a commitment",
+      "trade": "roofing",
+      "a": {
+        "contractorName": "Beacon Slate and Shingle",
+        "text": "Replace chimney flashing ...................................... $1,300.00\nReplace 8 shingles ............................................ $  420.00\nReplace decking if required at $65 per sheet\nTotal: $1,720.00"
+      },
+      "b": {
+        "contractorName": "Nine Elms Exterior Surveys",
+        "text": "Replace chimney flashing ...................................... $1,200.00\nReplace 8 shingles ............................................ $  400.00\nExclusions: decking replacement\nTotal: $1,600.00"
+      },
+      "expect": {
+        "verdict": "COMPARABLE",
+        "identifiable": true,
+        "sharedComponents": ["roof.chimney_flashing", "roof.shingles"],
+        "notAlignedComponents": ["roof.decking"]
+      }
+    },
+    {
+      "id": "qp-10",
+      "title": "Ancillary difference only: one charges for disposal",
+      "trade": "roofing",
+      "a": {
+        "contractorName": "Charles River Roofing Co-op",
+        "text": "Replace valley flashing ....................................... $  980.00\nReplace 20 shingles ........................................... $  640.00\nDisposal ...................................................... $  180.00\nTotal: $1,800.00"
+      },
+      "b": {
+        "contractorName": "Hawthorne Gutter and Roof",
+        "text": "Replace valley flashing ....................................... $1,050.00\nReplace 20 shingles ........................................... $  700.00\nTotal: $1,750.00"
+      },
+      "expect": {
+        "verdict": "COMPARABLE",
+        "identifiable": true,
+        "note": "Disposal is ancillary. Two quotes that cover the same work and differ only in whether the skip is a separate line are two prices for the same job, and naming the disposal as the headline difference would bury the thing that matters.",
+        "sharedComponents": ["roof.valley_flashing", "roof.shingles"],
+        "onlyAComponents": ["gen.disposal"],
+        "headlineComponent": null
+      }
+    },
+    {
+      "id": "qp-11",
+      "title": "Evaporator coil against a whole condenser",
+      "trade": "hvac",
+      "a": {
+        "contractorName": "Ellery Street Mechanical",
+        "text": "Replace evaporator coil ....................................... $2,300.00\nRecharge refrigerant .......................................... $  800.00\nTotal: $3,100.00"
+      },
+      "b": {
+        "contractorName": "Willamette Comfort Systems",
+        "text": "Replace evaporator coil ....................................... $1,850.00\nRecharge refrigerant .......................................... $  520.00\nReplace condenser fan capacitor ............................... $  180.00\nTotal: $2,550.00"
+      },
+      "expect": {
+        "verdict": "SCOPE_DIFFERS",
+        "identifiable": true,
+        "sharedComponents": ["hvac.evaporator_coil", "hvac.refrigerant"],
+        "onlyBComponents": ["hvac.capacitor"]
+      }
+    },
+    {
+      "id": "qp-12",
+      "title": "Unmapped trade language on one side",
+      "trade": "general",
+      "a": {
+        "contractorName": "Cambridge Handwork",
+        "text": "Remediation package as discussed .............................. $4,800.00\nSite protection ............................................... $  400.00\nTotal: $5,200.00"
+      },
+      "b": {
+        "contractorName": "Brooklyn Neighborhood Repairs",
+        "text": "Remove affected drywall, 120 square feet ...................... $  900.00\nRemove and replace insulation ................................. $  650.00\nInstall vapour barrier ........................................ $  480.00\nTotal: $2,030.00"
+      },
+      "expect": {
+        "verdict": "NOT_COMPARABLE",
+        "identifiable": false,
+        "reason": "NO_COMMON_SCOPE"
+      }
+    },
+    {
+      "id": "qp-13",
+      "title": "Right-aligned amounts with padding",
+      "trade": "roofing",
+      "a": {
+        "contractorName": "West End Roof Services",
+        "text": "Replace chimney flashing                                       $  1,400.00\nReplace 12 shingles                                            $    600.00\nTotal:                                                         $  2,000.00"
+      },
+      "b": {
+        "contractorName": "Buckman Roofworks",
+        "text": "Replace chimney flashing                                       $  1,150.00\nReplace 12 shingles                                            $    480.00\nTotal:                                                         $  1,630.00"
+      },
+      "expect": {
+        "verdict": "COMPARABLE",
+        "identifiable": true,
+        "sharedComponents": ["roof.chimney_flashing", "roof.shingles"]
+      }
+    },
+    {
+      "id": "qp-14",
+      "title": "Negation split by a semicolon",
+      "trade": "roofing",
+      "a": {
+        "contractorName": "Beacon Slate and Shingle",
+        "text": "Replace 8 shingles; no decking damage observed ................ $  420.00\nReplace chimney flashing ...................................... $1,280.00\nTotal: $1,700.00"
+      },
+      "b": {
+        "contractorName": "Charles River Roofing Co-op",
+        "text": "Replace 8 shingles ............................................ $  400.00\nReplace chimney flashing ...................................... $1,200.00\nTotal: $1,600.00"
+      },
+      "expect": {
+        "verdict": "COMPARABLE",
+        "identifiable": true,
+        "sharedComponents": ["roof.shingles", "roof.chimney_flashing"],
+        "notAlignedComponents": ["roof.decking"]
+      }
+    }
+  ]
+}

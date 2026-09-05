@@ -1,0 +1,169 @@
+[
+  {
+    "id": "plumb-01",
+    "title": "Emergency call-out at 2am, cash only",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "plumbing",
+    "issueSummary": "The supply line under the sink burst in the night",
+    "offer": {
+      "description": "Replace the burst supply line and the shut-off valve under the kitchen sink and dry the cabinet",
+      "companyName": "Sylvan Road Drain and Sewer",
+      "quotedPrice": 890,
+      "context": {
+        "contractorFoundBy": "SEARCH",
+        "decisionRequestedBy": "IMMEDIATELY",
+        "paymentMethodsRequested": ["CASH"],
+        "damageShownToCustomer": true
+      }
+    },
+    "expectAttention": ["conditions.immediate_decision", "conditions.payment_method"]
+  },
+  {
+    "id": "plumb-02",
+    "title": "Water heater replacement, called them, staged payment",
+    "kind": "ORDINARY",
+    "trade": "plumbing",
+    "issueSummary": "The water heater is fourteen years old and leaking at the base",
+    "offer": {
+      "description": "Remove the existing water heater, install a new fifty gallon heater, new expansion tank, new flex connectors, haul away the old one",
+      "companyName": "Sunnyside Water Heater Co",
+      "quotedPrice": 2350,
+      "depositRequested": 400,
+      "context": { "contractorFoundBy": "SEARCH", "decisionRequestedBy": "THIS_WEEK", "damageShownToCustomer": true }
+    },
+    "answers": { "writtenScopeProvided": true, "licenceNumberProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "plumb-03",
+    "title": "Camera inspection turns into a sewer line replacement, decide today",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "plumbing",
+    "issueSummary": "The basement drain backed up and the plumber ran a camera down it",
+    "offer": {
+      "description": "Excavate and replace the sewer line from the house to the street, they say the clay pipe has collapsed under the front garden",
+      "companyName": "Oakland City Plumbing",
+      "quotedPrice": 14500,
+      "depositRequested": 7250,
+      "context": { "contractorFoundBy": "SEARCH", "decisionRequestedBy": "TODAY", "urgencyClaim": "it will back up into the house again tonight" }
+    },
+    "expectAttention": ["conditions.immediate_decision", "conditions.deposit_share"]
+  },
+  {
+    "id": "plumb-04",
+    "title": "Toilet reset, repeat plumber",
+    "kind": "ORDINARY",
+    "trade": "plumbing",
+    "issueSummary": "The downstairs toilet rocks and there is a smell",
+    "offer": {
+      "description": "Pull the toilet, replace the wax ring and the closet flange bolts, reset and reseal",
+      "companyName": "Belmont Plumbing Works",
+      "quotedPrice": 310,
+      "context": { "contractorFoundBy": "REPEAT", "decisionRequestedBy": "THIS_WEEK", "paymentMethodsRequested": ["CARD"] }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "plumb-05",
+    "title": "Repipe quoted at the door",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "plumbing",
+    "issueSummary": "Someone offering free water tests said our pipes are corroding",
+    "offer": {
+      "description": "Repipe the whole house in PEX, they say the galvanised supply lines are about to fail",
+      "companyName": "Ellery Street Mechanical",
+      "quotedPrice": 16800,
+      "context": { "contractorFoundBy": "DOOR_KNOCK", "decisionRequestedBy": "THIS_WEEK" }
+    },
+    "expectAttention": ["conditions.unsolicited"]
+  },
+  {
+    "id": "plumb-06",
+    "title": "Referred, pressure regulator, no deposit",
+    "kind": "ORDINARY",
+    "trade": "plumbing",
+    "issueSummary": "The taps hammer and the pressure feels very high",
+    "offer": {
+      "description": "Test the incoming pressure, replace the pressure reducing valve and the expansion tank",
+      "companyName": "Kendall Square Plumbing",
+      "quotedPrice": 720,
+      "context": { "contractorFoundBy": "REFERRAL", "decisionRequestedBy": "NO_DEADLINE", "damageShownToCustomer": true }
+    },
+    "answers": { "writtenScopeProvided": true, "insuranceEvidenceProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "plumb-07",
+    "title": "Drain clearing with a large up-front share",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "plumbing",
+    "issueSummary": "The shower drains slowly and gurgles",
+    "offer": {
+      "description": "Snake the branch drain line and the main stack vent, and run a camera afterwards",
+      "companyName": "Sylvan Road Drain and Sewer",
+      "quotedPrice": 480,
+      "depositRequested": 300,
+      "context": { "contractorFoundBy": "MARKETPLACE", "decisionRequestedBy": "THIS_WEEK" }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": ["conditions.deposit_share"]
+  },
+  {
+    "id": "plumb-08",
+    "title": "Leak under the slab, insurer already confirmed it",
+    "kind": "ORDINARY",
+    "trade": "plumbing",
+    "issueSummary": "The insurer's leak detection found a slab leak in the hot line",
+    "offer": {
+      "description": "Reroute the hot water supply line overhead, cap the failed section under the slab, patch the drywall",
+      "companyName": "Belmont Plumbing Works",
+      "quotedPrice": 3900,
+      "depositRequested": 900,
+      "context": {
+        "contractorFoundBy": "REFERRAL",
+        "decisionRequestedBy": "THIS_WEEK",
+        "urgencyClaim": "the meter is still turning with everything off",
+        "independentUrgencyConfirmation": true,
+        "damageShownToCustomer": true
+      }
+    },
+    "answers": { "writtenScopeProvided": true, "licenceNumberProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "plumb-09",
+    "title": "Wire transfer for a water main",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "plumbing",
+    "issueSummary": "The water company says there is a leak on our side of the meter",
+    "offer": {
+      "description": "Replace the water service line from the meter to the house, restore the driveway trench",
+      "companyName": "Oakland City Plumbing",
+      "quotedPrice": 7600,
+      "context": {
+        "contractorFoundBy": "SEARCH",
+        "paymentMethodsRequested": ["WIRE", "CASH"],
+        "urgencyClaim": "the utility will shut the supply off",
+        "independentUrgencyConfirmation": true
+      }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": ["conditions.payment_method"]
+  },
+  {
+    "id": "plumb-10",
+    "title": "Annual service visit, nothing found",
+    "kind": "ORDINARY",
+    "trade": "plumbing",
+    "issueSummary": "Booked the yearly plumbing check",
+    "offer": {
+      "description": "Inspect the water heater, test the pressure relief valve, check the shut-off valves and the supply lines under each sink",
+      "companyName": "Kendall Square Plumbing",
+      "quotedPrice": 125,
+      "context": { "contractorFoundBy": "REPEAT", "decisionRequestedBy": "NO_DEADLINE", "paymentMethodsRequested": ["CARD"] }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": []
+  }
+]

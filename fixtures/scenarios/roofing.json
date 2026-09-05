@@ -1,0 +1,196 @@
+[
+  {
+    "id": "roof-01",
+    "title": "Door-knock chimney flashing, same-day decision, half up front",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "roofing",
+    "issueSummary": "A roofer says the chimney flashing has failed and water could get in tonight",
+    "offer": {
+      "description": "They knocked on the door and said the flashing around the chimney has failed, the shingles near it need replacing, and maybe the decking underneath",
+      "companyName": "Apex Exteriors",
+      "quotedPrice": 6500,
+      "depositRequested": 3000,
+      "context": {
+        "contractorFoundBy": "DOOR_KNOCK",
+        "decisionRequestedBy": "TODAY",
+        "urgencyClaim": "water could get in tonight"
+      }
+    },
+    "expectAttention": ["conditions.unsolicited", "conditions.immediate_decision", "conditions.deposit_share"]
+  },
+  {
+    "id": "roof-02",
+    "title": "Referred roofer, itemised estimate, ten per cent deposit",
+    "kind": "ORDINARY",
+    "trade": "roofing",
+    "issueSummary": "A stain appeared on the bedroom ceiling after the storm",
+    "offer": {
+      "description": "Replace the cracked valley flashing and about twenty shingles either side of it, and reseal the ridge vent",
+      "companyName": "Charles River Roofing Co-op",
+      "quotedPrice": 2400,
+      "depositRequested": 240,
+      "context": { "contractorFoundBy": "REFERRAL", "decisionRequestedBy": "THIS_WEEK", "damageShownToCustomer": true }
+    },
+    "answers": { "writtenScopeProvided": true, "licenceNumberProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "roof-03",
+    "title": "Storm chaser, cash only",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "roofing",
+    "issueSummary": "Someone came round after the hail and said the whole roof is finished",
+    "offer": {
+      "description": "Tear off and replace the whole roof, they say the hail took the granules off every shingle",
+      "companyName": "Cascade Ridge Roofing",
+      "quotedPrice": 18400,
+      "context": {
+        "contractorFoundBy": "DOOR_KNOCK",
+        "paymentMethodsRequested": ["CASH"],
+        "urgencyClaim": "the crew is in the neighbourhood this week only"
+      }
+    },
+    "expectAttention": ["conditions.unsolicited", "conditions.payment_method"]
+  },
+  {
+    "id": "roof-04",
+    "title": "Repeat contractor, gutter replacement, no deposit",
+    "kind": "ORDINARY",
+    "trade": "roofing",
+    "issueSummary": "The gutters over the front door are sagging",
+    "offer": {
+      "description": "Remove the old gutter run at the front and install new seamless gutter and two downspouts",
+      "companyName": "Hawthorne Gutter and Roof",
+      "quotedPrice": 1450,
+      "context": { "contractorFoundBy": "REPEAT", "decisionRequestedBy": "NO_DEADLINE", "damageShownToCustomer": true }
+    },
+    "answers": { "writtenScopeProvided": true, "insuranceEvidenceProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "roof-05",
+    "title": "Searched online, full replacement, third down for materials",
+    "kind": "ORDINARY",
+    "trade": "roofing",
+    "issueSummary": "The roof is twenty-eight years old and losing shingles every winter",
+    "offer": {
+      "description": "Strip the existing roof, replace underlayment, install architectural shingles, replace all flashings, haul away",
+      "companyName": "Buckman Roofworks",
+      "quotedPrice": 21000,
+      "depositRequested": 6000,
+      "context": { "contractorFoundBy": "SEARCH", "decisionRequestedBy": "THIS_WEEK", "damageShownToCustomer": true }
+    },
+    "answers": { "writtenScopeProvided": true, "licenceNumberProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "roof-06",
+    "title": "Cold call, decide immediately, wire transfer",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "roofing",
+    "issueSummary": "A company rang about the roof out of nowhere",
+    "offer": {
+      "description": "They say the ridge is separating and the whole ridge line needs rebuilding before the next storm",
+      "companyName": "Beacon Slate and Shingle",
+      "quotedPrice": 8900,
+      "context": {
+        "contractorFoundBy": "PHONE_CALL",
+        "decisionRequestedBy": "IMMEDIATELY",
+        "paymentMethodsRequested": ["WIRE"],
+        "urgencyClaim": "before the next storm"
+      }
+    },
+    "expectAttention": ["conditions.unsolicited", "conditions.immediate_decision", "conditions.payment_method"]
+  },
+  {
+    "id": "roof-07",
+    "title": "Marketplace roofer, sixty per cent deposit",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "roofing",
+    "issueSummary": "Water is coming in around the skylight",
+    "offer": {
+      "description": "Remove the skylight, replace the curb flashing and the surrounding shingles, refit the skylight",
+      "companyName": "West End Roof Services",
+      "quotedPrice": 3200,
+      "depositRequested": 2000,
+      "context": { "contractorFoundBy": "MARKETPLACE", "decisionRequestedBy": "THIS_WEEK", "damageShownToCustomer": true }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": ["conditions.deposit_share"]
+  },
+  {
+    "id": "roof-08",
+    "title": "Insurance-referred assessment, no pressure",
+    "kind": "ORDINARY",
+    "trade": "roofing",
+    "issueSummary": "The insurer asked for a roof condition report after the wind claim",
+    "offer": {
+      "description": "Inspect the roof covering, flashings and decking, photograph anything damaged, and write a condition report",
+      "companyName": "Adair Park Inspection Group",
+      "quotedPrice": 275,
+      "context": { "contractorFoundBy": "REFERRAL", "decisionRequestedBy": "NO_DEADLINE" }
+    },
+    "answers": { "writtenScopeProvided": true, "licenceNumberProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "roof-09",
+    "title": "Neighbour's crew already on site, decide today",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "roofing",
+    "issueSummary": "The crew doing next door came over and offered to do ours while they are here",
+    "offer": {
+      "description": "Replace the shingles on the back slope and reseal the pipe boots while the lift is up",
+      "companyName": "Cascade Ridge Roofing",
+      "quotedPrice": 4200,
+      "context": { "contractorFoundBy": "DOOR_KNOCK", "decisionRequestedBy": "TODAY" }
+    },
+    "expectAttention": ["conditions.unsolicited", "conditions.immediate_decision"]
+  },
+  {
+    "id": "roof-10",
+    "title": "Called them, small repair, cheque",
+    "kind": "ORDINARY",
+    "trade": "roofing",
+    "issueSummary": "A few shingles came off in the wind",
+    "offer": {
+      "description": "Replace eight missing shingles on the south slope and reseal two pipe boots",
+      "companyName": "Charles River Roofing Co-op",
+      "quotedPrice": 480,
+      "context": { "contractorFoundBy": "SEARCH", "paymentMethodsRequested": ["CHECK", "CARD"], "damageShownToCustomer": true }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "roof-11",
+    "title": "Referred, deposit exactly a third",
+    "kind": "ORDINARY",
+    "trade": "roofing",
+    "issueSummary": "The flat roof over the extension is ponding",
+    "offer": {
+      "description": "Strip the existing membrane, replace wet insulation boards, install new EPDM and new edge trim",
+      "companyName": "Ladds Addition Building Science",
+      "quotedPrice": 9000,
+      "depositRequested": 3000,
+      "context": { "contractorFoundBy": "REFERRAL", "decisionRequestedBy": "THIS_WEEK", "damageShownToCustomer": true }
+    },
+    "answers": { "writtenScopeProvided": true, "insuranceEvidenceProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "roof-12",
+    "title": "Unsolicited but no urgency, no deposit, card accepted",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "roofing",
+    "issueSummary": "A roofer left a card saying our chimney crown is cracked",
+    "offer": {
+      "description": "Rebuild the chimney crown and repoint the top four courses of brick",
+      "companyName": "Beacon Slate and Shingle",
+      "quotedPrice": 2100,
+      "context": { "contractorFoundBy": "DOOR_KNOCK", "decisionRequestedBy": "NO_DEADLINE", "paymentMethodsRequested": ["CARD", "CHECK"] }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": ["conditions.unsolicited"]
+  }
+]

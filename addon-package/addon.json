@@ -1,0 +1,28 @@
+{
+  "manifestVersion": "1.0",
+  "name": {
+    "value": "CIRCA repair guardian"
+  },
+  "shortDescription": "A second opinion on a home repair before you say yes: what is established, what is not, and what cannot be said.",
+  "fullDescription": "CIRCA keeps the record of a home repair you are deciding about and checks what can be checked before money moves.\n\nTell it what a contractor has offered and it opens a record that survives across conversations. It runs a checklist of deterministic rules — each one citing published FTC or AARP consumer guidance — and reports four things about each: established, not established, worth knowing about, or not applicable to this job. A rule that does not apply is reported as such rather than quietly dropped, so a checklist that shrinks cannot be mistaken for one that passed.\n\nIt will not tell you whether a contractor is trustworthy. It says so plainly and then gives you the checklist, because that is a question about a person and this is a product about a transaction.\n\nAsk for a second opinion and it writes the request itself, saying where to look and not what to conclude. The first contractor's price, company name and urgency claim are deliberately left out, and it shows you what it withheld and why: an assessment that is handed the first diagnosis is not an independent one.\n\nWhen two quotes are on file it aligns the work they describe and tries to say where the price difference sits. Most of the time it cannot, because most residential quotes are a single number for a paragraph of work — and when it cannot, it says so and says what would make it answerable. Ask the contractor to itemise it, and the same comparison then returns the decomposition. There is no score at any point.\n\nAfter you accept a scope, CIRCA holds it. When someone asks for more money three weeks later, the new request is measured against what you actually agreed to rather than against what anyone remembers.\n\nEverything is a record you can read back, and you can delete it all in one sentence.",
+  "examplePhrases": [
+    "Alexa, ask Circa to check a repair. A roofer knocked on the door and says the flashing has failed.",
+    "Alexa, ask Circa to get me an independent opinion on this roof.",
+    "Alexa, ask Circa to compare the two quotes.",
+    "Alexa, ask Circa whether the extra work they want is in what I agreed to."
+  ],
+  "privacyPolicyUrl": "https://github.com/Marc-Dvci/Circa/blob/main/docs/PRIVACY.md",
+  "termsOfUseUrl": "https://github.com/Marc-Dvci/Circa/blob/main/docs/TERMS.md",
+  "integrations": [
+    {
+      "type": "MCP",
+      "config": {
+        "endpoints": {
+          "default": {
+            "uri": "https://circa.example.com/mcp"
+          }
+        }
+      }
+    }
+  ]
+}

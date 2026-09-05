@@ -1,0 +1,148 @@
+[
+  {
+    "id": "elec-01",
+    "title": "Panel replacement offered at the door, decide today, cash",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "electrical",
+    "issueSummary": "Someone doing work on the street said our electrical panel is a fire risk",
+    "offer": {
+      "description": "Replace the electrical panel with a two hundred amp service, they say the existing breakers are the recalled type",
+      "companyName": "Division Street Wiring",
+      "quotedPrice": 4800,
+      "context": {
+        "contractorFoundBy": "DOOR_KNOCK",
+        "decisionRequestedBy": "TODAY",
+        "paymentMethodsRequested": ["CASH"],
+        "urgencyClaim": "it could start a fire any day"
+      }
+    },
+    "expectAttention": ["conditions.unsolicited", "conditions.immediate_decision", "conditions.payment_method"]
+  },
+  {
+    "id": "elec-02",
+    "title": "Kitchen circuit added, referred electrician",
+    "kind": "ORDINARY",
+    "trade": "electrical",
+    "issueSummary": "The kitchen breaker trips when the kettle and the toaster are both on",
+    "offer": {
+      "description": "Run a new twenty amp circuit to the kitchen, install two GFCI outlets and a breaker, pull the permit",
+      "companyName": "Longfellow Electric",
+      "quotedPrice": 1150,
+      "depositRequested": 200,
+      "context": { "contractorFoundBy": "REFERRAL", "decisionRequestedBy": "THIS_WEEK" }
+    },
+    "answers": { "writtenScopeProvided": true, "licenceNumberProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "elec-03",
+    "title": "Rewire quoted with seventy per cent up front",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "electrical",
+    "issueSummary": "The house still has some cloth-covered wiring in the attic",
+    "offer": {
+      "description": "Rewire the first floor, replace the panel and install new outlets throughout",
+      "companyName": "Beltline Power Systems",
+      "quotedPrice": 12000,
+      "depositRequested": 8400,
+      "context": { "contractorFoundBy": "SEARCH", "decisionRequestedBy": "THIS_WEEK", "damageShownToCustomer": true }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": ["conditions.deposit_share"]
+  },
+  {
+    "id": "elec-04",
+    "title": "EV charger install, called them",
+    "kind": "ORDINARY",
+    "trade": "electrical",
+    "issueSummary": "We want a charger in the garage",
+    "offer": {
+      "description": "Install a fifty amp circuit and a wall connector in the garage, upgrade the breaker, pull the permit and arrange inspection",
+      "companyName": "Southeast Current",
+      "quotedPrice": 1850,
+      "depositRequested": 400,
+      "context": { "contractorFoundBy": "SEARCH", "decisionRequestedBy": "NO_DEADLINE", "paymentMethodsRequested": ["CARD", "CHECK"] }
+    },
+    "answers": { "writtenScopeProvided": true, "licenceNumberProvided": true, "insuranceEvidenceProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "elec-05",
+    "title": "Cold call about a meter base",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "electrical",
+    "issueSummary": "A company rang saying the utility flagged our meter base",
+    "offer": {
+      "description": "Replace the meter base and the service entrance cable, they say the utility will not reconnect otherwise",
+      "companyName": "Inman Circuit Works",
+      "quotedPrice": 3400,
+      "context": { "contractorFoundBy": "PHONE_CALL", "decisionRequestedBy": "THIS_WEEK", "urgencyClaim": "the utility will not reconnect otherwise" }
+    },
+    "expectAttention": ["conditions.unsolicited"]
+  },
+  {
+    "id": "elec-06",
+    "title": "Outlet replacement, repeat electrician, no deposit",
+    "kind": "ORDINARY",
+    "trade": "electrical",
+    "issueSummary": "Two outlets in the front room have stopped working",
+    "offer": {
+      "description": "Trace the dead circuit, replace the failed outlet and the two downstream of it, test the grounding",
+      "companyName": "Fort McPherson Electrical",
+      "quotedPrice": 260,
+      "context": { "contractorFoundBy": "REPEAT", "decisionRequestedBy": "NO_DEADLINE" }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "elec-07",
+    "title": "Grounding upgrade, immediate decision asked for",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "electrical",
+    "issueSummary": "The home inspector noted the panel is not properly grounded",
+    "offer": {
+      "description": "Install two ground rods and bond the water pipe, replace the grounding electrode conductor",
+      "companyName": "Longfellow Electric",
+      "quotedPrice": 640,
+      "context": { "contractorFoundBy": "REFERRAL", "decisionRequestedBy": "IMMEDIATELY" }
+    },
+    "answers": { "writtenScopeProvided": true, "licenceNumberProvided": true },
+    "expectAttention": ["conditions.immediate_decision"]
+  },
+  {
+    "id": "elec-08",
+    "title": "Whole-house surge protector, marketplace, small deposit",
+    "kind": "ORDINARY",
+    "trade": "electrical",
+    "issueSummary": "We keep losing appliances to surges",
+    "offer": {
+      "description": "Install a whole-house surge protective device at the panel and label the breakers",
+      "companyName": "Beltline Power Systems",
+      "quotedPrice": 540,
+      "depositRequested": 100,
+      "context": { "contractorFoundBy": "MARKETPLACE", "decisionRequestedBy": "THIS_WEEK", "paymentMethodsRequested": ["CARD"] }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "elec-09",
+    "title": "Aluminium wiring remediation, wire payment only",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "electrical",
+    "issueSummary": "The insurer wants the aluminium branch wiring dealt with",
+    "offer": {
+      "description": "Pigtail every aluminium branch circuit connection with approved connectors and replace the affected outlets and switches",
+      "companyName": "Division Street Wiring",
+      "quotedPrice": 2900,
+      "context": {
+        "contractorFoundBy": "SEARCH",
+        "decisionRequestedBy": "THIS_WEEK",
+        "paymentMethodsRequested": ["WIRE"]
+      }
+    },
+    "answers": { "writtenScopeProvided": true, "licenceNumberProvided": true },
+    "expectAttention": ["conditions.payment_method"]
+  }
+]

@@ -1,0 +1,129 @@
+[
+  {
+    "id": "gen-01",
+    "title": "Driveway sealing offered from a truck with leftover material",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "general",
+    "issueSummary": "A crew said they have sealant left over from a job down the road",
+    "offer": {
+      "description": "Seal the whole driveway today with the material left on the truck",
+      "companyName": "Capitol View Repairs",
+      "quotedPrice": 700,
+      "context": {
+        "contractorFoundBy": "DOOR_KNOCK",
+        "decisionRequestedBy": "IMMEDIATELY",
+        "paymentMethodsRequested": ["CASH"],
+        "urgencyClaim": "the material will set on the truck"
+      }
+    },
+    "expectAttention": ["conditions.unsolicited", "conditions.immediate_decision", "conditions.payment_method"]
+  },
+  {
+    "id": "gen-02",
+    "title": "Foundation crack repair, referred, engineer's report first",
+    "kind": "ORDINARY",
+    "trade": "general",
+    "issueSummary": "There is a diagonal crack above the basement window",
+    "offer": {
+      "description": "Inject the foundation crack with epoxy, install two carbon fibre straps, and regrade the soil away from the wall",
+      "companyName": "Brooklyn Neighborhood Repairs",
+      "quotedPrice": 2200,
+      "depositRequested": 500,
+      "context": { "contractorFoundBy": "REFERRAL", "decisionRequestedBy": "NO_DEADLINE", "damageShownToCustomer": true }
+    },
+    "answers": { "writtenScopeProvided": true, "licenceNumberProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "gen-03",
+    "title": "Mould remediation quoted after a free inspection, most of it up front",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "general",
+    "issueSummary": "A free basement inspection found what they say is black mould",
+    "offer": {
+      "description": "Remove the affected drywall and insulation, treat the framing and install a vapour barrier",
+      "companyName": "Cambridge Handwork",
+      "quotedPrice": 6200,
+      "depositRequested": 4000,
+      "context": { "contractorFoundBy": "MARKETPLACE", "decisionRequestedBy": "THIS_WEEK", "damageShownToCustomer": false }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": ["conditions.deposit_share"]
+  },
+  {
+    "id": "gen-04",
+    "title": "Fence repair after a storm, called them",
+    "kind": "ORDINARY",
+    "trade": "general",
+    "issueSummary": "Three fence panels came down in the wind",
+    "offer": {
+      "description": "Replace three fence panels and two posts, set the posts in concrete, remove the broken timber",
+      "companyName": "Capitol View Repairs",
+      "quotedPrice": 850,
+      "context": { "contractorFoundBy": "SEARCH", "decisionRequestedBy": "THIS_WEEK", "paymentMethodsRequested": ["CHECK"], "damageShownToCustomer": true }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "gen-05",
+    "title": "Tree work offered at the door after a storm",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "general",
+    "issueSummary": "A crew with a chipper offered to take the leaning tree down",
+    "offer": {
+      "description": "Take down the leaning oak at the back and grind the stump, they say it will come down on the house",
+      "companyName": "Brooklyn Neighborhood Repairs",
+      "quotedPrice": 2800,
+      "context": { "contractorFoundBy": "DOOR_KNOCK", "decisionRequestedBy": "THIS_WEEK", "urgencyClaim": "it will come down on the house in the next storm" }
+    },
+    "expectAttention": ["conditions.unsolicited"]
+  },
+  {
+    "id": "gen-06",
+    "title": "Bathroom refit, planned, staged payments",
+    "kind": "ORDINARY",
+    "trade": "general",
+    "issueSummary": "We are redoing the upstairs bathroom",
+    "offer": {
+      "description": "Strip the bathroom, replace the flooring and the subfloor where it is soft, install the new suite and retile",
+      "companyName": "Cambridge Handwork",
+      "quotedPrice": 14500,
+      "depositRequested": 3500,
+      "context": { "contractorFoundBy": "REFERRAL", "decisionRequestedBy": "NO_DEADLINE" }
+    },
+    "answers": { "writtenScopeProvided": true, "licenceNumberProvided": true, "insuranceEvidenceProvided": true },
+    "expectAttention": []
+  },
+  {
+    "id": "gen-07",
+    "title": "Chimney sweep turns into a liner replacement, decide today",
+    "kind": "CONDITIONS_PRESENT",
+    "trade": "general",
+    "issueSummary": "The chimney sweep says the flue liner is cracked",
+    "offer": {
+      "description": "Install a new stainless flue liner and rebuild the chimney crown, they say the existing liner is cracked",
+      "companyName": "Beacon Slate and Shingle",
+      "quotedPrice": 4300,
+      "context": { "contractorFoundBy": "SEARCH", "decisionRequestedBy": "TODAY", "damageShownToCustomer": false }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": ["conditions.immediate_decision"]
+  },
+  {
+    "id": "gen-08",
+    "title": "Gutter guards, unsolicited, no urgency, card taken",
+    "kind": "ORDINARY",
+    "trade": "general",
+    "issueSummary": "We asked three companies about gutter guards",
+    "offer": {
+      "description": "Install micro-mesh gutter guards on the front and back runs and clean the gutters first",
+      "companyName": "Hawthorne Gutter and Roof",
+      "quotedPrice": 1900,
+      "depositRequested": 200,
+      "context": { "contractorFoundBy": "SEARCH", "decisionRequestedBy": "NO_DEADLINE", "paymentMethodsRequested": ["CARD", "CHECK"] }
+    },
+    "answers": { "writtenScopeProvided": true },
+    "expectAttention": []
+  }
+]
