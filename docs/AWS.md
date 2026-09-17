@@ -1,6 +1,6 @@
 # AWS
 
-**One of the four integrations has been run against AWS. Three have not, and
+**Two of the four integrations have been run against AWS. Two have not, and
 nothing has been deployed.** That is the first paragraph because it is the one a
 judge needs, and the rest of this document says exactly what was run, what came
 back, and where the line is.
@@ -76,7 +76,63 @@ documentation, and both changed what `infrastructure/cdk/stack.ts` should do.
 recreatable from the command above; nothing about this repository depends on it
 existing.
 
-## What was not run: Bedrock, Textract, S3
+## What was actually run: Bedrock, 2026-09-17, on the voice path
+
+A real model, on Bedrock, rephrasing CIRCA's refusal, and the product's own
+guard deciding whether to let it through.
+
+```
+$ AWS_PROFILE=otl-agent AWS_REGION=us-east-1 CIRCA_BEDROCK=1 \
+  CIRCA_BEDROCK_ENDPOINT=https://bedrock-mantle.us-east-1.api.aws \
+  CIRCA_MODEL_ID=openai.gpt-oss-120b pnpm check
+
+  optional paths
+  · bedrock                     on — API endpoint https://bedrock-mantle.us-east-1.api.aws
+  · bedrock model               openai.gpt-oss-120b
+  · bedrock round trip          4296 ms, sentence accepted by checkVoice
+  · bedrock said                “Apex Exteriors is $6,500 and Nine Elms Exterior Surveys is
+                                 $1,850, a difference of $4,650. I cannot set these side by
+                                 side because one is a single pri…”
+```
+
+Three round trips: 4,296 ms, 3,851 ms, 3,122 ms. All three sentences carried
+exactly the figures the payload carried and none it did not, so `checkVoice`
+accepted all three. That guard is the product's answer to a model on the voice
+path, and this is the first time it ran against something other than a scripted
+model.
+
+**The model is not the one the code was written for, and that is fine.** The
+account cannot invoke Anthropic models — `InvokeModel` answers `Operation not
+allowed` and the API endpoint answers `permission_error: anthropic.claude-haiku-4-5
+is not available for this account` — but it can invoke `openai.gpt-oss-120b`.
+CIRCA's design never depended on which model rephrases a sentence: the model
+proposes and the code decides, and `apps/agent/src/bedrock.ts` folds a
+chat-completions answer into the Messages shape so the callers stay ignorant of
+the family. Fifteen lines, and the same guard runs either way.
+
+**The number that settles a design question.** Three to four seconds a
+rephrasing, against a 500 ms round-trip budget. A model on the voice path cannot
+sit inside an Alexa+ turn, whatever the model. So the deterministic sentence is
+the one that ships, and the rephrasing is what you would run ahead of time for
+the fixed sentences, or not at all. That was the design already; now it is
+measured.
+
+**The transport.** Bedrock serves Anthropic models over the Anthropic Messages API
+at `<endpoint>/anthropic/v1/messages` and other families over
+`/v1/chat/completions`, authenticated with a twelve-hour bearer token minted
+locally from the AWS credential chain (`@aws/bedrock-token-generator`). This is
+the path an account without a model-access agreement can use, and it is the one
+the console now leads with. `CIRCA_BEDROCK_ENDPOINT` selects it;
+without it, `InvokeModel` through the SDK as before, and the CDK task role still
+scopes that to one model ARN.
+
+## What was not run: Textract, S3
+
+Neither was run. Everything said about those two below is read off the API
+documentation and the SDK types, and is labelled as such where it matters — see
+`docs/PRODUCT_FEEDBACK.md`.
+
+## What the Bedrock SDK path returned, before the endpoint was found
 
 ```
 $ aws bedrock get-foundation-model-availability \
@@ -117,10 +173,8 @@ IAM is the one credential guaranteed not to work.
 `aws bedrock get-foundation-model-availability` is the call that answers the
 question, and it is not the call anyone reaches for.
 
-Textract and S3 were not run either. Everything said about those three below is
-read off the API documentation and the SDK types, and is labelled as such where
-it matters — see `docs/PRODUCT_FEEDBACK.md`, which now separates what was used
-from what was only read.
+That was the state for most of the final session, and it is why the endpoint path
+above exists.
 
 ---
 
@@ -167,11 +221,15 @@ be the product.
 
 ### Amazon Bedrock, in two places
 
-`apps/agent/src/bedrock.ts`, `InvokeModel`, default model
-`anthropic.claude-haiku-4-5-20251001-v1:0`.
+`apps/agent/src/bedrock.ts`. Two transports behind one `send()`: `InvokeModel`
+through the SDK, default model `anthropic.claude-haiku-4-5-20251001-v1:0`, or
+the Bedrock API endpoint with a bearer token, default model
+`anthropic.claude-haiku-4-5`, any model id the account can invoke.
 
 ```bash
 CIRCA_BEDROCK=1 AWS_REGION=us-east-1 pnpm mcp
+CIRCA_BEDROCK=1 CIRCA_BEDROCK_ENDPOINT=https://bedrock-mantle.us-east-1.api.aws \
+  CIRCA_MODEL_ID=openai.gpt-oss-120b pnpm mcp
 ```
 
 **Reading a document.** A model proposes a structure for a two-column photographed

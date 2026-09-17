@@ -82,10 +82,111 @@ export class BedrockClient {
   }
 }
 
+/** The model id on the Bedrock API endpoint, which drops the version suffix `InvokeModel` carries. */
+export const DEFAULT_ENDPOINT_MODEL_ID = "anthropic.claude-haiku-4-5";
+
+/**
+ * Bedrock's API endpoint, as a `BedrockLike`.
+ *
+ * Bedrock now serves Anthropic models over the Anthropic Messages API at
+ * `<endpoint>/anthropic/v1/messages`, authenticated with a short-term bearer
+ * token minted from the caller's AWS credentials, and this is the path an
+ * account without a model-access agreement can use. The request body is the
+ * one `InvokeModel` already builds, minus `anthropic_version` and plus `model`,
+ * and the response body is byte-for-byte the same shape, so the two callers
+ * above do not know which transport they are on. That is the point of keeping
+ * the transport behind `send()`.
+ */
+export function bedrockEndpoint(
+  endpoint: string,
+  token: () => Promise<string>,
+  fetchImpl: typeof fetch = fetch,
+): BedrockLike {
+  const base = endpoint.replace(/\/+$/, "");
+  const post = async (path: string, extraHeaders: Record<string, string>, body: unknown): Promise<unknown> => {
+    const response = await fetchImpl(`${base}${path}`, {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${await token()}`, ...extraHeaders },
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) {
+      throw new Error(`Bedrock endpoint answered ${response.status}: ${(await response.text()).slice(0, 400)}`);
+    }
+    return response.json();
+  };
+  return {
+    async send(command: unknown): Promise<{ body?: Uint8Array }> {
+      const { modelId, body } = command as { modelId: string; body: string };
+      const {
+        anthropic_version: _dropped,
+        system,
+        messages,
+        max_tokens,
+      } = JSON.parse(body) as {
+        anthropic_version?: string;
+        system: string;
+        messages: { role: string; content: { type: string; text: string }[] }[];
+        max_tokens: number;
+      };
+
+      // Anthropic models take the Messages API and answer in the shape
+      // `InvokeModel` already returns. Every other family on the endpoint takes
+      // chat completions, whose answer is folded into that same shape here, so
+      // the callers stay ignorant of which model rephrased their sentence. The
+      // product never depended on that: the model proposes and the code decides,
+      // whatever the model is.
+      const answer = modelId.startsWith("anthropic.")
+        ? await post("/anthropic/v1/messages", { "anthropic-version": "2023-06-01" }, { model: modelId, system, messages, max_tokens })
+        : toMessagesShape(
+            await post(
+              "/v1/chat/completions",
+              {},
+              {
+                model: modelId,
+                max_tokens,
+                messages: [
+                  { role: "system", content: system },
+                  ...messages.map((m) => ({ role: m.role, content: m.content.map((c) => c.text).join("\n") })),
+                ],
+              },
+            ),
+          );
+      return { body: new TextEncoder().encode(JSON.stringify(answer)) };
+    },
+  };
+}
+
+/** A chat-completions answer, in the Messages shape `BedrockClient.complete` reads. */
+function toMessagesShape(completion: unknown): { content: { type: "text"; text: string }[] } {
+  const text = (completion as { choices?: { message?: { content?: string | null } }[] }).choices?.[0]?.message?.content ?? "";
+  return { content: [{ type: "text", text }] };
+}
+
 export async function bedrockFromEnv(env: NodeJS.ProcessEnv = process.env): Promise<BedrockClient | undefined> {
   if (env["CIRCA_BEDROCK"] !== "1") return undefined;
+  const region = env["AWS_REGION"];
+
+  // CIRCA_BEDROCK_ENDPOINT=https://bedrock-mantle.us-east-1.api.aws selects the
+  // API endpoint; without it, InvokeModel through the SDK as before.
+  const endpoint = env["CIRCA_BEDROCK_ENDPOINT"];
+  if (endpoint) {
+    const { getToken } = await import("@aws/bedrock-token-generator");
+    const { fromNodeProviderChain } = await import("@aws-sdk/credential-providers");
+    // The same provider chain every other AWS call here uses, signed into a
+    // twelve-hour bearer token. Minted per call, which costs nothing (it is a
+    // local signature) and means a rotated credential is picked up without a
+    // restart.
+    const credentials = fromNodeProviderChain();
+    const token = (): Promise<string> => getToken({ credentials, region: region ?? "us-east-1" });
+    return new BedrockClient(
+      bedrockEndpoint(endpoint, token),
+      { invokeModel: (input) => input },
+      { modelId: env["CIRCA_MODEL_ID"] ?? DEFAULT_ENDPOINT_MODEL_ID },
+    );
+  }
+
   const sdk = await import("@aws-sdk/client-bedrock-runtime");
-  const client = new sdk.BedrockRuntimeClient({ ...(env["AWS_REGION"] ? { region: env["AWS_REGION"] } : {}) });
+  const client = new sdk.BedrockRuntimeClient({ ...(region ? { region } : {}) });
   return new BedrockClient(
     client as unknown as BedrockLike,
     { invokeModel: (input) => new sdk.InvokeModelCommand(input as never) },

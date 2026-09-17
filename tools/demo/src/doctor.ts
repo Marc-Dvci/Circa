@@ -145,6 +145,52 @@ async function checkAws(): Promise<Line[]> {
   return lines;
 }
 
+/**
+ * The model path, round-tripped rather than announced.
+ *
+ * "bedrock: on" with a model id is a claim about configuration. What a judge
+ * wants to know is whether a sentence went to a model and came back, so the
+ * voice-rephrase path is run once on a fixed payload and the result is printed
+ * with its latency, through `checkVoice`, which is the guard the product puts
+ * between a model and a customer. A rephrasing that invented a number would
+ * print as rejected, with the reason, rather than as a tick.
+ */
+async function checkBedrock(): Promise<Line[]> {
+  const { bedrockFromEnv, speakWithModel } = await import("../../../apps/agent/src/bedrock.js");
+  const endpoint = process.env["CIRCA_BEDROCK_ENDPOINT"];
+  const lines: Line[] = [
+    line("bedrock", endpoint ? `on — API endpoint ${endpoint}` : "on — InvokeModel through the SDK"),
+    line("bedrock model", process.env["CIRCA_MODEL_ID"] ?? (endpoint ? "anthropic.claude-haiku-4-5" : "anthropic.claude-haiku-4-5-20251001-v1:0")),
+  ];
+  const client = await bedrockFromEnv();
+  if (!client) return [...lines, line("bedrock round trip", "client did not construct", "warn")];
+  const payload = {
+    view: "ui://circa/comparison",
+    caseId: "case_doctor",
+    headline: "One price for everything",
+    speech:
+      "Apex Exteriors is $6,500. Nine Elms Exterior Surveys is $1,850. That is a difference of $4,650. I cannot set these side by side, because one of these is a single price for everything it describes.",
+    rows: [{ label: "Where the money sits", value: "Cannot be said", attention: true }],
+    actions: [],
+    refusal: "Ask for the same quote itemised, with a price against each line.",
+  };
+  const started = performance.now();
+  const result = await within(
+    30_000,
+    speakWithModel(client, payload).then(
+      (voice) => ({ ok: true as const, voice }),
+      (error: unknown) => ({ ok: false as const, message: error instanceof Error ? error.message : String(error) }),
+    ),
+  );
+  const ms = Math.round(performance.now() - started);
+  if (!result) return [...lines, line("bedrock round trip", "no answer within 30 s", "warn")];
+  if (!result.ok) return [...lines, line("bedrock round trip", result.message.slice(0, 400), "warn")];
+  lines.push(line("bedrock round trip", `${ms} ms, sentence ${result.voice.ok ? "accepted" : "rejected"} by checkVoice`));
+  lines.push(line("bedrock said", `“${result.voice.speech.slice(0, 150)}${result.voice.speech.length > 150 ? "…" : ""}”`));
+  for (const problem of result.voice.problems) lines.push(line("bedrock rejected because", problem, "warn"));
+  return lines;
+}
+
 /** Boot the real server, connect the real client, and read `/health` back. */
 async function checkServer(): Promise<Line[]> {
   const lines: Line[] = [];
@@ -202,9 +248,9 @@ async function main(): Promise<void> {
     process.env["CIRCA_AUTH"] === "1"
       ? line("oauth", "on — bearer token required on /mcp")
       : line("oauth", "off — set CIRCA_AUTH=1 to require a token", "off"),
-    process.env["CIRCA_BEDROCK"] === "1"
-      ? line("bedrock", `on — ${process.env["CIRCA_MODEL_ID"] ?? "default model"}`)
-      : line("bedrock", "off — the deterministic planner and phrasing are in use", "off"),
+    ...(process.env["CIRCA_BEDROCK"] === "1"
+      ? await checkBedrock()
+      : [line("bedrock", "off — the deterministic planner and phrasing are in use", "off")]),
     process.env["CIRCA_TEXTRACT"] === "1"
       ? line("textract", "on — documents are read by DetectDocumentText")
       : line("textract", "off — documents are read as plain text", "off"),

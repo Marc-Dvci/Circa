@@ -211,17 +211,15 @@ remaining questions were about product rather than protocol.
 
 Four, all off by default, all behind an opt-in flag.
 
-**One of them has been run against AWS and three have not, and each entry below
-says which.** DynamoDB held a real case in a real table on 2026-09-17; the
-transcript, the latencies and the defect that run exposed are in `docs/AWS.md`.
-Textract, Bedrock and S3 were not run: the default credentials on this machine
-are refused by STS with `InvalidClientTokenId`, and the second account this
-session reached holds no Bedrock model-access agreement, so `InvokeModel` answers
-`ValidationException: Operation not allowed` in nineteen providers' worth of
-models. Where an entry is written from the API documentation and the SDK types
-rather than from use, it says so in its first line, because feedback inferred
-from a type signature and feedback earned from a failure are not the same thing
-and should not be read as though they were.
+**Two of them have been run against AWS and two have not, and each entry below
+says which.** DynamoDB held a real case in a real table on 2026-09-17, and a
+model on Bedrock rephrased the refusal three times through the product's own
+guard; the transcripts, the latencies and the defect the DynamoDB run exposed are
+in `docs/AWS.md`. Textract and S3 were not run. Where an entry is written from
+the API documentation and the SDK types rather than from use, it says so in its
+first line, because feedback inferred from a type signature and feedback earned
+from a failure are not the same thing and should not be read as though they
+were.
 
 ### Amazon DynamoDB (`@aws-sdk/client-dynamodb`, `@aws-sdk/lib-dynamodb`)
 
@@ -291,9 +289,11 @@ yes.
 
 ### Amazon Bedrock (`@aws-sdk/client-bedrock-runtime`)
 
-*Not run against a model. The API surface was exercised as far as an account
-without a model-access agreement allows, which turned out to be further than
-expected and is the subject of the "what needs work" paragraph.*
+*Run against a model, on the voice path, on 2026-09-17: three rephrasings of the
+refusal by `openai.gpt-oss-120b` through the Bedrock API endpoint, all three
+accepted by `checkVoice`, 3.1 to 4.3 seconds each. The SDK `InvokeModel` path was
+exercised as far as an account without a model-access agreement allows, which is
+the subject of the "what needs work" paragraph.*
 
 **Used for:** `InvokeModel` in two places: proposing a structure for a
 photographed document, and rephrasing a deterministic sentence for voice.
@@ -335,9 +335,28 @@ by region and appears in an IAM ARN, a config value and an environment variable,
 and an inference-profile id (`us.anthropic.…`) needs a different ARN shape in the
 policy from the foundation-model id it resolves to.
 
+**What the endpoint gets right that the SDK path does not.** Against the same
+account, the API endpoint answers a model you cannot use with
+`permission_error: anthropic.claude-haiku-4-5 is not available for this account`,
+naming the model and pointing at the console. That is the sentence `InvokeModel`
+should have said instead of `Operation not allowed`. The token generator is a
+local signature over the credential chain, so it needs no new secret and picks up
+a rotated key without a restart; `getToken` requiring `credentials` explicitly
+rather than reading the chain itself is one extra import, and worth it for the
+clarity. And `/anthropic/v1/messages` speaking the Anthropic Messages API means the
+request body `InvokeModel` already built goes through with one key dropped and one
+added.
+
+**The number that settles a design question.** 3.1 to 4.3 seconds per rephrasing
+against a 500 ms Alexa+ round-trip budget. A model on the voice path cannot sit
+inside a turn, whatever the model, so the deterministic sentence is the one that
+ships. That was the design; now it is measured rather than assumed.
+
 **Would I build with it again.** Yes, and I would keep the same discipline: the
 model proposes and the code decides, with `groundProposal` and `checkVoice`
-between the model and anything a customer sees.
+between the model and anything a customer sees. The fact that the model that
+finally ran was not the family the code was written for, and nothing above the
+transport noticed, is the discipline paying for itself.
 
 ### Amazon S3 (`@aws-sdk/client-s3`)
 
