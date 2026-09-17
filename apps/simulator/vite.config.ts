@@ -45,6 +45,10 @@ async function waitForHealth(url: string, timeoutMs = 20_000): Promise<boolean> 
 
 function circaServer(): PluginOption {
   let child: ChildProcess | undefined;
+  const stopChild = (): void => {
+    child?.kill();
+    child = undefined;
+  };
   return {
     name: "circa-mcp-server",
     apply: "serve",
@@ -65,17 +69,22 @@ function circaServer(): PluginOption {
         process.stdout.write(chunk.toString().replace(/^/gm, "  "));
       });
       const up = await waitForHealth(target);
-      if (!up) server.config.logger.warn(`  ➜  CIRCA:   no /health from ${target} — the simulator will show the error`);
+      if (!up) {
+        // Loudly, and stop. A warning here was survivable in a terminal and
+        // invisible in a recording: the page came up, the cards never did, and
+        // the reason was one line of scrollback above the URL.
+        stopChild();
+        throw new Error(
+          `CIRCA's MCP server did not answer /health at ${target}. Something else may be holding port ${serverPort}: ` +
+            `run with CIRCA_PORT set to a free port, or stop that process.`,
+        );
+      }
 
-      const stop = (): void => {
-        child?.kill();
-        child = undefined;
-      };
-      server.httpServer?.on("close", stop);
-      process.on("exit", stop);
+      server.httpServer?.on("close", stopChild);
+      process.on("exit", stopChild);
     },
     closeBundle() {
-      child?.kill();
+      stopChild();
     },
   };
 }

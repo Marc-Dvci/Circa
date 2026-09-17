@@ -1,6 +1,6 @@
 # Friction log
 
-Six entries. Every claim about a documented behaviour was re-read on the live
+Seven entries. Every claim about a documented behaviour was re-read on the live
 documentation page before this file was written, and every claim about code
 points at a file in this repository that a reader can open. Where I could not
 establish what a product does, the entry says that rather than guessing, because
@@ -42,21 +42,40 @@ Content-Type: application/json
 }
 ```
 
-The header is not mentioned anywhere on the page. The page also asks for a
+The header is not mentioned anywhere on that page. The page also asks for a
 metadata document at `/.well-known/oauth-protected-resource` without citing RFC
-9728, so a server author reading both documents cannot tell whether omitting the
-header is required, permitted, or simply unmentioned. The two documents describe
-the same discovery step in incompatible detail.
+9728, so a server author reading it cannot tell whether omitting the header is
+required, permitted, or simply unmentioned.
+
+**The answer exists, on a different page, in a list titled something else.** The
+[MCP QuickStart Guide](https://developer.amazon.com/docs/alexaplus/add-ons/mcp-toolkit-quickstart.html)'s
+authentication checklist says it twice:
+
+> Your MCP server returns 401 Unauthorized (**without a `WWW-Authenticate`
+> header**) for unauthenticated requests.
+
+and then, under **Not Supported Yet**, alongside Dynamic Client Registration,
+CIMD, OIDC and step-up authorization:
+
+> `WWW-Authenticate` header in 401 responses.
+
+So it is required to be absent, and that is a deliberate narrowing of RFC 9728
+rather than an omission. It is also filed under "not supported yet" next to four
+features a server may *choose* not to use, which reads as permission rather than
+a requirement. The one page that answers it is the quickstart, which an
+implementer reads first and then leaves, and the question only forms later on the
+account-linking page.
 
 **Workaround.** Send the documented shape. `apps/mcp-server/src/oauth.ts`
 answers 401 with `resource_metadata` in the JSON body and no header, and
 `tests/oauth.test.ts` asserts the header is absent so the deviation stays
 deliberate rather than being restored by somebody tidying up.
 
-**Suggestion.** One sentence on the account-linking page saying whether Alexa+
-reads `WWW-Authenticate`. If it does not, say so and cite RFC 9728 as the
-document the metadata endpoint comes from, so an implementer knows they are
-deliberately narrowing the RFC rather than misreading it.
+**Suggestion.** Put the sentence on the account-linking page too, where the 401
+example is, and say it as a requirement rather than as an unsupported feature:
+"Do not send `WWW-Authenticate`; Alexa+ reads the JSON body." Citing RFC 9728 as
+the source of the metadata endpoint, and naming this as a deliberate narrowing of
+§5.1, would let an implementer stop wondering which document is stale.
 
 ---
 
@@ -209,7 +228,7 @@ moment it matters:
 ```ts
 const client = new DynamoDBClient({});
 await client.config.region();       // "eu-west-1"
-await client.config.credentials();  // resolves, access key id AKIA…
+await client.config.credentials();  // resolves, an access key id
 ```
 
 Then call STS.
@@ -232,8 +251,23 @@ available, and the first thing to discover otherwise is whichever feature runs
 first in front of a user. Two sibling projects in this same hackathon reported the
 identical error, so this is the state a hackathon machine is commonly in.
 
+**There is a second rung on the same ladder, and it is the one that cost most.**
+A credential that STS accepts is still not a credential that can invoke a model.
+Bedrock answers `AccessDeniedException` while IAM is unsatisfied and
+`ValidationException: Operation not allowed` once IAM is satisfied and the
+account holds no model-access agreement — a different exception type, naming no
+action and no resource, for a condition one console click away. Meanwhile
+`list-foundation-models` returns nineteen providers regardless, because it
+describes the catalogue rather than the caller.
+
+So there are three distinct states that all look like "AWS works": resolved,
+authenticated, entitled. Each has its own call, each fails with a different
+exception class, and only the last one is checked by
+`get-foundation-model-availability` — the call nobody reaches for, because the
+listing call already returned the model id you were about to use.
+
 **Workaround.** Report the two facts separately and never infer one from the
-other. `pnpm doctor` prints the resolved key with a warning line saying that
+other. `pnpm check` prints the resolved key with a warning line saying that
 resolving is not the same as being accepted, and names `aws sts
 get-caller-identity` as the thing that decides. Every AWS path in the product is
 behind an opt-in flag, and the product is complete with all of them off.
@@ -243,6 +277,59 @@ provider chain, or a note in the chain's documentation that resolution implies
 nothing about validity. The current documentation describes where credentials
 come from and not what "resolved" guarantees, and the gap between those two is
 where a deployment plan gets built on a credential that was never going to work.
+
+---
+
+## 7. `DynamoDBDocumentClient` refuses an explicit `undefined`, and a table double will never tell you
+
+**Severity: medium.**
+
+**Task.** Run CIRCA's case store against a real DynamoDB table rather than
+against the double the suite uses.
+
+**Steps.** Create the table, point the product at it, and record one case:
+
+```bash
+aws dynamodb create-table --table-name circa-cases --billing-mode PAY_PER_REQUEST ...
+CIRCA_STORE=dynamodb CIRCA_TABLE=circa-cases circa quote <case> --file quote.txt
+```
+
+**Expected.** The same behaviour as the file store. The adapter is driven end to
+end by `tests/smoke.test.ts`, including the optimistic-concurrency conflict
+branch, against a double that enforces the condition expressions rather than
+accepting every write.
+
+**Actual.**
+
+```
+Pass options.removeUndefinedValues=true to remove undefined values from map/array/set.
+```
+
+`DynamoDBDocumentClient.from(client)` throws on an object holding an explicit
+`undefined`. CIRCA's records are full of them by design: `contractorName`,
+`deposit` and `concealedDamageClause` are optional, and an optional field the
+customer has not answered is a state this product is careful to preserve —
+`undefined` is not `false` is the first rule in `packages/verification/src/rules.ts`.
+`pnpm check`'s round trip passed, because the record it writes is a minimal case
+with every optional field absent rather than present-and-undefined.
+
+**The general shape is what makes it worth logging.** The double was written to
+enforce the thing the adapter is interesting for, which is the condition
+expression. It marshals nothing, because marshalling is the SDK's job and the
+double is not the SDK. So the one behaviour the adapter could not get wrong under
+test was the one it got wrong, and seven green test files and a green health
+check all agreed. A test double shares the bug it was not written to have.
+
+**Workaround.** `marshallOptions: { removeUndefinedValues: true }` in
+`packages/store/src/configure.ts`, which is correct here rather than expedient: a
+key dropped on the way in is a key absent on the way back, and an absent key
+reads as `undefined`, which is what it was.
+
+**Suggestion.** Default `removeUndefinedValues` to true, or throw at client
+construction rather than at the first write that happens to carry one. The error
+names the option and not the field, so on a record of any size the next question
+is "which one", and the answer is a `JSON.stringify` replacer written at the
+moment you least want to write one.
 
 ---
 

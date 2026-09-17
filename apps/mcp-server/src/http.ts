@@ -127,7 +127,20 @@ export function createApp(context: ServerContext, options: HttpOptions = {}): { 
         await server.close();
       },
     });
-    const server = createServer(context);
+    /**
+     * The session is bound to the linked account at `initialize`, and to nothing
+     * else.
+     *
+     * `requireBearer` validated the token and attached its subject before this
+     * handler ran; until this line, nothing read it back, so every session on a
+     * server with `CIRCA_AUTH=1` shared one `CIRCA_USER` and a second linked
+     * account would have been shown the first one's cases. Binding here rather
+     * than per call is right for Streamable HTTP: a session is opened by one
+     * initialize request carrying one token, and every later message on it
+     * belongs to that session.
+     */
+    const auth = (req as express.Request & { auth?: { subject?: string } }).auth;
+    const server = createServer(auth?.subject ? { ...context, userId: auth.subject } : context);
     await server.connect(transport);
     await transport.handleRequest(req, res, req.body);
   });
@@ -161,8 +174,17 @@ export function createApp(context: ServerContext, options: HttpOptions = {}): { 
 export async function startHttpServer(context: ServerContext, options: HttpOptions = {}): Promise<RunningServer> {
   const { app, closeAll } = createApp(context, options);
   const requested = options.port ?? 8787;
+  /**
+   * Bind the loopback address explicitly.
+   *
+   * `app.listen(port)` binds `0.0.0.0`, which on Windows succeeds while another
+   * process holds `127.0.0.1:<port>`. Both sockets then exist, the simulator's
+   * health check reaches the other process, and the failure reads as "no
+   * /health" from a server that started without complaint. Binding the address
+   * the client will actually use turns that into EADDRINUSE, which is the truth.
+   */
   const http = await new Promise<HttpServer>((resolve, reject) => {
-    const server = app.listen(requested, () => resolve(server));
+    const server = app.listen(requested, "127.0.0.1", () => resolve(server));
     server.on("error", reject);
   });
   const address = http.address();

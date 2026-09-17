@@ -39,7 +39,10 @@
         "identifiable": true,
         "headlineComponent": "roof.decking",
         "sharedComponents": ["roof.chimney_flashing", "roof.shingles"],
-        "onlyAComponents": ["roof.decking"]
+        "onlyAComponents": ["roof.decking"],
+        "scopeDifferenceCents": 403000,
+        "rateDifferenceCents": 42000,
+        "residualCents": 20000
       }
     },
     {

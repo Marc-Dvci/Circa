@@ -245,6 +245,33 @@ describe("host to view", () => {
     }
   });
 
+  it("never draws the word null, on any of the six views", async () => {
+    // `replaceChildren` stringifies whatever it is handed, so a builder that
+    // returns null for a section the payload does not have printed "null" on the
+    // card. `el()` filtered those children; `mount()` did not, and the result was
+    // on screen for most of a three-minute demo. Every view, every recorded
+    // result, every text node.
+    for (const [tool, result] of results) {
+      const uri = (result._meta as { ui?: { resourceUri?: string } } | undefined)?.ui?.resourceUri;
+      if (!uri) continue;
+      const frame = await mount(uri);
+      try {
+        await deliver(frame, tool, { caseId }, result);
+        const walker = frame.document.createTreeWalker(frame.document.body, 4 /* SHOW_TEXT */);
+        const offenders: string[] = [];
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+          const value = (node.nodeValue ?? "").trim();
+          if (value === "null" || value === "undefined" || value === "false" || value === "[object Object]") {
+            offenders.push(value);
+          }
+        }
+        expect(offenders, `${tool} -> ${uri}`).toEqual([]);
+      } finally {
+        frame.dispose();
+      }
+    }
+  });
+
   it("measures itself after every render, not only the first", async () => {
     const result = results.get("capture_offer")!;
     const frame = await mount(viewUriOf(result));

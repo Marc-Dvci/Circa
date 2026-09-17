@@ -103,16 +103,28 @@ token minted for a different endpoint by the same issuer does not open this one.
 
 ---
 
+## What the subject already does
+
+`context.userId` follows the token's subject. The MCP session is bound to it at
+`initialize` in `apps/mcp-server/src/http.ts`, and every `CaseService` operation
+is keyed by user, so two linked accounts on one server hold two separate sets of
+repairs. `tests/oauth.test.ts` links two and requires the second not to see the
+first's case; removing the binding turns that test red.
+
+This demo authorization server takes the subject from `login_hint`, because it is
+standing in for Login with Amazon and has no identity of its own to consult. In
+production the subject comes from the real identity and nothing downstream
+changes.
+
+---
+
 ## What would change for production
 
-Three things, and none of them is protocol.
+Two things, and neither is protocol.
 
-1. `subject` comes from a real identity rather than a seeded constant, and
-   `context.userId` follows it. Every `CaseService` operation is already keyed by
-   user, so this is a wiring change rather than a model change.
-2. Tokens live somewhere that survives a restart. The `AuthInfo` shape is already
+1. Tokens live somewhere that survives a restart. The `AuthInfo` shape is already
    what a store would hold.
-3. Refresh tokens are issued, and `grant_types_supported` grows to say so. It
+2. Refresh tokens are issued, and `grant_types_supported` grows to say so. It
    advertised `refresh_token` before the grant existed, which is the same
    mistake as advertising a registration endpoint: a metadata document is a
    promise about what the token endpoint will accept, and the test now pins it

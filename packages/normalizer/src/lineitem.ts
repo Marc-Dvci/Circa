@@ -125,6 +125,7 @@ interface Match {
 function matchComponents(
   normalised: string,
   trade: Trade,
+  action: WorkAction,
 ): { matches: Match[]; ambiguous: NormalisedItem["ambiguous"] } {
   const taken: boolean[] = new Array(normalised.length).fill(false);
   const matches: Match[] = [];
@@ -150,8 +151,12 @@ function matchComponents(
       }
       if (overlaps) continue;
 
-      // Every component that claims this exact phrase.
-      const claimants = LEXICON.filter((e) => e.phrase === entry.phrase).map((e) => e.component);
+      // Every component that claims this exact phrase, in the lexicon being
+      // scanned. Reading claimants out of LEXICON while scanning the fallback
+      // list made every fallback phrase resolve against an empty claimant set,
+      // so it was dropped as unresolvable and the whole fallback pass did
+      // nothing — "replace the roof" mapped to no component at all.
+      const claimants = lexicon.filter((e) => e.phrase === entry.phrase).map((e) => e.component);
       const resolved = resolveByTrade(claimants, trade);
       if (resolved === null) {
         if (!seenPhrase.has(entry.phrase)) {
@@ -172,8 +177,12 @@ function matchComponents(
   scan(LEXICON);
   // The fallback pass runs only on a clause that named nothing. "Replace the
   // roof" is a whole roof; "replace roof decking" is not, and the difference is
-  // whether the clause already told us which part.
-  if (matches.length === 0) scan(FALLBACK_LEXICON);
+  // whether the clause already told us which part. An entry that declares
+  // `actions` fires only under those verbs, which is what keeps "seal roof
+  // penetrations" from becoming a roof replacement.
+  if (matches.length === 0) {
+    scan(FALLBACK_LEXICON.filter((entry) => !entry.actions || entry.actions.includes(action)));
+  }
 
   matches.sort((a, b) => a.start - b.start);
   return { matches, ambiguous };
@@ -225,7 +234,15 @@ export function normaliseLineItem(
 
   for (const segment of splitSegments(raw)) {
     const normalised = normaliseText(segment);
-    const { matches, ambiguous: segmentAmbiguous } = matchComponents(normalised, trade);
+    // The verb is resolved before the components, because a fallback form can
+    // depend on it.
+    const verb: { action: WorkAction; phrase: string } | null = findAction(normalised) ?? lastAction;
+    if (verb) lastAction = verb;
+    const { matches, ambiguous: segmentAmbiguous } = matchComponents(
+      normalised,
+      trade,
+      verb?.action ?? defaultAction,
+    );
     for (const entry of segmentAmbiguous) {
       if (seenAmbiguous.has(entry.phrase)) continue;
       seenAmbiguous.add(entry.phrase);
@@ -233,8 +250,6 @@ export function normaliseLineItem(
     }
     if (matches.length > 0) sawAnyComponent = true;
     const negated = isNegated(normalised);
-    const verb: { action: WorkAction; phrase: string } | null = findAction(normalised) ?? lastAction;
-    if (verb) lastAction = verb;
 
     for (const match of matches) {
       if (negated) {

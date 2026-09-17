@@ -138,7 +138,17 @@ export class DemoAuthorizationServer {
       codeChallenge: challenge,
       codeChallengeMethod: "S256",
       scopes: scope.split(/\s+/).filter(Boolean),
-      subject: "user_demo",
+      /**
+       * Who the customer is.
+       *
+       * The real authorization server is Login with Amazon and it knows. This
+       * one stands in for it, so it takes the answer from `login_hint` — the
+       * parameter OAuth defines for exactly this hint — and falls back to one
+       * demo customer. It is the only way to drive two linked accounts against
+       * one server in a test, and per-account isolation is not a property worth
+       * asserting with one account.
+       */
+      subject: params.get("login_hint") ?? "user_demo",
       resource,
       expiresAt: Date.now() + (this.config.authorizationCodeTtlSeconds ?? DEFAULT_CODE_TTL) * 1000,
       used: false,

@@ -22,8 +22,10 @@ in about 50 ms. Watch for two beats.
 
 **The refusal**, at `compare_quotes`:
 
-> I cannot tell you where that difference sits. One of these was never itemised,
-> so there is nothing to compare its price against, line by line.
+> I cannot set these side by side, because one of these is a single price for
+> everything it describes, so there is no way to tell which part of the money
+> belongs to which piece of work. That is a property of the document, not of the
+> roof.
 >
 > Ask for the same quote itemised, with a price against each line. Then the same
 > comparison can answer it.
@@ -33,9 +35,18 @@ itemised version and the contractor sent it:
 
 ```
 Different scope               $4,030
-Same work, different price    $540
-Unaccounted for               $80
+Same work, different price    $420
+Unaccounted for               $200
 ```
+
+and, spoken:
+
+> $200 is not accounted for by either, and all of it sits on one line I could not
+> classify: "Seal penetrations". That is the line to ask about.
+
+A residual is a subtraction, so it usually has a name. Handing the customer the
+number without the name leaves them to invent the question; handing them the line
+lets them read it off the quote.
 
 Same call, same code, different documents. The product's advice changed what the
 product could compute. That is the whole thesis: a price difference is not a
@@ -106,9 +117,9 @@ The third corpus reports detection and containment separately on purpose.
 Detection may miss; containment must be zero, and is.
 
 ```bash
-pnpm bench     # 360 calls over the wire: slowest tool 6.1 ms at p95, budget 500 ms
-pnpm verify    # typecheck, 99 tests, all three corpora
-pnpm doctor    # what is actually live here
+pnpm bench     # 360 calls over the wire: slowest tool 6.2 ms at p95, budget 500 ms
+pnpm verify    # typecheck, 107 tests, all three corpora
+pnpm check    # what is actually live here
 ```
 
 ---

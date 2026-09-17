@@ -47,6 +47,18 @@ export interface QuotePair {
     onlyBComponents?: string[];
     /** Components that must not appear in the alignment at all. */
     notAlignedComponents?: string[];
+    /**
+     * The decomposition itself, in cents, when the pair is attributable.
+     *
+     * Asserting the verdict and the component lists leaves the three numbers the
+     * product actually reads aloud untested, and one of them was wrong for a
+     * fortnight: a line asserting two components attached its amount to both, so
+     * the rate difference double-counted it and the residual absorbed the
+     * difference. Every figure a demo speaks belongs in a corpus.
+     */
+    scopeDifferenceCents?: number;
+    rateDifferenceCents?: number;
+    residualCents?: number;
   };
 }
 

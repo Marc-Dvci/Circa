@@ -54,10 +54,23 @@ export interface ScenarioReport {
   falseAlarmRate: number;
   languageFailures: number;
   scopeLeakFailures: number;
+  /**
+   * Rules that were seen citing published guidance by URL, and rules that were
+   * seen citing only CIRCA's own policy, across all 48 scenarios.
+   *
+   * "Eighteen checks that cite published FTC guidance" is a sentence in the
+   * narration, the README and the store listing, and it was wrong by two. The
+   * number is counted here rather than remembered, from the bases the rules
+   * actually emitted, so labelling a rule as ours moves it.
+   */
+  rulesCitingGuidance: number;
+  rulesCitingPolicy: number;
 }
 
 export async function evaluateScenarios(): Promise<ScenarioReport> {
   const scenarios = await loadScenarios();
+  /** ruleId to every basis source it was seen emitting. NOT_APPLICABLE is excluded: it carries a placeholder basis. */
+  const basisSources = new Map<string, Set<string>>();
   const results: ScenarioResult[] = [];
 
   for (const scenario of scenarios) {
@@ -84,6 +97,12 @@ export async function evaluateScenarios(): Promise<ScenarioReport> {
 
     const snapshot = (await service.snapshot(repair.id))!;
     const report = runVerification(snapshot);
+    for (const check of report.checks) {
+      if (check.status === "NOT_APPLICABLE") continue;
+      (basisSources.get(check.ruleId) ?? basisSources.set(check.ruleId, new Set()).get(check.ruleId)!).add(
+        check.basis.source,
+      );
+    }
     const actual = report.checks.filter((c) => c.status === "ATTENTION").map((c) => c.ruleId).sort();
     const expected = [...scenario.expectAttention].sort();
     const spurious = actual.filter((id) => !expected.includes(id));
@@ -119,6 +138,9 @@ export async function evaluateScenarios(): Promise<ScenarioReport> {
     });
   }
 
+  const seen = [...basisSources.values()];
+  const citingGuidance = seen.filter((sources) => [...sources].some((s) => s !== "CIRCA_POLICY")).length;
+
   const ordinary = results.filter((r) => r.kind === "ORDINARY");
   const firings = results.reduce((sum, r) => sum + r.actual.length, 0);
   const correctFirings = results.reduce((sum, r) => sum + r.actual.filter((id) => r.expected.includes(id)).length, 0);
@@ -135,6 +157,8 @@ export async function evaluateScenarios(): Promise<ScenarioReport> {
     falseAlarmRate: ordinary.length === 0 ? 0 : ordinary.filter((r) => r.actual.length > 0).length / ordinary.length,
     languageFailures: results.filter((r) => r.languageProblems.length > 0).length,
     scopeLeakFailures: results.filter((r) => r.scopeLeaks.length > 0).length,
+    rulesCitingGuidance: citingGuidance,
+    rulesCitingPolicy: seen.length - citingGuidance,
   };
 }
 
@@ -222,6 +246,17 @@ export async function evaluateQuotePairs(): Promise<QuoteReport> {
       const actual = statusOf(component);
       if (actual === undefined) correctPlacements += 1;
       else alignmentErrors.push(`${component}: expected absent, got ${actual}`);
+    }
+    for (const [field, expected] of [
+      ["scopeDifferenceCents", pair.expect.scopeDifferenceCents],
+      ["rateDifferenceCents", pair.expect.rateDifferenceCents],
+      ["residualCents", pair.expect.residualCents],
+    ] as const) {
+      if (expected === undefined) continue;
+      placements += 1;
+      const actual = comparison.attribution[field];
+      if (actual === expected) correctPlacements += 1;
+      else alignmentErrors.push(`${field}: expected ${expected}, got ${actual ?? "absent"}`);
     }
     if (pair.expect.headlineComponent !== undefined) {
       const expectedHeadline = pair.expect.headlineComponent;

@@ -5,7 +5,7 @@ import { DynamoCaseRepository, PLAIN_COMMANDS, type DynamoCommandFactory, type D
 import type { CaseRepository } from "./types.js";
 
 /**
- * Which repository is live, decided by environment and reported by `pnpm doctor`.
+ * Which repository is live, decided by environment and reported by `pnpm check`.
  *
  * `CIRCA_STORE=dynamodb` needs credentials and `CIRCA_TABLE`; anything else
  * falls back to a file store under `.state/cases`, which is what a judge gets on
@@ -23,7 +23,24 @@ export async function configureRepository(env: NodeJS.ProcessEnv = process.env):
   if (!table) throw new Error("CIRCA_STORE=dynamodb needs CIRCA_TABLE");
   const { DynamoDBClient } = await import("@aws-sdk/client-dynamodb");
   const lib = await import("@aws-sdk/lib-dynamodb");
-  const client = lib.DynamoDBDocumentClient.from(new DynamoDBClient({}));
+  /**
+   * `removeUndefinedValues`, and it is not a formality.
+   *
+   * The document client refuses to marshal an object holding an explicit
+   * `undefined` and throws "Pass options.removeUndefinedValues=true". CIRCA's
+   * records are full of them: a quote carries `contractorName`, `deposit` and
+   * `concealedDamageClause` as optional fields, and an optional field the
+   * customer has not answered is exactly the state this product is careful to
+   * keep. Dropping the key is the right marshalling of it, because on the way
+   * back a missing key reads as `undefined`, which is what it was.
+   *
+   * This line is here because the DynamoDB path was run against DynamoDB. The
+   * adapter's own suite passes against a table double that marshals nothing, so
+   * every test was green and `circa quote` threw on the first real write.
+   */
+  const client = lib.DynamoDBDocumentClient.from(new DynamoDBClient({}), {
+    marshallOptions: { removeUndefinedValues: true },
+  });
   const commands: DynamoCommandFactory = {
     get: (input) => new lib.GetCommand(input as never) as never,
     put: (input) => new lib.PutCommand(input as never) as never,

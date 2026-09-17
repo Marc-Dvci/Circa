@@ -12,7 +12,7 @@ import type {
   Trade,
   VerificationReport,
 } from "#schema";
-import { computeItemisation } from "#schema";
+import { computeItemisation, formatCents } from "#schema";
 import type { CaseFacts, CaseSnapshot, EvidenceItem, SecondOpinionRequest } from "#domain";
 import { assertTransition, canTransition, newId } from "#domain";
 import { buildNeutralScope, compareQuotes, normaliseLineItem, parseQuoteText, quoteFromSpokenOffer, type NeutralScope } from "#normalizer";
@@ -31,6 +31,44 @@ import { VersionConflictError, type CaseRecord, type CaseRepository } from "./ty
  * review three weeks later reads the baseline out of it, and "what did we
  * originally agree" is a question the product promises to answer.
  */
+/**
+ * The timeline is customer-facing, so it is written in the customer's words.
+ *
+ * Alexa+ functional requirements are explicit that no API codes, tool names,
+ * JSON or internal identifiers may appear in a customer-facing response, and the
+ * dossier card reads these summaries straight out to the screen and to voice.
+ * `change_6RHTGR is now DOCUMENTED` broke that rule three ways in five words.
+ */
+const CHANGE_STATUS_SUMMARY: Record<string, string> = {
+  PROPOSED: "The extra work is recorded as proposed, not agreed",
+  DOCUMENTED: "The extra work has been put in writing",
+  ACCEPTED: "The extra work was accepted",
+  DECLINED: "The extra work was declined",
+  WITHDRAWN: "The extra work was withdrawn",
+};
+
+/** Plain-language names for the offer facts a customer can answer about. */
+const ANSWER_SUMMARY: Record<string, { yes: string; no: string }> = {
+  writtenScopeProvided: { yes: "There is something in writing", no: "Nothing has been put in writing" },
+  damageShownToCustomer: { yes: "The damage was shown to you", no: "The damage has not been shown to you" },
+  licenceNumberProvided: { yes: "A licence number was given", no: "No licence number was given" },
+  insuranceEvidenceProvided: { yes: "Proof of insurance was given", no: "No proof of insurance was given" },
+  unsolicitedApproach: { yes: "They approached you", no: "You approached them" },
+  urgencyClaimed: { yes: "Urgency was claimed", no: "No urgency was claimed" },
+  urgencyIndependentlyConfirmed: { yes: "The urgency was independently confirmed", no: "The urgency has not been independently confirmed" },
+};
+
+export function describeAnswers(answered: readonly string[], answers: Partial<OfferContext>): string {
+  const parts: string[] = [];
+  for (const field of answered) {
+    const value = (answers as Record<string, unknown>)[field];
+    const phrasing = ANSWER_SUMMARY[field];
+    if (phrasing && typeof value === "boolean") parts.push(value ? phrasing.yes : phrasing.no);
+    else if (field === "decisionRequestedBy" && typeof value === "string") parts.push("A decision was asked for by a set time");
+  }
+  return parts.length > 0 ? `${parts.join(". ")}.` : "You answered a question about the offer.";
+}
+
 export class CaseService {
   constructor(
     private readonly repository: CaseRepository,
@@ -50,7 +88,7 @@ export class CaseService {
 
   async require(caseId: string): Promise<CaseRecord> {
     const record = await this.repository.get(caseId);
-    if (!record) throw new Error(`no case ${caseId}`);
+    if (!record) throw new Error("I do not have a record of that repair.");
     return record;
   }
 
@@ -231,7 +269,13 @@ export class CaseService {
         result: report,
         status: canTransition(record.case.status, "VERIFYING") ? "VERIFYING" : undefined,
         events: answered.length
-          ? [{ kind: "VERIFICATION_ANSWERED", summary: answered.join(", "), data: { ...input.answers } }]
+          ? [
+              {
+                kind: "VERIFICATION_ANSWERED",
+                summary: describeAnswers(answered, input.answers),
+                data: { ...input.answers },
+              },
+            ]
           : [],
       };
     });
@@ -262,6 +306,22 @@ export class CaseService {
         events: [{ kind: "EVIDENCE_ADDED", summary: `${input.kind}: ${input.label}`, data: { evidenceId: item.id } }],
       };
     });
+  }
+
+  /**
+   * The same neutral scope, read without recording that it was built again.
+   *
+   * `request_second_opinion` needs the scope text to send it, and calling
+   * `structureScope` for it wrote a second "Independent assessment scope for 6
+   * components" into the timeline, one second after the first. The timeline is
+   * the record the change review reads three weeks later, so an entry that
+   * describes no decision does not belong in it.
+   */
+  async peekScope(caseId: string): Promise<NeutralScope> {
+    const record = await this.require(caseId);
+    const offer = record.offers.at(-1);
+    if (!offer) throw new Error("nothing has been captured on this case to build a scope from");
+    return buildNeutralScope(offer, record.case.trade, this.clock());
   }
 
   async structureScope(caseId: string): Promise<NeutralScope> {
@@ -389,9 +449,9 @@ export class CaseService {
    */
   async acceptScope(input: { caseId: string; quoteId: string }): Promise<AgreementBaseline> {
     return this.mutate(input.caseId, (record) => {
-      if (record.baseline) throw new Error(`case ${input.caseId} already has an accepted scope (${record.baseline.id})`);
+      if (record.baseline) throw new Error("You have already accepted a scope on this repair.");
       const quote = record.quotes.find((q) => q.id === input.quoteId);
-      if (!quote) throw new Error(`no quote ${input.quoteId} on this case`);
+      if (!quote) throw new Error("I do not have that quote on this repair.");
       const work = quote.lineItems.flatMap((li) => li.work);
       const baseline: AgreementBaseline = {
         id: newId("base"),
@@ -411,7 +471,7 @@ export class CaseService {
         events: [
           {
             kind: "SCOPE_ACCEPTED",
-            summary: `Accepted ${quote.contractorName ?? "quote"} at ${quote.total / 100} dollars, covering ${work.length} piece${work.length === 1 ? "" : "s"} of work`,
+            summary: `Accepted ${quote.contractorName ?? "the quote"} at ${formatCents(quote.total)}, covering ${work.length} piece${work.length === 1 ? "" : "s"} of work`,
             data: { baselineId: baseline.id, quoteId: quote.id, total: quote.total },
           },
         ],
@@ -503,11 +563,17 @@ export class CaseService {
   async setChangeStatus(input: { caseId: string; changeId: string; status: ScopeChange["status"] }): Promise<ScopeChange> {
     return this.mutate(input.caseId, (record) => {
       const change = record.changes.find((c) => c.id === input.changeId);
-      if (!change) throw new Error(`no change ${input.changeId} on this case`);
+      if (!change) throw new Error("I do not have that proposed change on this repair.");
       change.status = input.status;
       return {
         result: change,
-        events: [{ kind: "CHANGE_STATUS", summary: `${input.changeId} is now ${input.status}`, data: { status: input.status } }],
+        events: [
+          {
+            kind: "CHANGE_STATUS",
+            summary: CHANGE_STATUS_SUMMARY[input.status] ?? `The proposed change is now ${input.status.toLowerCase()}`,
+            data: { status: input.status },
+          },
+        ],
       };
     });
   }

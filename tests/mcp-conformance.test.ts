@@ -167,10 +167,16 @@ describe("streamable http conformance", () => {
     expect((compared._meta as { ui: { resourceUri: string } }).ui.resourceUri).toBe("ui://circa/comparison");
   });
 
-  it("reports an unknown case as a spoken error rather than a crash", async () => {
+  it("reports an unknown case as a spoken error that names no internal id", async () => {
+    // Alexa+ functional requirements: surface no API codes, tool names, JSON or
+    // internal ids in any customer-facing response. An error is a customer-facing
+    // response, and this one used to read the case id back.
     const result = await client.callTool({ name: "get_verification_status", arguments: { caseId: "case_nope" } });
     expect(result.isError).toBe(true);
-    expect(((result.content as { text: string }[])[0] ?? { text: "" }).text).toContain("case_nope");
+    const text = ((result.content as { text: string }[])[0] ?? { text: "" }).text;
+    expect(text).toMatch(/do not have a record of that repair/i);
+    expect(text).not.toContain("case_nope");
+    expect(text).not.toMatch(/get_verification_status/);
   });
 
   it("records latency for every call it served", () => {

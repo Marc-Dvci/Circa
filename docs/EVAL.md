@@ -123,7 +123,7 @@ rather than a note.
 | | |
 |---|---|
 | taxonomy components | 103, across 5 trades |
-| lexical forms | 779 |
+| lexical forms | 777 |
 | phrases claimed by two components | 10 |
 | verification rules | 18, across 4 dimensions |
 | injection detectors | 22, across 7 categories |

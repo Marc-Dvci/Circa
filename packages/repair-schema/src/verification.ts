@@ -45,6 +45,16 @@ export type Basis = z.infer<typeof BasisSchema>;
 export const VerificationCheckSchema = z.object({
   ruleId: z.string(),
   dimension: CheckDimensionSchema,
+  /**
+   * Two or three words naming what the check is about, status-neutral.
+   *
+   * One label, used by the card row and by the spoken summary, because the
+   * product's architectural claim is that everything a view shows the speech has
+   * already said. Deriving the card's label from the rule id and leaving the
+   * speech to count things made that claim false on the very first card: the
+   * screen named three conditions the voice only counted.
+   */
+  label: z.string(),
   status: CheckStatusSchema,
   /**
    * What was observed, in the second person, about the transaction. Never about
@@ -137,4 +147,17 @@ export function assertSafeLanguage(text: string): string {
   const hit = findUnsafeLanguage(text);
   if (hit) throw new UnsafeLanguageError(text, hit.matched, hit.why);
   return text;
+}
+
+/**
+ * Start a sentence with a capital letter.
+ *
+ * Component labels are lower case on purpose — "roof decking" is the phrase a
+ * quote uses, and a card row reads better without title case — so a sentence
+ * built by putting one first came out as "roof decking is not in the scope you
+ * accepted". Applied where a label becomes the first word of a sentence, never
+ * to the label itself.
+ */
+export function sentenceCase(text: string): string {
+  return text.length === 0 ? text : text[0]!.toUpperCase() + text.slice(1);
 }

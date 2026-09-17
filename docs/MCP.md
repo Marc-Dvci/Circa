@@ -87,8 +87,13 @@ rule that migrated into a tool handler would be a rule the CLI does not have.
 
 A thrown error becomes a spoken sentence with `isError: true`, never a stack
 trace. `get_verification_status` on an unknown case answers "I do not have a
-repair with the reference case_nope", which is a sentence a device can read
-aloud.
+record of that repair. Say check a repair and I will open one."
+
+**It used to read the case id back**, which was both a worse sentence and a
+breach of the Alexa+ functional requirement that no internal identifier reach a
+customer-facing response. An error is a customer-facing response.
+`tests/mcp-conformance.test.ts` now asserts the id is absent rather than present,
+which is the same test with its sign corrected.
 
 ---
 
@@ -190,7 +195,7 @@ reports what the client waited, including JSON-RPC framing, the HTTP round trip
 and schema validation of both the arguments and the structured output.
 
 ```
-  slowest tool at p95              request_second_opinion at 6.1 ms
+  slowest tool at p95              request_second_opinion at 6.2 ms
   Alexa+ round-trip budget         500 ms
   headroom at the slowest tool     493.9 ms
   first call of the process        10.7 ms  (cold path, excluded from the quantiles)

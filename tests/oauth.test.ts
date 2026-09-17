@@ -71,7 +71,7 @@ async function exchange(params: Record<string, string>): Promise<{ status: numbe
 }
 
 /** One complete authorization-code + PKCE round trip, returning the access token. */
-async function link(): Promise<string> {
+async function link(subject?: string): Promise<string> {
   const { verifier, challenge } = pkcePair();
   const authorized = await authorize({
     client_id: CLIENT_ID,
@@ -82,6 +82,7 @@ async function link(): Promise<string> {
     state: "alexa-state",
     resource,
     scope: "repair:read repair:write",
+    ...(subject ? { login_hint: subject } : {}),
   });
   expect(authorized.status).toBe(302);
   const location = new URL(authorized.headers.get("location") ?? "");
@@ -198,6 +199,43 @@ describe("authorization code with PKCE", () => {
       expect((started.structuredContent as { caseId: string }).caseId).toMatch(/^case_/);
     } finally {
       await client.close().catch(() => undefined);
+    }
+  });
+
+  it("keeps one linked account's repairs away from another's", async () => {
+    // The gate being correct says nothing about who the cases belong to. The
+    // token's subject was validated and attached to the request and then never
+    // read, so every session on a server with CIRCA_AUTH=1 shared one user id
+    // and the second household to link would have been shown the first
+    // household's contract.
+    const open = async (subject: string): Promise<Client> => {
+      const token = await link(subject);
+      const client = new Client({ name: `circa-${subject}`, version: "0.1.0" });
+      await client.connect(
+        new StreamableHTTPClientTransport(new URL(`${issuer}/mcp`), {
+          requestInit: { headers: { authorization: `Bearer ${token}` } },
+        }),
+      );
+      return client;
+    };
+
+    const alice = await open("user_alice");
+    const bob = await open("user_bob");
+    try {
+      const started = await alice.callTool({
+        name: "start_repair_case",
+        arguments: { issueSummary: "A roofer says the chimney flashing has failed", trade: "roofing" },
+      });
+      const caseId = (started.structuredContent as { caseId: string }).caseId;
+
+      const hers = (await alice.callTool({ name: "list_repair_cases", arguments: {} })).structuredContent;
+      expect(JSON.stringify(hers)).toContain(caseId);
+
+      const his = (await bob.callTool({ name: "list_repair_cases", arguments: {} })).structuredContent;
+      expect(JSON.stringify(his)).not.toContain(caseId);
+    } finally {
+      await alice.close().catch(() => undefined);
+      await bob.close().catch(() => undefined);
     }
   });
 

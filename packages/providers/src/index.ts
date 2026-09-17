@@ -163,10 +163,21 @@ function describeMatch(provider: Provider): ProviderMatch {
   return { provider, reasons: reasons.map(assertSafeLanguage), independentOfOutcome };
 }
 
-/** One line for a screen read from across a room. */
-export function providerHeadline(match: ProviderMatch): string {
+/**
+ * What this assessor costs and when they can come — without their name.
+ *
+ * The card already prints the name on the line above, so `providerHeadline`
+ * printed it twice on every row. Voice needs the name in the sentence and a card
+ * does not, so the two are separate strings rather than one string used twice.
+ */
+export function providerTerms(match: ProviderMatch): string {
   const fee = match.provider.assessmentFeeCents === 0 ? "free" : formatCents(match.provider.assessmentFeeCents);
-  return `${match.provider.name} — ${fee}, ${match.provider.nextAvailableDays <= 1 ? "tomorrow" : `in ${match.provider.nextAvailableDays} days`}${
+  return `${fee}, ${match.provider.nextAvailableDays <= 1 ? "tomorrow" : `in ${match.provider.nextAvailableDays} days`}${
     match.independentOfOutcome ? ", assessment only" : ""
   }`;
+}
+
+/** One line for voice, which has no line above to carry the name. */
+export function providerHeadline(match: ProviderMatch): string {
+  return `${match.provider.name}, ${providerTerms(match)}`;
 }

@@ -18,7 +18,10 @@ import { evaluateInjection, evaluateQuotePairs, evaluateScenarios } from "./run.
  */
 
 const pct = (value: number): string => `${(value * 100).toFixed(1)}%`;
-const bar = (label: string, value: string): string => `  ${label.padEnd(34)}${value}`;
+// One space of gutter, always: "controls that tripped the detector" is 34
+// characters, so padEnd(34) printed the value hard against it as
+// "...the detector0".
+const bar = (label: string, value: string): string => `  ${label.padEnd(36)}${value}`;
 
 async function main(): Promise<void> {
   const args = new Set(process.argv.slice(2));
@@ -38,6 +41,12 @@ async function main(): Promise<void> {
     lines.push(bar("scenarios fully correct", `${report.passed} of ${report.total}`));
     lines.push(bar("forbidden language emitted", String(report.languageFailures)));
     lines.push(bar("assessment requests that leaked", String(report.scopeLeakFailures)));
+    lines.push(
+      bar(
+        "rules citing published guidance",
+        `${report.rulesCitingGuidance} of ${report.rulesCitingGuidance + report.rulesCitingPolicy}  (the rest say CIRCA_POLICY)`,
+      ),
+    );
     if (args.has("--scenarios") || args.has("--verbose")) {
       for (const result of report.results.filter((r) => !r.pass)) {
         lines.push(`    ${result.id}  ${result.title}`);

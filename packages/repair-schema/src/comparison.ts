@@ -65,6 +65,18 @@ export const AttributionSchema = z.object({
   rateDifferenceCents: CentsSchema.optional(),
   /** total(A) - total(B) - scope - rate. What the documents do not account for. */
   residualCents: CentsSchema.optional(),
+  /**
+   * Money on line items that cover both shared work and work only that quote
+   * has, netted A - B.
+   *
+   * It is deliberately in neither the scope nor the rate bucket: the line does
+   * not say how it divides, and a split we invented would be the most persuasive
+   * wrong number in the product. It lands in the residual, and this field is why
+   * the residual can explain itself instead of only being a leftover.
+   */
+  straddlingCents: CentsSchema.optional(),
+  /** Money on line items whose text mapped to no work at all, netted A - B. Also inside the residual. */
+  unclassifiedCents: CentsSchema.optional(),
 });
 export type Attribution = z.infer<typeof AttributionSchema>;
 

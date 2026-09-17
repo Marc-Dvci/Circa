@@ -127,7 +127,7 @@ function render(data) {
     el("ul", { class: "plain" }, (data.matches || []).map((m) =>
       el("li", {}, [
         el("div", { class: "name" }, m.name),
-        el("div", { class: "why" }, m.headline),
+        el("div", { class: "why" }, m.terms),
         el("div", { class: "why" }, m.reasons[0]),
         el("div", { class: "actions" }, [
           el("button", {

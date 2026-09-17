@@ -15,6 +15,7 @@ import {
   type ViewPayload,
 } from "#agent";
 import { DemoProviderRepository } from "#providers";
+import { describeAnswers } from "#store";
 import type { ServerContext } from "./context.js";
 
 /**
@@ -82,6 +83,12 @@ function textResult(text: string): CallToolResult {
   return { content: [{ type: "text", text: assertSafeLanguage(text) }] };
 }
 
+/** A spoken sentence for the customer, and the structure the model needs to act on it. */
+function structuredResult(speech: string, extra: Record<string, unknown>): CallToolResult {
+  const safe = assertSafeLanguage(speech);
+  return { content: [{ type: "text", text: safe }], structuredContent: { speech: safe, ...extra } };
+}
+
 export function registerTools(server: McpServer, context: ServerContext): void {
   const { service, providers, metrics } = context;
 
@@ -107,7 +114,7 @@ export function registerTools(server: McpServer, context: ServerContext): void {
 
   const snapshot = async (caseId: string): Promise<CaseSnapshot> => {
     const found = await service.snapshot(caseId);
-    if (!found) throw new Error(`I do not have a repair with the reference ${caseId}`);
+    if (!found) throw new Error("I do not have a record of that repair. Say check a repair and I will open one.");
     return found;
   };
 
@@ -239,7 +246,14 @@ export function registerTools(server: McpServer, context: ServerContext): void {
         (patch as Record<string, unknown>)[key] = key === "paymentMethodsRequested" ? (value as PaymentMethod[]) : value;
       }
       await service.answerVerification({ caseId, answers: patch });
-      return toResult(await verificationPayload(caseId));
+      const payload = await verificationPayload(caseId);
+      // Acknowledge the answer before restating the position. Repeating the
+      // capture_offer sentence word for word made the product sound as though it
+      // had not heard, and made the checklist growing by two look like a fault
+      // rather than two rules that only became answerable once the customer
+      // spoke.
+      payload.speech = assertSafeLanguage(`${describeAnswers(Object.keys(patch), patch)} ${payload.speech}`);
+      return toResult(payload);
     }),
   );
 
@@ -264,7 +278,10 @@ export function registerTools(server: McpServer, context: ServerContext): void {
       // that leaked the price would still read perfectly well, so nothing else
       // would notice.
       const leaks = findAnchoring(scope, offer);
-      if (leaks.length > 0) throw new Error(`the assessment request would have carried the first opinion: ${leaks.join("; ")}`);
+      if (leaks.length > 0)
+        throw new Error(
+          `I stopped the assessment request from going out, because it still carried the first opinion: ${leaks.join("; ")}`,
+        );
 
       const payload: ViewPayload = {
         view: "ui://circa/scope",
@@ -336,8 +353,8 @@ export function registerTools(server: McpServer, context: ServerContext): void {
     },
     timed("request_second_opinion", async ({ caseId, providerId }) => {
       const provider = await providers.get(providerId);
-      if (!provider) throw new Error(`I do not have a provider with the reference ${providerId}`);
-      const scope = await service.structureScope(caseId);
+      if (!provider) throw new Error("I do not have that assessor on the list I just read you.");
+      const scope = await service.peekScope(caseId);
       await service.requestSecondOpinion({
         caseId,
         providerId,
@@ -553,15 +570,31 @@ export function registerTools(server: McpServer, context: ServerContext): void {
       title: "List the customer's repairs",
       description: "List the repairs on record for this customer, most recently updated first. Use it when the customer refers to a repair without saying which.",
       inputSchema: {},
+      // The spoken text names no case ids; the structured result carries them.
+      // Alexa+ forbids internal identifiers in a customer-facing response, and
+      // this sentence is read out. The model still needs the id to call the next
+      // tool, so it goes where the model reads and the customer does not.
+      outputSchema: {
+        speech: z.string(),
+        cases: z.array(z.object({ id: z.string(), title: z.string(), status: z.string() })),
+      },
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
     timed("list_repair_cases", async () => {
-      const cases = await service.list(context.userId);
-      if (cases.length === 0) return textResult("You have no repairs on record with me.");
-      const lines = cases
-        .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
-        .map((c) => `${shortTitle(c.issueSummary)} — ${c.status.toLowerCase().replace(/_/g, " ")} (${c.id})`);
-      return textResult(`${cases.length} repair${cases.length === 1 ? "" : "s"}: ${lines.join("; ")}`);
+      const cases = [...(await service.list(context.userId))].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+      if (cases.length === 0) {
+        return structuredResult("You have no repairs on record with me.", { cases: [] });
+      }
+      const spoken = cases
+        .map((c) => `${shortTitle(c.issueSummary)}, ${c.status.toLowerCase().replace(/_/g, " ")}`)
+        .join("; ");
+      return structuredResult(`${cases.length} repair${cases.length === 1 ? "" : "s"}: ${spoken}.`, {
+        cases: cases.map((c) => ({
+          id: c.id,
+          title: shortTitle(c.issueSummary),
+          status: c.status.toLowerCase().replace(/_/g, " "),
+        })),
+      });
     }),
   );
 

@@ -60,16 +60,37 @@ interface Args {
   flags: Record<string, string | true>;
 }
 
+/**
+ * Flags that never take a value, so `--door-knock case_X` does not eat the case.
+ *
+ * Everything else accepts both `--file=path` and `--file path`. Only the first
+ * form parsed for a while, and the help text printed the second, so every
+ * documented invocation of `circa quote` answered "needs a case id and --file"
+ * — including the one in the README.
+ */
+const BOOLEAN_FLAGS = new Set(["door-knock", "independent-only", "json", "tour"]);
+
 function parseArgs(argv: string[]): Args {
   const positional: string[] = [];
   const flags: Record<string, string | true> = {};
-  for (const token of argv) {
+  for (let i = 0; i < argv.length; i++) {
+    const token = argv[i]!;
     if (!token.startsWith("--")) {
       positional.push(token);
       continue;
     }
     const [name, ...rest] = token.slice(2).split("=");
-    flags[name!] = rest.length > 0 ? rest.join("=") : true;
+    if (rest.length > 0) {
+      flags[name!] = rest.join("=");
+      continue;
+    }
+    const next = argv[i + 1];
+    if (!BOOLEAN_FLAGS.has(name!) && next !== undefined && !next.startsWith("--")) {
+      flags[name!] = next;
+      i += 1;
+      continue;
+    }
+    flags[name!] = true;
   }
   return { positional, flags };
 }
@@ -442,7 +463,7 @@ function usage(): string {
   lines.push(
     "",
     c(DIM, "  The store is chosen by CIRCA_STORE (file by default, then memory or dynamodb)."),
-    c(DIM, "  `pnpm doctor` prints which one is live. No AWS account is needed for any of this."),
+    c(DIM, "  `pnpm check` prints which one is live. No AWS account is needed for any of this."),
     "",
   );
   return lines.join("\n");

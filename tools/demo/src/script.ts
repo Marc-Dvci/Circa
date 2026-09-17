@@ -55,7 +55,7 @@ export const INDEPENDENT_QUOTE = [
 
 export const SCRIPT: readonly Beat[] = [
   {
-    said: "Alexa, ask Circa to check a repair. A roofer knocked on the door and says the flashing round the chimney has failed.",
+    said: "Alexa, check a repair for me. A roofer knocked on the door and says the flashing round the chimney has failed.",
     tool: "start_repair_case",
     arguments: {
       issueSummary: "A roofer says the chimney flashing has failed and water could get in tonight",
@@ -76,7 +76,7 @@ export const SCRIPT: readonly Beat[] = [
       contractorFoundBy: "DOOR_KNOCK",
       urgencyClaim: "water could get in tonight",
     },
-    note: "Three conditions fire, and none of them is about the contractor.",
+    note: "Two conditions fire here, and neither is about the contractor.",
   },
   {
     said: "No, I have not seen it, and there is nothing in writing.",
@@ -116,13 +116,13 @@ export const SCRIPT: readonly Beat[] = [
     },
   },
   {
-    said: "Alexa, compare the two quotes.",
+    said: "Compare the two quotes.",
     tool: "compare_quotes",
     arguments: { caseId: "$caseId" },
     note: "THE REFUSAL. One is a single number for a paragraph of work, so the gap cannot be split up. CIRCA says what would make it answerable.",
   },
   {
-    caption: "That afternoon — the customer asked for it itemised",
+    caption: "That afternoon, after the customer asked for it itemised",
     said: "They sent it again, broken down.",
     tool: "add_quote",
     arguments: {
@@ -145,8 +145,8 @@ export const SCRIPT: readonly Beat[] = [
     note: "The baseline is written once and never rewritten.",
   },
   {
-    caption: "Three weeks later — during the repair",
-    said: "Alexa, Circa — they want another two thousand two hundred for decking.",
+    caption: "Three weeks later, during the repair",
+    said: "They want another two thousand two hundred for decking. Is that in what I agreed to?",
     tool: "record_scope_change",
     arguments: {
       caseId: "$caseId",

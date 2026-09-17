@@ -5,6 +5,7 @@ import { CaseService, MemoryCaseRepository } from "#store";
 import { createContext } from "../apps/mcp-server/src/context.js";
 import { startHttpServer, type RunningServer } from "../apps/mcp-server/src/http.js";
 import { REQUIRED_PROTOCOL_VERSION } from "../apps/mcp-server/src/server.js";
+import { SCRIPT } from "../tools/demo/src/script.js";
 
 /**
  * The simulator, mounted and driven.
@@ -139,7 +140,7 @@ describe("the page", () => {
     expect(pageText()).toContain("start_repair_case");
     // The transcript is the tool result's own `content`. If the page wrote its
     // own sentences here, voice-only would not be the same product.
-    expect(pageText()).toContain("Alexa, ask Circa to check a repair");
+    expect(pageText()).toContain(SCRIPT[0]!.said);
 
     await click("Next beat");
     await until("the offer", () => pageText().includes("capture_offer"));

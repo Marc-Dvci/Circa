@@ -10,7 +10,7 @@ import { CaseNotFoundError, VersionConflictError, type CaseRecord, type CaseRepo
  * This is the default, and it is the reason a judge can clone the repository and
  * see state survive a restart without an AWS account. The DynamoDB adapter next
  * to it is the same interface against the same tests; which one is live is one
- * environment variable, and `pnpm doctor` prints which.
+ * environment variable, and `pnpm check` prints which.
  *
  * Writes go to a temporary file and are renamed into place. `rename` within a
  * directory is atomic on both POSIX and NTFS, so a process killed mid-write

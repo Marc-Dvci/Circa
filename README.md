@@ -13,12 +13,13 @@ with six MCP Apps views for screen devices and a spoken answer that is complete
 without any of them.
 
 ```
-You      Alexa, compare the two quotes.
+You      Compare the two quotes.
 
-CIRCA    Apex Exteriors is $6,500 and Nine Elms Exterior Surveys is $1,850. I
-         cannot tell you where that difference sits. One of these was never
-         itemised, so there is nothing to compare its price against, line by
-         line.
+CIRCA    Apex Exteriors is $6,500. Nine Elms Exterior Surveys is $1,850. That is
+         a difference of $4,650. I cannot set these side by side, because one of
+         these is a single price for everything it describes, so there is no way
+         to tell which part of the money belongs to which piece of work. That is
+         a property of the document, not of the roof.
 
          Ask for the same quote itemised, with a price against each line. Then
          the same comparison can answer it.
@@ -36,8 +37,10 @@ and the contractor sends it, the same call returns:
 
 ```
 CIRCA    Of the $4,650 difference, $4,030 is work only Apex Exteriors is
-         proposing, $540 is the same work at a different price, and $80 is
-         unaccounted for.
+         proposing, $420 is the same work at a different price, and $200 is
+         not accounted for by either. All of that $200 sits on one line I
+         could not classify: "Seal penetrations". That is the line to ask
+         about.
 ```
 
 The product's advice changed what the product could compute.
@@ -63,14 +66,15 @@ two sides negotiated, so it can be read rather than taken on trust.
 Everything else:
 
 ```bash
-pnpm verify        # typecheck, 99 tests, three evaluation corpora
+pnpm verify        # typecheck, 107 tests, three evaluation corpora
 pnpm eval          # the corpora on their own, with the metrics below
 pnpm bench         # latency per tool against the 500 ms Alexa+ budget
-pnpm doctor        # what is actually live here: store, credentials, optional paths
+pnpm check         # what is actually live here: store, credentials, optional paths
 pnpm mcp           # just the server, on :8787
 pnpm circa help    # the same repair record from a terminal
 pnpm demo --tour   # the demo, slowed down, with the reasoning printed
 pnpm cdk:synth     # the CloudFormation this would deploy to
+pnpm check:citations  # fetch every URL the rules cite and expect 200
 ```
 
 ---
@@ -92,7 +96,7 @@ with the reason. `findAnchoring` checks the generated text against the case
 rather than trusting the generator, and it has already caught one leak.
 
 **Aligns two quotes before it compares them.** Work units are extracted from the
-text of each document against a taxonomy of 103 components and 779 lexical forms,
+text of each document against a taxonomy of 103 components and 777 lexical forms,
 with subsumption, so "full roof replacement" is understood to contain the eight
 shingles the other quote prices. Then it either attributes the difference or says
 why it cannot.
@@ -126,7 +130,7 @@ Every number below comes from a command in this repository.
 
 | | | how |
 |---|---|---|
-| tests | 99 | `pnpm test` |
+| tests | 107 | `pnpm test` |
 | typecheck | clean | `pnpm typecheck` |
 | protocol negotiated | **2025-11-25** | `tests/mcp-conformance.test.ts`, a real SDK client on a real socket |
 | MCP tools | 16 | `pnpm eval`, `/health` |
@@ -140,10 +144,10 @@ Every number below comes from a command in this repository.
 | injection corpus | 16 attacks, 8 controls | `pnpm eval --injection` |
 | **containment failures** | **0** | " |
 | detection recall / control false positives | 100% / 0 | " |
-| taxonomy | 103 components, 779 lexical forms | `pnpm eval --lexicon` |
-| verification rules | 18, across 4 dimensions | " |
+| taxonomy | 103 components, 777 lexical forms | `pnpm eval --lexicon` |
+| verification rules | 18, across 4 dimensions, 16 citing published guidance | " |
 | injection detectors | 22, across 7 categories | " |
-| slowest tool at p95 | **6.1 ms** against a 500 ms budget | `pnpm bench`, 360 calls over the wire |
+| slowest tool at p95 | **6.2 ms** against a 500 ms budget | `pnpm bench`, 360 calls over the wire |
 | demo | 14 tool calls, 48 ms total | `pnpm demo` |
 
 The three corpora found seven defects in the engine that 38 passing unit tests
@@ -191,7 +195,7 @@ caller that would notice if it stopped being true: `pnpm circa` reaches the same
 | path | what it is |
 |---|---|
 | `packages/repair-schema` | The wire format. Money in integer cents, work units, comparison results, verification vocabulary. No I/O, no model, no network. |
-| `packages/taxonomy` | 103 components across 5 trades, 779 lexical forms, subsumption, an action lexicon, and an enumerated ambiguity set the normaliser refuses to guess through. |
+| `packages/taxonomy` | 103 components across 5 trades, 777 lexical forms, subsumption, an action lexicon, and an enumerated ambiguity set the normaliser refuses to guess through. |
 | `packages/normalizer` | Text to work units, quote parsing, `compareQuotes`, and the neutral scope with its anchoring check. |
 | `packages/verification` | 18 rules, each citing its basis, plus the change-order review. |
 | `packages/documents` | The isolation boundary. Document text enters through `isolate()` and reaches a model only inside a nonce-delimited envelope. `groundProposal` refuses the parts of a model's output that are not in the document. |

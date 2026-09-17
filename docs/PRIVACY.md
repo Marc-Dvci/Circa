@@ -36,7 +36,7 @@ it is served only to whoever can reach the server.
 
 ## Where it is stored
 
-One environment variable decides, and `pnpm doctor` prints which is live.
+One environment variable decides, and `pnpm check` prints which is live.
 
 | `CIRCA_STORE` | where | notes |
 |---|---|---|
@@ -56,7 +56,7 @@ somebody eventually writes.
 ## Deleting it
 
 ```
-"Alexa, ask Circa to delete this repair."
+"Delete this repair."
 ```
 
 `delete_repair_case` removes the case, its quotes, the accepted scope, every
@@ -109,15 +109,24 @@ independent quote is drawn towards.
 A document read with Amazon Textract is sent to Textract. That path is off unless
 `CIRCA_TEXTRACT=1` is set; without it, documents are read as plain text locally.
 A document read with a model is sent to Amazon Bedrock. That path is off unless
-`CIRCA_BEDROCK=1`. `pnpm doctor` prints which of these are on.
+`CIRCA_BEDROCK=1`. `pnpm check` prints which of these are on.
 
 Both are off by default, and the product is complete with both off.
 
 ## Who can read a case
 
-Every `CaseService` operation is keyed by user. With `CIRCA_AUTH=1`, that user
-comes from the linked account's subject; without it, from `CIRCA_USER`, which
-defaults to a single demo user because a local clone has one person using it.
+Every `CaseService` operation is keyed by user. With `CIRCA_AUTH=1` that user is
+the subject of the linked account's token, bound to the MCP session at
+`initialize`; without it, it is `CIRCA_USER`, which defaults to a single demo
+user because a local clone has one person using it.
+
+That binding is asserted rather than described. `tests/oauth.test.ts` links two
+accounts against one running server, opens a repair on the first, and requires
+the second not to see it. Before that test existed the token was validated, its
+subject was attached to the request, and nothing read it back — so every session
+shared one user id, and the second household to link would have been shown the
+first household's contract. The gate being correct said nothing about who the
+cases belonged to.
 
 The MCP endpoint is gated by a bearer token when `CIRCA_AUTH=1`, and that token
 is bound to this specific endpoint by RFC 8707, so a token minted for another

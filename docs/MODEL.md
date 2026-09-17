@@ -1,7 +1,7 @@
 # The model
 
 Every number in CIRCA that is policy rather than arithmetic, in one place, with
-the reason it is where it is. There are seven. Everything else the product
+the reason it is where it is. There are nine. Everything else the product
 reports is counted, summed or compared.
 
 The rule that governs all of them: **a threshold decides whether CIRCA is
@@ -81,7 +81,7 @@ to report and wrong to count. Expanding a container against its own leaves adds
 one present-in-one-quote-only entry per component and drives the overlap of a
 document that exactly contains another down to 2 of 10.
 
-### The four reasons a comparison refuses
+### The five reasons a comparison refuses
 
 Each is returned by name in `attribution.reason`, and each has a different
 remedy, which is the point of separating them.
@@ -124,6 +124,28 @@ argue against.
 A deposit above these shares raises `ATTENTION`, which in this product means
 "worth knowing about". It does not mean the contractor is doing anything wrong,
 and no wording in the product suggests that it does.
+
+---
+
+## 4. Two thresholds that decide only what is highlighted
+
+`apps/agent/src/present.ts`
+
+| constant | value | what it decides |
+|---|---|---|
+| residual attention floor | $1.00 | a residual smaller than a dollar is rounding, and is reported without the attention mark |
+| change increase share | 0.20 | a proposed change worth at least a fifth of the accepted total is marked for attention |
+
+These two are listed separately because they are weaker than the six above and
+should not be mistaken for them. Neither changes what CIRCA concludes: the
+residual is stated either way, the increase is stated either way, and the speech
+is identical. They decide only whether a row on a card is drawn in the attention
+colour, which is why a reader who disagrees with either number loses nothing but
+an emphasis.
+
+They are here because the alternative was leaving two policy numbers out of the
+document that exists to list every policy number, and a list that is complete
+except for the parts that seemed unimportant is not a list anybody can rely on.
 
 ---
 

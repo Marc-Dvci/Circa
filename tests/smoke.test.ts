@@ -124,7 +124,7 @@ Total: $1,850.00
     // The baseline is written once. Accepting a second scope on the same case
     // would make the review above meaningless.
     await expect(service.acceptScope({ caseId: repair.id, quoteId: quote.id })).rejects.toThrow(
-      /already has an accepted scope/,
+      /already accepted a scope/,
     );
   });
 

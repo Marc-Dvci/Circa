@@ -5,13 +5,13 @@ import type {
   VerificationCheck,
   VerificationReport,
 } from "#schema";
-import { assertSafeLanguage, formatCents } from "#schema";
+import { assertSafeLanguage, formatCents, sentenceCase } from "#schema";
 import type { CaseSnapshot } from "#domain";
 import { contractorQuote, currentOffer } from "#domain";
-import { agenda, explainScopeChange, summarise } from "#verification";
+import { agenda, explainScopeChange, listOf, summarise } from "#verification";
 import { comparisonHeadline, explainComparison, type NeutralScope } from "#normalizer";
 import type { ProviderMatch } from "#providers";
-import { providerHeadline } from "#providers";
+import { providerHeadline, providerTerms } from "#providers";
 import { labelFor } from "#taxonomy";
 
 /**
@@ -72,11 +72,35 @@ export function shortTitle(issueSummary: string): string {
   return words.length > 42 ? `${words.slice(0, 39)}…` : words;
 }
 
+const TRADE_TITLE: Record<string, string> = {
+  roofing: "Roofing",
+  plumbing: "Plumbing",
+  electrical: "Electrical",
+  hvac: "Heating and cooling",
+  general: "Repair",
+  unknown: "Repair",
+};
+
+/**
+ * The card title.
+ *
+ * The first five words of the issue summary gave every card in the demo the
+ * title "A roofer says the chimney" — a sentence fragment, on screen for three
+ * minutes, saying nothing the card below it does not. What identifies a case on
+ * a shelf of cases is the trade, who it is with and what it costs, so that is
+ * the title.
+ */
+export function caseTitle(snapshot: CaseSnapshot): string {
+  const trade = TRADE_TITLE[snapshot.case.trade] ?? "Repair";
+  const offer = currentOffer(snapshot);
+  const name = offer?.companyName ?? offer?.contractorName;
+  const price = offer?.quotedPrice;
+  if (!name) return `${trade} · not yet quoted`;
+  return price === undefined ? `${trade} · ${name}` : `${trade} · ${name} · ${formatCents(price)}`;
+}
+
 function checkRow(check: VerificationCheck): ViewRow {
-  const label = check.ruleId
-    .split(".")[1]!
-    .replace(/_/g, " ")
-    .replace(/^\w/, (c) => c.toUpperCase());
+  const label = check.label;
   const value =
     check.status === "ATTENTION" ? "Worth knowing" : check.status === "VERIFY" ? "Not established" : "Done";
   return { label, value, attention: check.status === "ATTENTION" };
@@ -114,12 +138,15 @@ export function presentVerification(snapshot: CaseSnapshot, report: Verification
   }
   actions.push({ label: "Show the whole record", tool: "get_repair_dossier", arguments: { caseId: snapshot.case.id } });
 
-  const speech = [summarise(report), withNextStep?.nextStep].filter(Boolean).join(" ");
+  // The refusal leads the first checklist after the offer and is not repeated on
+  // every one after it.
+  const firstChecklist = snapshot.case.status === "NEW" || snapshot.case.status === "OFFER_CAPTURED";
+  const speech = [summarise(report, firstChecklist), withNextStep?.nextStep].filter(Boolean).join(" ");
 
   return {
     view: "ui://circa/verification",
     caseId: snapshot.case.id,
-    headline: shortTitle(snapshot.case.issueSummary),
+    headline: caseTitle(snapshot),
     speech: assertSafeLanguage(speech),
     rows,
     actions,
@@ -156,16 +183,32 @@ export function presentComparison(
 ): ViewPayload {
   const lines = explainComparison(comparison, quoteA, quoteB);
   const rows: ViewRow[] = [];
-  rows.push({
-    label: "Same work in both",
-    value: `${comparison.coverage.shared} of ${comparison.coverage.shared + comparison.coverage.onlyA + comparison.coverage.onlyB}`,
-  });
-  if (comparison.headline) {
+  /**
+   * A lump sum has not been aligned, so nothing about its alignment is
+   * reportable.
+   *
+   * When one side is a single number for a paragraph, its work units carry no
+   * stated action and never pair with anything. The card was reading that empty
+   * pairing back as fact: "same work in both, 0 of 7" and "chimney flashing:
+   * second quote only" — for a first quote whose entire premise was the chimney
+   * flashing. Two documents that were never aligned produce one row, and it says
+   * so.
+   */
+  const aligned = comparison.attribution.reason !== "LUMP_SUM";
+  if (aligned) {
     rows.push({
-      label: comparison.headline.label,
-      value: comparison.headline.presentIn === "A" ? "First quote only" : "Second quote only",
-      attention: true,
+      label: "Same work in both",
+      value: `${comparison.coverage.shared} of ${comparison.coverage.shared + comparison.coverage.onlyA + comparison.coverage.onlyB}`,
     });
+    if (comparison.headline) {
+      rows.push({
+        label: sentenceCase(comparison.headline.label),
+        value: comparison.headline.presentIn === "A" ? "First quote only" : "Second quote only",
+        attention: true,
+      });
+    }
+  } else {
+    rows.push({ label: "Line by line", value: "Cannot be aligned", attention: true });
   }
   if (comparison.attribution.identifiable) {
     rows.push({ label: "Different scope", value: formatCents(Math.abs(comparison.attribution.scopeDifferenceCents ?? 0)) });
@@ -226,7 +269,7 @@ export function presentChange(snapshot: CaseSnapshot, review: ScopeChangeReview)
   const rows: ViewRow[] = [];
   rows.push({ label: "Against your agreement", value: CHANGE_HEADLINE[review.verdict]!, attention: review.verdict !== "WITHIN_BASELINE" });
   if (review.newWork.length > 0) {
-    rows.push({ label: "New work", value: review.newWork.map((w) => labelFor(w.component)).join(", ") });
+    rows.push({ label: "New work", value: sentenceCase(review.newWork.map((w) => labelFor(w.component)).join(", ")) });
   }
   if (review.alreadyAgreed.length > 0) {
     rows.push({ label: "Already agreed", value: review.alreadyAgreed.map((w) => labelFor(w.component)).join(", ") });
@@ -241,8 +284,15 @@ export function presentChange(snapshot: CaseSnapshot, review: ScopeChangeReview)
       attention: review.increaseFraction >= 0.2,
     });
   }
+  // "outside baseline / Not yet" under a headline already reading "Not in what
+  // you accepted" said the opposite of what it meant. The label is the rule's
+  // own, and ATTENTION gets a word of its own rather than borrowing VERIFY's.
   for (const check of review.checks.filter((c) => c.status !== "CLEAR" && c.nextStep)) {
-    rows.push({ label: check.ruleId.split(".")[1]!.replace(/_/g, " "), value: "Not yet", attention: check.status === "ATTENTION" });
+    rows.push({
+      label: check.label,
+      value: check.status === "ATTENTION" ? "No" : "Not yet",
+      attention: check.status === "ATTENTION",
+    });
   }
 
   const actions: ViewAction[] = [
@@ -303,6 +353,7 @@ export function presentProviders(
       id: m.provider.id,
       name: m.provider.name,
       headline: providerHeadline(m),
+      terms: providerTerms(m),
       reasons: m.reasons,
       independentOfOutcome: m.independentOfOutcome,
       assessmentFee: formatCents(m.provider.assessmentFeeCents),
@@ -333,20 +384,32 @@ export function presentDossier(snapshot: CaseSnapshot, report: VerificationRepor
   if (snapshot.baseline) {
     rows.push({ label: "Accepted", value: formatCents(snapshot.baseline.totalCents) });
   }
-  rows.push({
-    label: "Checks complete",
-    value: `${report.completedApplicable} of ${report.totalApplicable}`,
-    attention: report.counts.attention > 0,
-  });
+  // Counts by status, never a completion ratio. "2 of 17 checks complete" is the
+  // single number dressed up as a verdict that this product exists to refuse:
+  // fifteen of those seventeen are questions nobody has answered, and reading
+  // them as fifteen failures is exactly the wrong thing to do with them.
+  if (report.counts.attention > 0) {
+    rows.push({ label: "Worth knowing about", value: String(report.counts.attention), attention: true });
+  }
+  if (report.counts.verify > 0) rows.push({ label: "Not established yet", value: String(report.counts.verify) });
+  if (report.counts.clear > 0) rows.push({ label: "Settled", value: String(report.counts.clear) });
 
+  // The card carries three counts and a list of quotes, so the speech carries
+  // them too. A dossier the voice summarises in one line while the screen shows
+  // seven rows is the exact drift this file exists to prevent.
+  const tally = [
+    report.counts.attention > 0 ? `${report.counts.attention} worth knowing about` : null,
+    report.counts.verify > 0 ? `${report.counts.verify} not established yet` : null,
+    report.counts.clear > 0 ? `${report.counts.clear} settled` : null,
+  ].filter((part): part is string => part !== null);
   const speech = snapshot.baseline
-    ? `You accepted ${formatCents(snapshot.baseline.totalCents)} covering ${snapshot.baseline.work.length} pieces of work, on ${snapshot.baseline.acceptedAt.slice(0, 10)}.`
+    ? `You accepted ${formatCents(snapshot.baseline.totalCents)} covering ${snapshot.baseline.work.length} pieces of work, on ${snapshot.baseline.acceptedAt.slice(0, 10)}. There ${snapshot.quotes.length === 1 ? "is one quote" : `are ${snapshot.quotes.length} quotes`} on file${tally.length > 0 ? `, and of the checks, ${listOf(tally)}` : ""}.`
     : summarise(report);
 
   return {
     view: "ui://circa/dossier",
     caseId: snapshot.case.id,
-    headline: shortTitle(snapshot.case.issueSummary),
+    headline: caseTitle(snapshot),
     statusLabel: SHORT_STATUS[snapshot.case.status] ?? snapshot.case.status,
     speech: assertSafeLanguage(speech),
     rows,

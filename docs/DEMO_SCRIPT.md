@@ -23,9 +23,9 @@ pnpm simulator:dev # the same arc with the Echo Show card beside the transcript
 ---
 
 
-**1. `start_repair_case`**  ·  8 ms
+**1. `start_repair_case`**  ·  10 ms
 
-> **You** — Alexa, ask Circa to check a repair. A roofer knocked on the door and says the flashing round the chimney has failed.
+> **You** — Alexa, check a repair for me. A roofer knocked on the door and says the flashing round the chimney has failed.
 
 **CIRCA** — I have opened a record for this repair. Tell me what you have been offered, and what they want for it.
 
@@ -36,43 +36,43 @@ pnpm simulator:dev # the same arc with the Echo Show card beside the transcript
 
 ---
 
-**2. `capture_offer`**  ·  9 ms
+**2. `capture_offer`**  ·  12 ms
 
 > **You** — They want six thousand five hundred, three thousand of it today, and they say water could get in tonight.
 
-**CIRCA** — I can't tell you whether this contractor is trustworthy, and I am not going to try. What I can tell you is that there are 2 conditions worth knowing about and 12 things not established yet before you decide. Nothing here has to be decided at the door. A written estimate can be looked at later.
+**CIRCA** — I can't tell you whether this contractor is trustworthy, and I am not going to try. What I can tell you is that 2 conditions here are worth knowing about: unsolicited approach and deposit size. And 12 things are not established yet before you decide. Nothing here has to be decided at the door. A written estimate can be looked at later.
 
 | | |
 |---|---|
-| Unsolicited | **Worth knowing** |
-| Deposit share | **Worth knowing** |
-| Licence provided | Not established |
-| Licence verified | Not established |
+| Unsolicited approach | **Worth knowing** |
+| Deposit size | **Worth knowing** |
+| Licence number | Not established |
+| Licence checked | Not established |
 | Deposit asked for | **$3,000** |
 | Quoted | $6,500 |
 
-*Three conditions fire, and none of them is about the contractor.*
+*Two conditions fire here, and neither is about the contractor.*
 
 ---
 
-**3. `answer_verification_question`**  ·  2 ms
+**3. `answer_verification_question`**  ·  4 ms
 
 > **You** — No, I have not seen it, and there is nothing in writing.
 
-**CIRCA** — I can't tell you whether this contractor is trustworthy, and I am not going to try. What I can tell you is that there are 3 conditions worth knowing about and 13 things not established yet before you decide. Nothing here has to be decided at the door. A written estimate can be looked at later.
+**CIRCA** — Nothing has been put in writing. The damage has not been shown to you. A decision was asked for by a set time. 3 conditions here are worth knowing about: unsolicited approach, immediate decision and deposit size. And 13 things are not established yet before you decide. Nothing here has to be decided at the door. A written estimate can be looked at later.
 
 | | |
 |---|---|
-| Unsolicited | **Worth knowing** |
+| Unsolicited approach | **Worth knowing** |
 | Immediate decision | **Worth knowing** |
-| Deposit share | **Worth knowing** |
-| Licence provided | Not established |
+| Deposit size | **Worth knowing** |
+| Licence number | Not established |
 | Deposit asked for | **$3,000** |
 | Quoted | $6,500 |
 
 ---
 
-**4. `structure_scope`**  ·  4 ms
+**4. `structure_scope`**  ·  6 ms
 
 > **You** — Get me another opinion.
 
@@ -90,9 +90,9 @@ pnpm simulator:dev # the same arc with the Echo Show card beside the transcript
 
 ---
 
-**5. `find_independent_professionals`**  ·  3 ms
+**5. `find_independent_professionals`**  ·  4 ms
 
-**CIRCA** — There are 3 who could look at this. Nine Elms Exterior Surveys — $245, tomorrow, assessment only. That one sells assessments and not repairs, so the fee is the same whatever they find.
+**CIRCA** — There are 3 who could look at this. Nine Elms Exterior Surveys, $245, tomorrow, assessment only. That one sells assessments and not repairs, so the fee is the same whatever they find.
 
 *Ordered by how little the assessor gains from the answer, not by rating.*
 
@@ -106,10 +106,10 @@ pnpm simulator:dev # the same arc with the Echo Show card beside the transcript
 
 | | |
 |---|---|
-| Unsolicited | **Worth knowing** |
+| Unsolicited approach | **Worth knowing** |
 | Immediate decision | **Worth knowing** |
-| Deposit share | **Worth knowing** |
-| Licence provided | Not established |
+| Deposit size | **Worth knowing** |
+| Licence number | Not established |
 | Deposit asked for | **$3,000** |
 | Quoted | $6,500 |
 
@@ -125,25 +125,24 @@ pnpm simulator:dev # the same arc with the Echo Show card beside the transcript
 
 | | |
 |---|---|
-| Unsolicited | **Worth knowing** |
+| Unsolicited approach | **Worth knowing** |
 | Immediate decision | **Worth knowing** |
-| Deposit share | **Worth knowing** |
-| Licence provided | Not established |
+| Deposit size | **Worth knowing** |
+| Licence number | Not established |
 | Deposit asked for | **$3,000** |
 | Quoted | $6,500 |
 
 ---
 
-**8. `compare_quotes`**  ·  2 ms
+**8. `compare_quotes`**  ·  5 ms
 
-> **You** — Alexa, compare the two quotes.
+> **You** — Compare the two quotes.
 
-**CIRCA** — Apex Exteriors is $6,500. Nine Elms Exterior Surveys is $1,850. That is a difference of $4,650. These are not two prices for the same job: one of these is a single price for everything it describes, so there is no way to tell which part of the money belongs to which piece of work. Comparing the totals would tell you nothing.
+**CIRCA** — Apex Exteriors is $6,500. Nine Elms Exterior Surveys is $1,850. That is a difference of $4,650. I cannot set these side by side, because one of these is a single price for everything it describes, so there is no way to tell which part of the money belongs to which piece of work. That is a property of the document, not of the roof.
 
 | | |
 |---|---|
-| Same work in both | 0 of 7 |
-| chimney flashing | **Second quote only** |
+| Line by line | **Cannot be aligned** |
 | Where the money sits | **Cannot be said** |
 
 > Ask for the same quote itemised, with a price against each line. Then the same comparison can answer it.
@@ -152,7 +151,7 @@ pnpm simulator:dev # the same arc with the Echo Show card beside the transcript
 
 ---
 
-### That afternoon — the customer asked for it itemised
+### That afternoon, after the customer asked for it itemised
 
 **9. `add_quote`**  ·  2 ms
 
@@ -162,28 +161,28 @@ pnpm simulator:dev # the same arc with the Echo Show card beside the transcript
 
 | | |
 |---|---|
-| Unsolicited | **Worth knowing** |
+| Unsolicited approach | **Worth knowing** |
 | Immediate decision | **Worth knowing** |
-| Deposit share | **Worth knowing** |
-| Licence provided | Not established |
+| Deposit size | **Worth knowing** |
+| Licence number | Not established |
 | Deposit asked for | **$3,000** |
 | Quoted | $6,500 |
 
 ---
 
-**10. `compare_quotes`**  ·  1 ms
+**10. `compare_quotes`**  ·  3 ms
 
 > **You** — Compare them again.
 
-**CIRCA** — Apex Exteriors is $6,500. Nine Elms Exterior Surveys is $1,850. That is a difference of $4,650. They overlap on 3 of 4 pieces of work, which is 75 per cent. The largest difference is roof decking: Apex Exteriors includes it, priced at $4,030, and Nine Elms Exterior Surveys does not. Of the $4,650 gap, $4,030 is work one includes and the other does not, and $540 is the same work at a different price. $80 is not accounted for by either. That is the figure worth asking about.
+**CIRCA** — Apex Exteriors is $6,500. Nine Elms Exterior Surveys is $1,850. That is a difference of $4,650. They overlap on 3 of 4 pieces of work, which is 75 per cent. The largest difference is roof decking: Apex Exteriors includes it, priced at $4,030, and Nine Elms Exterior Surveys does not. Of the $4,650 gap, $4,030 is work one includes and the other does not, and $420 is the same work at a different price. $200 is not accounted for by either, and all of it sits on one line I could not classify: "Seal penetrations". That is the line to ask about.
 
 | | |
 |---|---|
 | Same work in both | 3 of 4 |
-| roof decking | **First quote only** |
+| Roof decking | **First quote only** |
 | Different scope | $4,030 |
-| Same work, different price | $540 |
-| Unaccounted for | **$80** |
+| Same work, different price | $420 |
+| Unaccounted for | **$200** |
 
 *THE PAYOFF. The same call now decomposes the difference. The product's advice changed what the product could compute.*
 
@@ -193,7 +192,7 @@ pnpm simulator:dev # the same arc with the Echo Show card beside the transcript
 
 > **You** — I will go with the second one.
 
-**CIRCA** — Recorded. You accepted $1,850 covering 4 pieces of work, with 2 written exclusions. If anyone asks for more money later, ask me and I will tell you whether it was in this.
+**CIRCA** — Recorded. You accepted $1,850 covering 3 pieces of work, with 2 written exclusions. If anyone asks for more money later, ask me and I will tell you whether it was in this.
 
 | | |
 |---|---|
@@ -201,31 +200,33 @@ pnpm simulator:dev # the same arc with the Echo Show card beside the transcript
 | Nine Elms Exterior Surveys | $1,850 · itemised |
 | Apex Exteriors | $6,500 · itemised |
 | Accepted | $1,850 |
-| Checks complete | **2 of 17** |
+| Worth knowing about | **3** |
+| Not established yet | 12 |
+| Settled | 2 |
 
 *The baseline is written once and never rewritten.*
 
 ---
 
-### Three weeks later — during the repair
+### Three weeks later, during the repair
 
-**12. `record_scope_change`**  ·  2 ms
+**12. `record_scope_change`**  ·  3 ms
 
-> **You** — Alexa, Circa — they want another two thousand two hundred for decking.
+> **You** — They want another two thousand two hundred for decking. Is that in what I agreed to?
 
-**CIRCA** — roof decking is not in the scope you accepted on 2026-09-05. I have recorded this as a proposed change, not as approved work. Before you agree: Ask for the additional work and its price in writing before it starts.
+**CIRCA** — Roof decking is not in the scope you accepted on 2026-09-17. I have recorded this as a proposed change, not as approved work. Before you agree: Ask for the additional work and its price in writing before it starts.
 
 | | |
 |---|---|
 | Against your agreement | **Not in what you accepted** |
-| New work | roof decking |
+| New work | Roof decking |
 | Accepted total | $1,850 |
 | Increase | **119%** |
-| outside baseline | **Not yet** |
-| written order | Not yet |
-| condition documented | Not yet |
-| revised date | Not yet |
-| concealed clause | Not yet |
+| Inside the accepted scope | **No** |
+| Written change order | Not yet |
+| The condition documented | Not yet |
+| Revised completion date | Not yet |
+| Concealed-work clause | Not yet |
 
 *Measured against what was accepted three weeks ago, not against what anyone remembers.*
 
@@ -235,19 +236,19 @@ pnpm simulator:dev # the same arc with the Echo Show card beside the transcript
 
 > **You** — Ask them to put it in writing.
 
-**CIRCA** — Noted as documented. roof decking is not in the scope you accepted on 2026-09-05. I have recorded this as a proposed change, not as approved work. Before you agree: Ask for the additional work and its price in writing before it starts.
+**CIRCA** — Noted as documented. Roof decking is not in the scope you accepted on 2026-09-17. I have recorded this as a proposed change, not as approved work. Before you agree: Ask for the additional work and its price in writing before it starts.
 
 | | |
 |---|---|
 | Against your agreement | **Not in what you accepted** |
-| New work | roof decking |
+| New work | Roof decking |
 | Accepted total | $1,850 |
 | Increase | **119%** |
-| outside baseline | **Not yet** |
-| written order | Not yet |
-| condition documented | Not yet |
-| revised date | Not yet |
-| concealed clause | Not yet |
+| Inside the accepted scope | **No** |
+| Written change order | Not yet |
+| The condition documented | Not yet |
+| Revised completion date | Not yet |
+| Concealed-work clause | Not yet |
 
 ---
 
@@ -255,7 +256,7 @@ pnpm simulator:dev # the same arc with the Echo Show card beside the transcript
 
 > **You** — Show me the whole thing.
 
-**CIRCA** — You accepted $1,850 covering 4 pieces of work, on 2026-09-05.
+**CIRCA** — You accepted $1,850 covering 3 pieces of work, on 2026-09-17. There are 3 quotes on file, and of the checks, 3 worth knowing about, 12 not established yet and 2 settled.
 
 | | |
 |---|---|
@@ -263,8 +264,10 @@ pnpm simulator:dev # the same arc with the Echo Show card beside the transcript
 | Nine Elms Exterior Surveys | $1,850 · itemised |
 | Apex Exteriors | $6,500 · itemised |
 | Accepted | $1,850 |
-| Checks complete | **2 of 17** |
+| Worth knowing about | **3** |
+| Not established yet | 12 |
+| Settled | 2 |
 
 ---
 
-14 tool calls, 48 ms in total, slowest `capture_offer` at 9 ms.
+14 tool calls, 63 ms in total, slowest `capture_offer` at 12 ms.

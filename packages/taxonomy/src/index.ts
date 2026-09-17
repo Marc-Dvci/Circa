@@ -55,9 +55,14 @@ export interface LexiconEntry {
   component: ComponentId;
   /** Word count. Longest match wins, so "chimney flashing" beats "chimney". */
   words: number;
+  /** Fallback entries only: the actions this form fires under. Absent means any. */
+  actions?: readonly WorkAction[];
 }
 
-function buildLexicon(pick: (def: ComponentDef) => readonly string[]): LexiconEntry[] {
+function buildLexicon(
+  pick: (def: ComponentDef) => readonly string[],
+  actionsOf: (def: ComponentDef) => readonly WorkAction[] | undefined = () => undefined,
+): LexiconEntry[] {
   const entries: LexiconEntry[] = [];
   const seen = new Set<string>();
   for (const def of COMPONENTS) {
@@ -66,7 +71,8 @@ function buildLexicon(pick: (def: ComponentDef) => readonly string[]): LexiconEn
         const key = `${phrase}|${def.id}`;
         if (seen.has(key)) continue;
         seen.add(key);
-        entries.push({ phrase, component: def.id, words: phrase.split(" ").length });
+        const actions = actionsOf(def);
+        entries.push({ phrase, component: def.id, words: phrase.split(" ").length, ...(actions ? { actions } : {}) });
       }
     }
   }
@@ -85,7 +91,10 @@ export const LEXICON: readonly LexiconEntry[] = buildLexicon((def) => def.lexeme
  * entry mixed into that list would still consume a span. Two passes, the second
  * only when the first found nothing.
  */
-export const FALLBACK_LEXICON: readonly LexiconEntry[] = buildLexicon((def) => def.fallbackLexemes ?? []);
+export const FALLBACK_LEXICON: readonly LexiconEntry[] = buildLexicon(
+  (def) => def.fallbackLexemes ?? [],
+  (def) => def.fallbackActions,
+);
 
 /**
  * Phrases that more than one component claims.

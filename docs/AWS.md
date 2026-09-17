@@ -1,39 +1,126 @@
 # AWS
 
-**Nothing in this project has been deployed to AWS, and no AWS API has been
-called with a working credential.** That is the first sentence because it is the
-one a judge needs, and the rest of this document says exactly what exists,
-exactly what was run, and exactly where the line is.
+**One of the four integrations has been run against AWS. Three have not, and
+nothing has been deployed.** That is the first paragraph because it is the one a
+judge needs, and the rest of this document says exactly what was run, what came
+back, and where the line is.
 
 ---
 
-## What was actually run
+## What was actually run: DynamoDB, 2026-09-17
+
+A real table, in a real account, holding a real case.
 
 ```
 $ aws sts get-caller-identity
-An error occurred (InvalidClientTokenId) when calling the GetCallerIdentity
-operation: The security token included in the request is invalid.
+{
+    "UserId": "416964654816",
+    "Account": "416964654816",
+    "Arn": "arn:aws:iam::416964654816:root"
+}
+
+$ aws dynamodb create-table --table-name circa-cases --region us-east-1 \
+    --key-schema AttributeName=pk,KeyType=HASH AttributeName=sk,KeyType=RANGE \
+    --global-secondary-indexes 'IndexName=byUser,KeySchema=[...],Projection={ProjectionType=ALL}' \
+    --billing-mode PAY_PER_REQUEST
+arn:aws:dynamodb:us-east-1:416964654816:table/circa-cases   ACTIVE
+
+$ CIRCA_STORE=dynamodb CIRCA_TABLE=circa-cases AWS_REGION=us-east-1 pnpm check
+  storage
+  · store requested             dynamodb
+  · store                       dynamodb (circa-cases)
+  · store round trip            wrote a case, read it back, deleted it
 ```
 
-Credentials are present on the machine and they resolve. `pnpm doctor` runs the
-SDK's own provider chain, the same chain a client uses at the moment it matters,
-and gets an access key id and a region back:
+Then the whole product, over that table: `circa new`, `circa offer`,
+`circa quote` twice, `circa compare`, `circa dossier`. Same case ids, same
+refusal on the lump sum, same decomposition on the itemised re-quote —
+$4,030 of scope, $420 of rate, $200 unaccounted for — read back out of DynamoDB
+rather than out of a file.
+
+**Running it found a defect that seven test files did not.** The first
+`circa quote` against the real table threw:
 
 ```
-  aws
-  · aws region                  eu-west-1
-  · aws credentials             resolved (AKIA…JADV)
-  ! aws credentials note        resolving is not the same as being accepted
+Pass options.removeUndefinedValues=true to remove undefined values from map/array/set.
 ```
 
-The distinction in that last line is the point, and it is why `pnpm doctor`
-prints it as a warning rather than a tick. A credential that resolves through the
-provider chain has passed no test at all. STS is the thing that decides, and STS
-says no.
+CIRCA's records are full of explicit `undefined`s, because an optional field the
+customer has not answered is a state this product is deliberately careful to
+keep. The document client refuses to marshal one. The adapter's own suite is
+green because `packages/store/src/dynamo-double.ts` marshals nothing — it
+enforces the condition expressions, which is what it was written to do, and
+marshalling was never in its remit. The fix is one option in
+`packages/store/src/configure.ts`, and it is correct rather than expedient: a key
+dropped on the way in is a key missing on the way back, which reads as
+`undefined`, which is what it was.
 
-So: the four AWS integrations below are written, typed against the vendor SDKs,
-and driven in tests against injected doubles. They have not been run against
-AWS itself, and no number in this repository comes from an AWS API.
+### The latency, measured rather than assumed
+
+`GetItem` for one case, from a laptop in Europe to `us-east-1`:
+
+```
+first call (TLS + credential resolution + SDK warm-up): 365 ms
+next 20:  p50 102 ms   p95 104 ms   min 102 ms   max 104 ms
+```
+
+Put that next to the engine: the slowest CIRCA tool is **6.2 ms p95** against
+Alexa+'s 500 ms budget. The store is **seventeen times the whole engine**, and
+the first call of a cold task is most of the budget on its own. The product
+conclusion is not "DynamoDB is slow" — it is that for a voice add-on the table
+belongs in the region the add-on is served from, and that a Fargate task must not
+serve its first request cold. Neither of those is visible from the API
+documentation, and both changed what `infrastructure/cdk/stack.ts` should do.
+
+**The table was deleted after the run.** It cost a few cents and it is
+recreatable from the command above; nothing about this repository depends on it
+existing.
+
+## What was not run: Bedrock, Textract, S3
+
+```
+$ aws bedrock get-foundation-model-availability \
+    --model-id anthropic.claude-haiku-4-5-20251001-v1 --region us-east-1
+{
+    "modelId": "anthropic.claude-haiku-4-5-20251001-v1",
+    "agreementAvailability": { "status": "NOT_AVAILABLE" },
+    "authorizationStatus": "NOT_AUTHORIZED",
+    "entitlementAvailability": "AVAILABLE",
+    "regionAvailability": "AVAILABLE"
+}
+```
+
+The account can reach Bedrock, the region carries the model, and the identity
+holds `bedrock:InvokeModel` — `AmazonBedrockFullAccess` was attached during this
+session specifically to try. The model is still not invocable. Model access is an
+account-level agreement accepted in the console, and this account has not
+accepted one.
+
+Three things in that response are worth separating, because they took three
+attempts to tell apart:
+
+- `entitlementAvailability: AVAILABLE` and `regionAvailability: AVAILABLE` say the
+  model exists and this region serves it. Neither says anything about you.
+- `AccessDeniedException` is IAM. Before the policy was attached, that is what
+  came back, naming the exact action and ARN.
+- `ValidationException: Operation not allowed` is entitlement. It is what comes
+  back **after** IAM is satisfied, and it names nothing at all.
+
+It is account-wide rather than a quirk of one model family. `openai.gpt-5.6-luna`
+reads `NOT_AUTHORIZED` in the same account and region, as do the Sonnet and Haiku
+ids; `list-foundation-models` cheerfully lists nineteen providers, none of which
+this account may invoke. **A model appearing in `list-foundation-models` is not a
+model you can call**, and nothing in the list response hints otherwise. Root is
+refused outright whatever its policy says, so the one credential with unlimited
+IAM is the one credential guaranteed not to work.
+
+`aws bedrock get-foundation-model-availability` is the call that answers the
+question, and it is not the call anyone reaches for.
+
+Textract and S3 were not run either. Everything said about those three below is
+read off the API documentation and the SDK types, and is labelled as such where
+it matters — see `docs/PRODUCT_FEEDBACK.md`, which now separates what was used
+from what was only read.
 
 ---
 
@@ -81,7 +168,7 @@ be the product.
 ### Amazon Bedrock, in two places
 
 `apps/agent/src/bedrock.ts`, `InvokeModel`, default model
-`anthropic.claude-3-5-haiku-20241022-v1:0`.
+`anthropic.claude-haiku-4-5-20251001-v1:0`.
 
 ```bash
 CIRCA_BEDROCK=1 AWS_REGION=us-east-1 pnpm mcp

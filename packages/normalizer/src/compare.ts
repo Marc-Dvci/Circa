@@ -249,6 +249,55 @@ function isInspectionOnly(side: Side): boolean {
   return units.every((u) => u.action === "INSPECT" || u.component === "gen.inspection" || isAncillary(u.component));
 }
 
+/**
+ * Split one quote's money by where the work it bought ended up.
+ *
+ * Money moves in line items, so the decomposition is computed over line items
+ * and not over work units. A line item may assert several units — "replace 8
+ * damaged shingles at the chimney" asserts shingles and chimney flashing — and
+ * the document does not say how its money divides between them. Summing
+ * `amountA - amountB` across the shared *units* therefore counted such a line
+ * once per unit, and two quotes that both wrote that sentence reported a rate
+ * difference twice the size of the one on the page.
+ *
+ * Each priced line item is classified once, by where the work it asserts landed:
+ *
+ * - `shared` — every unit it asserts aligned with the other quote. This is the
+ *   same-work-different-price bucket.
+ * - `only` — every unit it asserts is work the other quote never mentioned.
+ *   This is the scope bucket.
+ * - `straddling` — it covers both, and the document declined to say in what
+ *   proportion. Left out of the other two on purpose, so its money falls into
+ *   the residual instead of being assigned to a bucket it only half belongs to.
+ */
+function splitByLineItem(
+  side: Side,
+  alignments: readonly Alignment[],
+  which: "A" | "B",
+): { shared: Cents; only: Cents; straddling: Cents } {
+  const sharedLines = new Set<string>();
+  const onlyLines = new Set<string>();
+  const onlyStatus = which === "A" ? "ONLY_A" : "ONLY_B";
+  for (const alignment of alignments) {
+    const ids = which === "A" ? alignment.lineItemsA : alignment.lineItemsB;
+    if (alignment.status === "SHARED") for (const id of ids) sharedLines.add(id);
+    else if (alignment.status === onlyStatus) for (const id of ids) onlyLines.add(id);
+  }
+
+  let shared = 0;
+  let only = 0;
+  let straddling = 0;
+  for (const item of side.quote.lineItems) {
+    if (typeof item.amount !== "number") continue;
+    const inShared = sharedLines.has(item.id);
+    const inOnly = onlyLines.has(item.id);
+    if (inShared && inOnly) straddling += item.amount;
+    else if (inShared) shared += item.amount;
+    else if (inOnly) only += item.amount;
+  }
+  return { shared, only, straddling };
+}
+
 export function compareQuotes(quoteA: Quote, quoteB: Quote, now = new Date().toISOString()): Comparison {
   const a = buildSide(quoteA);
   const b = buildSide(quoteB);
@@ -328,17 +377,17 @@ export function compareQuotes(quoteA: Quote, quoteB: Quote, now = new Date().toI
   if (reason) {
     attribution = { identifiable: false, reason };
   } else {
-    const scopeDifferenceCents =
-      onlyA.reduce((sum, x) => sum + (x.amountA ?? 0), 0) - onlyB.reduce((sum, x) => sum + (x.amountB ?? 0), 0);
-    const rateDifferenceCents = shared.reduce(
-      (sum, x) => (x.amountA !== undefined && x.amountB !== undefined ? sum + (x.amountA - x.amountB) : sum),
-      0,
-    );
+    const splitA = splitByLineItem(a, alignments, "A");
+    const splitB = splitByLineItem(b, alignments, "B");
+    const scopeDifferenceCents = splitA.only - splitB.only;
+    const rateDifferenceCents = splitA.shared - splitB.shared;
     attribution = {
       identifiable: true,
       scopeDifferenceCents,
       rateDifferenceCents,
       residualCents: difference - scopeDifferenceCents - rateDifferenceCents,
+      straddlingCents: splitA.straddling - splitB.straddling,
+      unclassifiedCents: a.unmappedValue - b.unmappedValue,
     };
   }
 

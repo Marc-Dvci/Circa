@@ -6,10 +6,20 @@ import type {
   VerificationCheck,
   WorkUnit,
 } from "#schema";
-import { actionsOverlap, assertSafeLanguage, formatCents, workKey } from "#schema";
+import { actionsOverlap, assertSafeLanguage, formatCents, sentenceCase, workKey } from "#schema";
 import { covers, labelFor } from "#taxonomy";
 import { BASIS } from "./basis.js";
 
+/** Two or three words per change rule, status-neutral, for the card row and the spoken line. */
+const CHANGE_LABELS: Record<string, string> = {
+  "change.no_baseline": "An agreed scope",
+  "change.outside_baseline": "Inside the accepted scope",
+  "change.written_order": "Written change order",
+  "change.condition_documented": "The condition documented",
+  "change.revised_date": "Revised completion date",
+  "change.concealed_clause": "Concealed-work clause",
+  "change.increase_share": "Size of the increase",
+};
 /**
  * Review a proposed change against the accepted scope.
  *
@@ -32,6 +42,9 @@ export function reviewScopeChange(
   unmappedText: readonly string[] = [],
   now = new Date().toISOString(),
 ): ScopeChangeReview {
+  // Same contract as the verification rules: one label per rule, status-neutral,
+  // used by both the card row and the spoken line. The change card used to print
+  // the lowercased rule id.
   const checks: VerificationCheck[] = [];
   const push = (
     ruleId: string,
@@ -43,6 +56,7 @@ export function reviewScopeChange(
     const c: VerificationCheck = {
       ruleId,
       dimension: "PROPOSAL",
+      label: CHANGE_LABELS[ruleId] ?? ruleId,
       status,
       statement: assertSafeLanguage(statement),
       basis,
@@ -115,7 +129,7 @@ export function reviewScopeChange(
     push(
       "change.outside_baseline",
       "ATTENTION",
-      `${names.join(", ")} ${names.length === 1 ? "is" : "are"} not in the scope you accepted on ${baseline.acceptedAt.slice(0, 10)}. I have recorded this as a proposed change, not as approved work.`,
+      `${sentenceCase(names.join(", "))} ${names.length === 1 ? "is" : "are"} not in the scope you accepted on ${baseline.acceptedAt.slice(0, 10)}. I have recorded this as a proposed change, not as approved work.`,
       BASIS.CIRCA_BASELINE,
       "A written change order, naming the work and the price, is the normal way to agree this.",
     );

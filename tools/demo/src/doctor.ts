@@ -13,7 +13,7 @@ import { TOOL_NAMES } from "../../../apps/mcp-server/src/tools.js";
 import { VIEWS } from "../../../apps/mcp-server/src/ui/views.js";
 
 /**
- * `pnpm doctor`.
+ * `pnpm check`.
  *
  * What is actually live, checked rather than described. Every optional path in
  * this product is off by default and turned on by an environment variable, which
@@ -124,8 +124,11 @@ async function checkAws(): Promise<Line[]> {
     if (!credentials) {
       lines.push(line("aws credentials", "did not resolve within 5 s", "warn"));
     } else if (credentials.ok) {
+      // The key id is not printed, not even partially. This output is read aloud
+      // in a recording and pasted into documents, and four characters of a real
+      // access key id buy nothing a plain "resolved" does not.
       const id = credentials.value.accessKeyId;
-      lines.push(line("aws credentials", `resolved (${id.slice(0, 4)}…${id.slice(-4)})`));
+      lines.push(line("aws credentials", `resolved (${id.length > 0 ? `${id.slice(0, 4)}…` : "empty id"})`));
       lines.push(
         line(
           "aws credentials note",

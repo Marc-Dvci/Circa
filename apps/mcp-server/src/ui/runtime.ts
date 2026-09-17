@@ -91,9 +91,13 @@ function el(tag, attrs, children) {
   return node;
 }
 
+// Same filter as el(). replaceChildren coerces null to the text node "null", so
+// a builder that returns nothing for an absent section printed the word on the
+// card; el() dropped those children, mount() did not.
 function mount(children) {
   const root = document.getElementById("root");
-  root.replaceChildren(...[].concat(children));
+  const kept = [].concat(children).filter((c) => c !== null && c !== undefined && c !== false);
+  root.replaceChildren(...kept);
   HOST.reportSize();
 }
 

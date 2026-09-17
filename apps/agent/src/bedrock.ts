@@ -41,7 +41,7 @@ export interface BedrockCommandFactory {
   invokeModel(input: { modelId: string; contentType: string; accept: string; body: string }): unknown;
 }
 
-export const DEFAULT_MODEL_ID = "anthropic.claude-3-5-haiku-20241022-v1:0";
+export const DEFAULT_MODEL_ID = "anthropic.claude-haiku-4-5-20251001-v1:0";
 
 /**
  * A thin client over `InvokeModel`.

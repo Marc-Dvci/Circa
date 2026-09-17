@@ -22,13 +22,14 @@ export function runVerification(facts: CaseFacts): VerificationReport {
       return {
         ruleId: rule.id,
         dimension: rule.dimension,
+        label: rule.label,
         status: "NOT_APPLICABLE" as const,
         statement: "Not applicable to this case yet.",
         basis: { source: "CIRCA_POLICY" as const, reference: "CIRCA policy — a rule with no facts to read reports that it has none" },
         evidence: [],
       };
     }
-    return { ruleId: rule.id, dimension: rule.dimension, ...result };
+    return { ruleId: rule.id, dimension: rule.dimension, ...result, label: rule.label };
   });
 
   const counts = {
@@ -78,17 +79,41 @@ export function agenda(report: VerificationReport, limit = 4): VerificationCheck
  * product must not answer, and saying so plainly is better than answering a
  * different question and hoping nobody notices.
  */
-export function summarise(report: VerificationReport): string {
+export function summarise(report: VerificationReport, withRefusal = true): string {
   const { attention, verify } = report.counts;
   const open = attention + verify;
   if (open === 0)
     return assertSafeLanguage(
       `Every check I can run on what you have told me is complete: ${report.completedApplicable} of ${report.totalApplicable}.`,
     );
-  const parts: string[] = [];
-  if (attention > 0) parts.push(`${attention} ${attention === 1 ? "condition worth knowing about" : "conditions worth knowing about"}`);
-  if (verify > 0) parts.push(`${verify} ${verify === 1 ? "thing" : "things"} not established yet`);
-  return assertSafeLanguage(
-    `I can't tell you whether this contractor is trustworthy, and I am not going to try. What I can tell you is that there ${open === 1 ? "is" : "are"} ${parts.join(" and ")} before you decide.`,
-  );
+  // Said on the checklist that follows the offer, and not on every checklist
+  // after it. It is the product's position and it has to be heard; a sentence
+  // repeated verbatim four turns running stops being heard, and on two
+  // consecutive turns it reads as the product not having listened.
+  const sentences = withRefusal
+    ? ["I can't tell you whether this contractor is trustworthy, and I am not going to try."]
+    : [];
+  if (attention > 0) {
+    // Named, not counted. The card lists these conditions by name, and a voice
+    // line that only counted them would make "everything a view shows, speech
+    // has already said" false on the product's first screen.
+    const named = listOf(report.checks.filter((c) => c.status === "ATTENTION").map((c) => c.label.toLowerCase()));
+    sentences.push(
+      `${withRefusal ? "What I can tell you is that " : ""}${attention} ${attention === 1 ? "condition here is" : "conditions here are"} worth knowing about: ${named}.`,
+    );
+  }
+  if (verify > 0) {
+    sentences.push(
+      `${attention > 0 ? "And " : withRefusal ? "What I can tell you is that " : ""}${verify} ${
+        verify === 1 ? "thing is" : "things are"
+      } not established yet before you decide.`,
+    );
+  }
+  return assertSafeLanguage(sentences.join(" "));
+}
+
+/** "a", "a and b", "a, b and c". */
+export function listOf(items: readonly string[]): string {
+  if (items.length <= 1) return items[0] ?? "";
+  return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
 }

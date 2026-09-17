@@ -27,8 +27,10 @@ import { BASIS } from "./basis.js";
 export interface Rule {
   id: string;
   dimension: CheckDimension;
+  /** Two or three words naming what this rule is about. Status-neutral: it is the same word whether the answer is yes, no or unknown. */
+  label: string;
   /** Returns null when the rule does not apply to this case at all. */
-  evaluate(facts: CaseFacts): Omit<VerificationCheck, "ruleId" | "dimension"> | null;
+  evaluate(facts: CaseFacts): Omit<VerificationCheck, "ruleId" | "dimension" | "label"> | null;
 }
 
 function check(
@@ -37,8 +39,8 @@ function check(
   basis: VerificationCheck["basis"],
   evidence: string[] = [],
   nextStep?: string,
-): Omit<VerificationCheck, "ruleId" | "dimension"> {
-  const out: Omit<VerificationCheck, "ruleId" | "dimension"> = {
+): Omit<VerificationCheck, "ruleId" | "dimension" | "label"> {
+  const out: Omit<VerificationCheck, "ruleId" | "dimension" | "label"> = {
     status,
     statement: assertSafeLanguage(statement),
     basis,
@@ -58,6 +60,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "identity.contractor_named",
     dimension: "IDENTITY",
+    label: "Business name",
     evaluate(facts) {
       const offer = currentOffer(facts);
       if (!offer) return null;
@@ -76,6 +79,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "identity.licence_provided",
     dimension: "IDENTITY",
+    label: "Licence number",
     evaluate(facts) {
       const offer = currentOffer(facts);
       if (!offer) return null;
@@ -93,6 +97,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "identity.licence_verified",
     dimension: "IDENTITY",
+    label: "Licence checked",
     evaluate(facts) {
       const offer = currentOffer(facts);
       if (!offer) return null;
@@ -131,6 +136,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "identity.insurance_evidence",
     dimension: "IDENTITY",
+    label: "Proof of insurance",
     evaluate(facts) {
       const offer = currentOffer(facts);
       if (!offer) return null;
@@ -153,6 +159,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "proposal.written_scope",
     dimension: "PROPOSAL",
+    label: "Written estimate",
     evaluate(facts) {
       const offer = currentOffer(facts);
       if (!offer) return null;
@@ -171,6 +178,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "proposal.itemised",
     dimension: "PROPOSAL",
+    label: "Itemised prices",
     evaluate(facts) {
       const quote = contractorQuote(facts);
       if (!quote) return null;
@@ -198,6 +206,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "proposal.materials_described",
     dimension: "PROPOSAL",
+    label: "Materials named",
     evaluate(facts) {
       const quote = contractorQuote(facts);
       if (!quote || quote.lineItems.length === 0) return null;
@@ -216,6 +225,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "proposal.completion_date",
     dimension: "PROPOSAL",
+    label: "Completion date",
     evaluate(facts) {
       const quote = contractorQuote(facts);
       if (!quote) return null;
@@ -233,6 +243,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "proposal.payment_schedule",
     dimension: "PROPOSAL",
+    label: "Payment schedule",
     evaluate(facts) {
       const quote = contractorQuote(facts);
       if (!quote) return null;
@@ -255,6 +266,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "proposal.warranty",
     dimension: "PROPOSAL",
+    label: "Warranty",
     evaluate(facts) {
       const quote = contractorQuote(facts);
       if (!quote) return null;
@@ -268,6 +280,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "conditions.unsolicited",
     dimension: "DECISION_CONDITIONS",
+    label: "Unsolicited approach",
     evaluate(facts) {
       const offer = currentOffer(facts);
       if (!offer) return null;
@@ -290,6 +303,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "conditions.immediate_decision",
     dimension: "DECISION_CONDITIONS",
+    label: "Immediate decision",
     evaluate(facts) {
       const offer = currentOffer(facts);
       if (!offer) return null;
@@ -309,6 +323,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "conditions.urgency_unconfirmed",
     dimension: "DECISION_CONDITIONS",
+    label: "Unconfirmed urgency",
     evaluate(facts) {
       const offer = currentOffer(facts);
       if (!offer?.context.urgencyClaim) return null;
@@ -330,6 +345,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "conditions.damage_shown",
     dimension: "DECISION_CONDITIONS",
+    label: "Seeing the damage",
     evaluate(facts) {
       const offer = currentOffer(facts);
       if (!offer) return null;
@@ -348,6 +364,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "conditions.deposit_share",
     dimension: "DECISION_CONDITIONS",
+    label: "Deposit size",
     evaluate(facts) {
       const offer = currentOffer(facts);
       const quote = contractorQuote(facts);
@@ -383,6 +400,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "conditions.payment_method",
     dimension: "DECISION_CONDITIONS",
+    label: "Payment method",
     evaluate(facts) {
       const offer = currentOffer(facts);
       const quote = contractorQuote(facts);
@@ -406,6 +424,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "evidence.second_opinion",
     dimension: "INDEPENDENT_EVIDENCE",
+    label: "Second opinion",
     evaluate(facts) {
       const independent = independentQuotes(facts);
       if (independent.length > 0)
@@ -430,6 +449,7 @@ export const RULES: readonly Rule[] = [
   {
     id: "evidence.photographs",
     dimension: "INDEPENDENT_EVIDENCE",
+    label: "Photographs",
     evaluate(facts) {
       const photos = facts.evidence.filter((e) => e.kind === "PHOTO");
       if (photos.length > 0)

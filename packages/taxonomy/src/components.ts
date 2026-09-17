@@ -1,4 +1,4 @@
-import type { ComponentId, Unit } from "#schema";
+import type { ComponentId, Unit, WorkAction } from "#schema";
 
 /**
  * The component vocabulary.
@@ -44,6 +44,15 @@ export interface ComponentDef {
    * the writer meant.
    */
   fallbackLexemes?: readonly string[];
+  /**
+   * Actions under which the fallback forms fire. Absent means any action.
+   *
+   * "Replace the roof" is a full replacement. "Seal roof penetrations" is not,
+   * and without this gate the bare system name turns a $180 sealing line into a
+   * whole-roof line — the same class of error the fallback list was created to
+   * stop, one verb further along.
+   */
+  fallbackActions?: readonly WorkAction[];
 }
 
 export const COMPONENTS: readonly ComponentDef[] = [
@@ -63,6 +72,7 @@ export const COMPONENTS: readonly ComponentDef[] = [
     // "roof" on its own means the whole roof only when the clause named no part
     // of one.
     fallbackLexemes: ["roof", "whole roof", "entire roof"],
+    fallbackActions: ["REPLACE", "INSTALL"],
     includes: [
       "roof.shingles",
       "roof.underlayment",
@@ -86,7 +96,13 @@ export const COMPONENTS: readonly ComponentDef[] = [
   // saying "replace chimney flashing" align through subsumption and the
   // comparison reports that one is broader than the other.
   { id: "roof.flashing", label: "flashing", trade: "roofing", lexemes: ["flashing"], includes: ["roof.chimney_flashing", "roof.valley_flashing", "roof.pipe_boot", "roof.drip_edge"], defaultUnit: "linear_ft" },
-  { id: "roof.chimney_flashing", label: "chimney flashing", trade: "roofing", lexemes: ["chimney flashing", "step flashing", "counter flashing", "counterflashing", "flashing around the chimney", "chimney"], defaultUnit: "linear_ft" },
+  // Bare "chimney" is a fallback, not a lexeme. As a lexeme it made "replace 8
+  // damaged shingles at the chimney" assert chimney flashing as well as
+  // shingles, so one priced line landed on two work units and the same money was
+  // counted twice in the rate difference. As a fallback it fires on "repair the
+  // chimney area", which is a clause that named no part of a roof and does mean
+  // the flashing.
+  { id: "roof.chimney_flashing", label: "chimney flashing", trade: "roofing", lexemes: ["chimney flashing", "step flashing", "counter flashing", "counterflashing", "flashing around the chimney"], fallbackLexemes: ["chimney"], defaultUnit: "linear_ft" },
   { id: "roof.valley_flashing", label: "valley flashing", trade: "roofing", lexemes: ["valley flashing", "valley", "valleys"], defaultUnit: "linear_ft" },
   { id: "roof.pipe_boot", label: "pipe boots", trade: "roofing", lexemes: ["pipe boot", "vent boot", "plumbing boot", "pipe flashing", "vent flashing"], defaultUnit: "each" },
   { id: "roof.drip_edge", label: "drip edge", trade: "roofing", lexemes: ["drip edge"], defaultUnit: "linear_ft" },

@@ -59,6 +59,52 @@ entire product into one place that decides what a result says.
 
 ---
 
+## The Alexa+ MCP Toolkit: the CLI, the Local Inspector and the Web Simulator
+
+**Not used, and the reason is the first thing worth reporting.**
+
+The [MCP QuickStart Guide](https://developer.amazon.com/docs/alexaplus/add-ons/mcp-toolkit-quickstart.html)
+opens with "**Step 1. Download and install CLI and authenticate**", and that
+heading is the whole of the install instructions. There is no download link, no
+package name, no `npm i -g`, no `brew install`, no installer, and no link
+anywhere else on the page. The next line is `alexa-ai configure`, which is what
+you run *after* the step the page does not describe.
+
+The obvious guess is worse than no guess: `alexa-ai` on the public npm registry
+is an unrelated third-party package — a WhatsApp chatbot at version 2.5.0,
+published by someone with no connection to Amazon. A developer following the
+quickstart, hitting a missing step, and doing the natural thing installs a
+stranger's package globally. That is a supply-chain hazard created by a missing
+sentence, and it is the single highest-value fix on this page.
+
+So the toolkit is absent from this project, and everything it would have done was
+done by hand instead:
+
+| toolkit | what CIRCA did instead |
+|---|---|
+| `alexa-ai new mcp` scaffolds `addon-package/addon.json` | `addon-package/addon.json` written against the schema reference on the quickstart page, with `tests/addon.test.ts` asserting the nesting, the six icon sizes, the 600x900 carousel image and every documented character limit |
+| Local Inspector | `tests/mcp-conformance.test.ts` drives the SDK's own client over Streamable HTTP on a real socket, and `tests/mcp-apps.test.ts` runs the view and the host against each other in a DOM |
+| Web Simulator | `apps/simulator`, a host rather than a mock: it holds no product knowledge and draws only what arrives in a tool result |
+
+**What I can say about the manifest without the CLI.** The schema reference is
+good: it gives the nesting, every character limit, the required icon sizes and
+the endpoint `type`. Writing to it by hand took twenty minutes and produced a
+document a test can check. Two things would have saved time. The field
+constraints table lists `mediaAssets.icons.light` as "All 6 sizes required:
+72x72, 64x64, 88x88, 126x126, 180x180, 241x241" — an order that is neither
+ascending nor a dimension anyone would guess, so it has to be copied exactly and
+there is no schema file to copy it from. And nothing states whether the media
+URIs must already resolve at submission time or whether they are fetched at
+certification, which decides whether a repository can host them.
+
+**What I would want most, after an install link.** A published JSON Schema for
+`addon.json`, and `alexa-ai validate` as a command that runs without
+authenticating. Both of those are things a project can put in CI; `deploy` and
+`submit` are not, and a toolkit whose only offline verb is `new` leaves a
+manifest unchecked until the first upload.
+
+---
+
 ## Model Context Protocol, spec 2025-11-25
 
 **Used for:** the transport, tool registration, resources, capability
@@ -163,12 +209,24 @@ remaining questions were about product rather than protocol.
 
 ## AWS services
 
-Four, all off by default, all behind an opt-in flag, and none of them running
-against AWS itself. `docs/AWS.md` is explicit about that: the credentials on this
-machine resolve through the SDK provider chain and are then refused by STS with
-`InvalidClientTokenId`.
+Four, all off by default, all behind an opt-in flag.
+
+**One of them has been run against AWS and three have not, and each entry below
+says which.** DynamoDB held a real case in a real table on 2026-09-17; the
+transcript, the latencies and the defect that run exposed are in `docs/AWS.md`.
+Textract, Bedrock and S3 were not run: the default credentials on this machine
+are refused by STS with `InvalidClientTokenId`, and the second account this
+session reached holds no Bedrock model-access agreement, so `InvokeModel` answers
+`ValidationException: Operation not allowed` in nineteen providers' worth of
+models. Where an entry is written from the API documentation and the SDK types
+rather than from use, it says so in its first line, because feedback inferred
+from a type signature and feedback earned from a failure are not the same thing
+and should not be read as though they were.
 
 ### Amazon DynamoDB (`@aws-sdk/client-dynamodb`, `@aws-sdk/lib-dynamodb`)
+
+*Run against a real table on 2026-09-17: a case written, re-read, compared and
+deleted. Everything below is from that run.*
 
 **Used for:** the case store. One table, partition key the user, sort key the
 case, optimistic concurrency through a condition expression on a version
@@ -176,18 +234,43 @@ attribute.
 
 **What worked well.** `lib-dynamodb`'s document client removes the attribute-value
 marshalling entirely, and the command factory pattern made the adapter injectable
-without a mock framework.
+without a mock framework. Nothing about the adapter needed to change to point it
+at a real table: one environment variable, and the same case ids, the same
+refusal and the same $4,030 / $420 / $200 decomposition came back out of DynamoDB
+that came out of the file store.
 
-**What needs work.** The failure a conditional write produces is a
-`ConditionalCheckFailedException` whose message says nothing about which condition
-failed. On a table with two different condition expressions, that is the
-difference between a two-minute diagnosis and an afternoon. Testing against a
-double that enforces the expressions rather than accepting every write is the
-only reason this project is confident the concurrency is not inverted.
+**What needs work.** Two things, and the first one cost a working afternoon's
+confidence.
+
+`DynamoDBDocumentClient.from(client)` throws on an object holding an explicit
+`undefined`, and the error names the option to set rather than the field that
+carried it. On a record with forty optional fields, "which one" is the next
+question and the SDK does not answer it. Defaulting `removeUndefinedValues` to
+true, or refusing at client construction, would both be better than refusing at
+the first write that happens to carry one. Full write-up as entry 7 of
+`docs/FRICTION_LOG.md`.
+
+The failure a conditional write produces is a `ConditionalCheckFailedException`
+whose message says nothing about which condition failed. On a table with two
+different condition expressions, that is the difference between a two-minute
+diagnosis and an afternoon.
+
+**The number that changed a design decision.** `GetItem` for one case, laptop in
+Europe to `us-east-1`: 365 ms on the first call, then p50 102 ms and p95 104 ms
+over the next twenty. CIRCA's slowest *tool* is 6.2 ms p95 against Alexa+'s
+500 ms budget, so the store is seventeen times the entire engine and a cold first
+call is most of the budget. That is not a complaint about DynamoDB — it is the
+reason a voice add-on's table has to sit in the region the add-on is served from,
+and the reason a Fargate task must not answer its first request cold. Neither
+fact is visible from the API documentation.
 
 **Would I build with it again.** Yes.
 
 ### Amazon Textract (`@aws-sdk/client-textract`)
+
+*Not run against Textract. Everything below is read off the API documentation and
+the SDK types, and the "what needs work" paragraph is a prediction about the
+block model rather than a report of one.*
 
 **Used for:** `DetectDocumentText` on a photographed estimate.
 
@@ -208,6 +291,10 @@ yes.
 
 ### Amazon Bedrock (`@aws-sdk/client-bedrock-runtime`)
 
+*Not run against a model. The API surface was exercised as far as an account
+without a model-access agreement allows, which turned out to be further than
+expected and is the subject of the "what needs work" paragraph.*
+
 **Used for:** `InvokeModel` in two places: proposing a structure for a
 photographed document, and rephrasing a deterministic sentence for voice.
 
@@ -216,16 +303,45 @@ this. Both call sites needed to control exactly what crossed the boundary, and
 being able to construct the request body directly is what made the nonce-delimited
 document envelope possible without fighting an abstraction.
 
-**What needs work.** The model id is a long opaque string that varies by region
-and appears in an IAM ARN, a config value and an environment variable. A
-documented way to ask an account which model ids are actually invocable in a
-region, before the first call fails, would be worth a lot.
+**What needs work.** **There is no way to ask "can I call this model" that a
+developer would find, and there are three different failures that all look like
+one.** This was measured rather than guessed, in an account with valid keys:
+
+| state | the call that answers it | what a wrong guess returns |
+|---|---|---|
+| credentials resolve | the SDK provider chain | a key id, and no opinion at all |
+| credentials authenticate | `sts get-caller-identity` | `InvalidClientTokenId` |
+| the account is entitled | `bedrock get-foundation-model-availability` | `ValidationException: Operation not allowed` |
+| the identity is permitted | the invoke itself | `AccessDeniedException`, naming the ARN |
+
+`list-foundation-models` returned nineteen providers and ninety model ids for an
+account entitled to none of them, because it describes the catalogue rather than
+the caller — and it is the call everyone makes, because it is the one that hands
+you the model id you are about to paste. `get-foundation-model-availability` is
+the call that answers the question, and it is buried; it also rejects the
+`...-v1` form of an id that `list-foundation-models` prints as `...-v1:0`,
+inconsistently between the two.
+
+The exception classes are the sharp edge. `AccessDeniedException` names the
+action and the ARN and is a joy to debug. `ValidationException: Operation not
+allowed` — the entitlement failure — names nothing, and reads exactly like a
+malformed request body, so the first hour goes on the body. And root is refused
+outright whatever its policy says, which means the one credential in the account
+with unlimited IAM is the one credential guaranteed not to work, with no message
+saying so.
+
+Secondly, and much more minor: the model id is a long opaque string that varies
+by region and appears in an IAM ARN, a config value and an environment variable,
+and an inference-profile id (`us.anthropic.…`) needs a different ARN shape in the
+policy from the foundation-model id it resolves to.
 
 **Would I build with it again.** Yes, and I would keep the same discipline: the
 model proposes and the code decides, with `groundProposal` and `checkVoice`
 between the model and anything a customer sees.
 
 ### Amazon S3 (`@aws-sdk/client-s3`)
+
+*Not run against S3.*
 
 **Used for:** uploaded document images, read one object at a time by key.
 

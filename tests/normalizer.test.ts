@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { apportion, computeItemisation, formatCents, parseCents, workKey } from "#schema";
+import { apportion, computeItemisation, formatCents, parseCents, workKey, type Quote } from "#schema";
 import { AMBIGUOUS_PHRASES, TAXONOMY_STATS, covers, findAction, normaliseText } from "#taxonomy";
 import { compareQuotes, normaliseLineItem, parseQuoteText, quoteFromSpokenOffer } from "#normalizer";
 
@@ -218,6 +218,52 @@ Total: $4,400.00
     // Totals differ by 4400 - 1850 = 2550; scope 2200 + rate 350 accounts for all of it.
     expect(result.totals.difference).toBe(255_000);
     expect(result.attribution.residualCents).toBe(0);
+  });
+
+  it("counts a line that asserts two components once, not once per component", () => {
+    // The document prices one line. It does not say how that price divides
+    // between the two things the line names, so the comparison must not divide
+    // it, and it must not count it twice either. Both quotes write the same
+    // sentence at a different price: the honest rate difference is $200, the
+    // difference on the page, not $400.
+    const side = (flashing: string, ridge: string, total: string): Quote =>
+      parseQuoteText({
+        id: `q_${total}`,
+        caseId: "c1",
+        source: "CONTRACTOR",
+        trade: "roofing",
+        text: `Replace chimney flashing and the ridge vent ... ${flashing}\nDisposal fee .................................. ${ridge}\nTotal: ${total}\n`,
+      });
+    const dear = side("$1,200.00", "$300.00", "$1,500.00");
+    const cheap = side("$1,000.00", "$300.00", "$1,300.00");
+
+    // One line, two work units, on both sides.
+    expect(dear.lineItems[0]!.work.map((w) => w.component).sort()).toEqual(["roof.chimney_flashing", "roof.ridge_vent"]);
+
+    const result = compareQuotes(dear, cheap);
+    expect(result.attribution.identifiable).toBe(true);
+    expect(result.attribution.rateDifferenceCents).toBe(20_000);
+    expect(result.attribution.residualCents).toBe(0);
+  });
+
+  it("leaves money on a line that covers both shared and unshared work out of both buckets", () => {
+    // A line whose money buys work the other quote has and work it does not, with
+    // no split stated. Neither bucket can claim it, so it falls into the residual
+    // and the residual says where it came from.
+    const a = parseQuoteText({
+      id: "qE",
+      caseId: "c1",
+      source: "CONTRACTOR",
+      trade: "roofing",
+      text: `Replace chimney flashing and 60 sq ft of roof decking ... $3,000.00\nReplace 8 asphalt shingles ............................. $  320.00\nSeal roof penetrations ................................. $  180.00\nDisposal fee ........................................... $  500.00\nTotal: $4,000.00\n`,
+    });
+    const result = compareQuotes(a, itemised);
+    expect(result.attribution.identifiable).toBe(true);
+    // Nothing is only-A on a line of its own, so there is no scope difference to
+    // name, and the $3,000 line is in neither bucket.
+    expect(result.attribution.straddlingCents).toBe(300_000);
+    expect(result.attribution.scopeDifferenceCents).toBe(0);
+    expect(result.attribution.residualCents).toBe(result.totals.difference - (result.attribution.rateDifferenceCents ?? 0));
   });
 
   it("reports a residual when the totals do not add up to the line items", () => {

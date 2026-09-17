@@ -49,7 +49,7 @@ edge is a check applied after the mistake.
 
 ## `packages/taxonomy` — what the trades call things
 
-103 components across 5 trades, 779 lexical forms, subsumption
+103 components across 5 trades, 777 lexical forms, subsumption
 (`roof.full_replacement` contains its parts), an action lexicon, and an
 enumerated ambiguity set.
 
