@@ -5,10 +5,6 @@ dist/
 .env
 .env.*
 !.env.example
-demo_video/_raw/
-demo_video/_frames/
-demo_video/speech/
-demo_video/narration.wav
 .DS_Store
 infrastructure/cdk/cdk.out/
-demo_video/*.mp4
+demo_video/
