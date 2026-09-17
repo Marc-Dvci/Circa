@@ -11,3 +11,4 @@ demo_video/speech/
 demo_video/narration.wav
 .DS_Store
 infrastructure/cdk/cdk.out/
+demo_video/*.mp4

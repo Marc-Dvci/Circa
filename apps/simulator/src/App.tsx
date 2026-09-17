@@ -3,6 +3,10 @@ import type { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { connect, readView, type Connection } from "./mcp.js";
 import { Session, type SessionState, type Turn } from "./session.js";
 import { ViewHost, type DisplayMode, type WireEntry } from "./host.js";
+import { Tour } from "./Tour.js";
+
+/** `?tour=1` plays the guided tour used for the demo video. Read lazily: the test suite imports this module under jsdom without a location. */
+const touring = (): boolean => typeof location !== "undefined" && new URLSearchParams(location.search).has("tour");
 
 /**
  * The page.
@@ -95,9 +99,12 @@ function Console({ connection }: { connection: Connection }): JSX.Element {
   );
 
   const nextBeat = session.nextBeat();
+  const tourControls = useMemo(() => ({ playNext: () => session.playNext() }), [session]);
+  const TOURING = touring();
 
   return (
-    <div className={`app mode-${displayMode}`}>
+    <div className={`app mode-${displayMode}${TOURING ? " touring" : ""}`}>
+      {TOURING ? <Tour controls={tourControls} /> : null}
       <header>
         <div className="brand">
           <span className="dot" /> Alexa+ <span className="dim">simulator</span>
