@@ -221,7 +221,7 @@ caller that would notice if it stopped being true: `pnpm circa` reaches the same
 | [`docs/PRIVACY.md`](docs/PRIVACY.md) | What is stored, for how long, and how to delete it |
 | [`docs/AWS.md`](docs/AWS.md) | Bedrock, Textract, DynamoDB, S3, CDK, and why nothing is deployed |
 | [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) | The video, beat by beat, generated from the script the demo runs |
-| [`docs/FRICTION_LOG.md`](docs/FRICTION_LOG.md) | Six entries against Alexa+, MCP and MCP Apps |
+| [`docs/FRICTION_LOG.md`](docs/FRICTION_LOG.md) | Eight entries against Alexa+, MCP, MCP Apps, the Alexa+ toolkit and AWS |
 | [`docs/PRODUCT_FEEDBACK.md`](docs/PRODUCT_FEEDBACK.md) | Every tool, API and SDK used, and whether I would build with it again |
 | [`docs/JUDGE.md`](docs/JUDGE.md) | Five minutes, in order |
 | [`docs/TERMS.md`](docs/TERMS.md) | Terms of use, referenced by the add-on manifest |

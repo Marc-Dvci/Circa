@@ -1,6 +1,6 @@
 # Friction log
 
-Seven entries. Every claim about a documented behaviour was re-read on the live
+Eight entries. Every claim about a documented behaviour was re-read on the live
 documentation page before this file was written, and every claim about code
 points at a file in this repository that a reader can open. Where I could not
 establish what a product does, the entry says that rather than guessing, because
@@ -12,7 +12,7 @@ a sentence of documentation removes.
 
 ---
 
-## 1. The documented 401 and RFC 9728 §5.1 disagree, and the page does not say which wins
+## 1. The documented 401 and RFC 9728 §5.1 disagree, and the page that says which wins is a different page
 
 **Severity: medium.**
 
@@ -330,6 +330,53 @@ construction rather than at the first write that happens to carry one. The error
 names the option and not the field, so on a record of any size the next question
 is "which one", and the answer is a `JSON.stringify` replacer written at the
 moment you least want to write one.
+
+---
+
+## 8. The quickstart's "Download and install CLI" step has no download, no install command and no link
+
+**Severity: high.** It blocks the documented onboarding path at its first step,
+and the obvious recovery is worse than being blocked.
+
+**Task.** Install the Alexa AI CLI so that `alexa-ai new mcp` can scaffold the
+add-on package and `alexa-ai deploy` can put it in the development stage.
+
+**Steps.** Open the
+[MCP QuickStart Guide](https://developer.amazon.com/docs/alexaplus/add-ons/mcp-toolkit-quickstart.html)
+and follow "Connect your MCP server to Alexa+" from the top.
+
+**Expected.** Step 1 names a package, a download or an installer.
+
+**Actual.** Step 1, in full:
+
+> **Step 1. Download and install CLI and authenticate**
+>
+> **After you install CLI,** authenticate with your Alexa developer account:
+>
+> `alexa-ai configure`
+
+There is no link in the heading, no link in the paragraph, no package name and no
+command that installs anything, on that page or on the pages it links to. The
+next thing the page says to run is the thing you run after the step it does not
+describe.
+
+The natural recovery is `npm install -g alexa-ai`, because that is the command
+name. On the public npm registry, `alexa-ai` is an unrelated third-party package:
+a WhatsApp chatbot, at version 2.5.0, from a publisher with no connection to
+Amazon. A developer who follows the quickstart, hits the missing step and does
+the obvious thing installs a stranger's code globally, with the credentials
+`alexa-ai configure` would then be asked for one command later.
+
+**Workaround.** None for the CLI. The add-on package was written by hand to the
+schema reference further down the same page, and `tests/addon.test.ts` checks it
+against every constraint that reference lists. The Local Inspector and the Web
+Simulator were replaced by `tests/mcp-conformance.test.ts` and
+`apps/simulator`.
+
+**Suggestion.** The install line, whatever it is, in Step 1. If the package is on
+npm under a scoped name, say the scoped name and say that the unscoped one is not
+Amazon's. If it is a download, link it. This is a one-line fix to the page and it
+closes a supply-chain hazard that the page currently creates.
 
 ---
 
