@@ -105,90 +105,92 @@ function Console({ connection }: { connection: Connection }): JSX.Element {
   return (
     <div className={`app mode-${displayMode}${TOURING ? " touring" : ""}`}>
       {TOURING ? <Tour controls={tourControls} /> : null}
-      <header>
-        <div className="brand">
-          <span className="dot" /> Alexa+ <span className="dim">simulator</span>
-        </div>
-        <div className="facts">
-          <Fact label="server" value={connection.serverName} />
-          <Fact label="transport" value="Streamable HTTP" />
-          <Fact label="protocol" value={connection.protocolVersion} strong />
-          <Fact label="session" value={connection.sessionId?.slice(0, 8) ?? "none"} />
-          <Fact label="tools" value={String(connection.toolCount)} />
-          <Fact label="views" value={String(connection.viewCount)} />
-        </div>
-      </header>
-
-      <main>
-        <section className="transcript" ref={transcriptRef}>
-          <div className="transcript-inner">
-            {state.turns.length === 0 ? (
-              <p className="empty">
-                Press <strong>Play the demo</strong>, or say something. The planner is deterministic and needs no
-                model — try <em>“a roofer knocked on the door and says the flashing has failed”</em>.
-              </p>
-            ) : null}
-            {state.turns.map((turn) => (
-              <TurnLine key={turn.id} turn={turn} />
-            ))}
-            {state.busy ? <div className="turn thinking">…</div> : null}
+      <div className="stage">
+        <header>
+          <div className="brand">
+            <span className="dot" /> Alexa+ <span className="dim">simulator</span>
           </div>
-        </section>
-
-        <section className="device-pane">
-          <Device
-            client={connection.client}
-            session={session}
-            turn={latest}
-            displayMode={displayMode}
-            onDisplayMode={setDisplayMode}
-            onWire={setWire}
-          />
-          <div className="under-device">
-            <button className="link" onClick={() => setShowWire((v) => !v)}>
-              {showWire ? "hide" : "show"} the MCP Apps wire ({wire.length})
-            </button>
-            {state.modelContext.length > 0 ? (
-              <span className="dim"> · {state.modelContext.length} context updates from the card</span>
-            ) : null}
+          <div className="facts">
+            <Fact label="server" value={connection.serverName} />
+            <Fact label="transport" value="Streamable HTTP" />
+            <Fact label="protocol" value={connection.protocolVersion} strong />
+            <Fact label="session" value={connection.sessionId?.slice(0, 8) ?? "none"} />
+            <Fact label="tools" value={String(connection.toolCount)} />
+            <Fact label="views" value={String(connection.viewCount)} />
           </div>
-          {showWire ? <Wire entries={wire} /> : null}
-        </section>
-      </main>
+        </header>
 
-      <footer>
-        <form onSubmit={submit}>
-          <input
-            ref={utteranceRef}
-            placeholder="Say something to Alexa…"
-            disabled={state.busy}
-            aria-label="What you say to Alexa"
-          />
-          <button type="submit" disabled={state.busy}>
-            Say it
-          </button>
-        </form>
-        <div className="controls">
-          {nextBeat ? (
-            <button className="secondary" onClick={step} disabled={state.busy}>
-              Next beat <span className="dim">({state.scriptIndex + 1}/{session.scriptLength})</span>
+        <main>
+          <section className="transcript" ref={transcriptRef}>
+            <div className="transcript-inner">
+              {state.turns.length === 0 ? (
+                <p className="empty">
+                  Press <strong>Play the demo</strong>, or say something. The planner is deterministic and needs no
+                  model — try <em>“a roofer knocked on the door and says the flashing has failed”</em>.
+                </p>
+              ) : null}
+              {state.turns.map((turn) => (
+                <TurnLine key={turn.id} turn={turn} />
+              ))}
+              {state.busy ? <div className="turn thinking">…</div> : null}
+            </div>
+          </section>
+
+          <section className="device-pane">
+            <Device
+              client={connection.client}
+              session={session}
+              turn={latest}
+              displayMode={displayMode}
+              onDisplayMode={setDisplayMode}
+              onWire={setWire}
+            />
+            <div className="under-device">
+              <button className="link" onClick={() => setShowWire((v) => !v)}>
+                {showWire ? "hide" : "show"} the MCP Apps wire ({wire.length})
+              </button>
+              {state.modelContext.length > 0 ? (
+                <span className="dim"> · {state.modelContext.length} context updates from the card</span>
+              ) : null}
+            </div>
+            {showWire ? <Wire entries={wire} /> : null}
+          </section>
+        </main>
+
+        <footer>
+          <form onSubmit={submit}>
+            <input
+              ref={utteranceRef}
+              placeholder="Say something to Alexa…"
+              disabled={state.busy}
+              aria-label="What you say to Alexa"
+            />
+            <button type="submit" disabled={state.busy}>
+              Say it
             </button>
-          ) : null}
-          <button onClick={play} disabled={state.busy || !nextBeat}>
-            Play the demo
-          </button>
-          <button
-            className="secondary"
-            onClick={() => {
-              session.reset();
-              setDisplayMode("inline");
-            }}
-            disabled={state.busy}
-          >
-            Reset
-          </button>
-        </div>
-      </footer>
+          </form>
+          <div className="controls">
+            {nextBeat ? (
+              <button className="secondary" onClick={step} disabled={state.busy}>
+                Next beat <span className="dim">({state.scriptIndex + 1}/{session.scriptLength})</span>
+              </button>
+            ) : null}
+            <button onClick={play} disabled={state.busy || !nextBeat}>
+              Play the demo
+            </button>
+            <button
+              className="secondary"
+              onClick={() => {
+                session.reset();
+                setDisplayMode("inline");
+              }}
+              disabled={state.busy}
+            >
+              Reset
+            </button>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 }

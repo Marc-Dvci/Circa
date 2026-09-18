@@ -41,7 +41,8 @@ code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-si
 .boot h1 { font-size: 20px; font-weight: 600; margin: 0; }
 .boot p { margin: 0; max-width: 52ch; }
 
-.app { display: grid; grid-template-rows: auto 1fr auto; height: 100%; }
+.app { height: 100%; overflow: hidden; }
+.stage { display: grid; grid-template-rows: auto 1fr auto; height: 100%; transform-origin: 0 0; }
 
 /* ── header ───────────────────────────────────────────────────────────── */
 
@@ -147,68 +148,101 @@ button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 /* The operator's controls are not the product; the recording has no use for them. */
 .app.touring footer { display: none; }
 .app.touring .under-device { visibility: hidden; }
+.app.touring .device-label { visibility: hidden; }
+.app.touring main { grid-template-columns: minmax(360px, 1fr) 660px; }
+/* `clip`, not `hidden`: a hidden box is still a scroll container, and a
+   scrollIntoView under the camera would drag the whole page sideways. */
+.app.touring, .app.touring main { overflow: clip; }
+/* A clip box keeps min-height: auto, which would let the 1fr row grow to its
+   content and stop the transcript scrolling. */
+.app.touring main { min-height: 0; }
+.app.touring .transcript { padding-bottom: 260px; }
+.app.touring .device-pane { padding-bottom: 60px; }
+
+/* The camera: the whole page glides towards what the sentence is about. */
+.app.touring .stage {
+  transition: transform 900ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
 
 .tour-ring {
   position: fixed;
   border: 2px solid var(--accent);
   border-radius: 14px;
-  box-shadow: 0 0 0 9999px rgba(4, 6, 9, 0.55), 0 0 28px rgba(111, 208, 232, 0.35);
+  box-shadow: 0 0 0 9999px rgba(4, 6, 9, 0.5), 0 0 28px rgba(111, 208, 232, 0.35);
   pointer-events: none;
   z-index: 40;
-  transition: top 260ms ease, left 260ms ease, width 260ms ease, height 260ms ease, opacity 260ms ease;
-  animation: tour-fade-in 300ms ease;
+  transition: opacity 320ms ease;
 }
 .tour-ring.hidden { opacity: 0; }
 
+/* The lower third: a headline, and the sentence being spoken. */
 .tour-caption {
   position: fixed;
-  left: 50%;
-  bottom: 34px;
-  transform: translateX(-50%);
-  width: min(1120px, calc(100vw - 80px));
-  background: rgba(14, 20, 27, 0.95);
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 16px 26px 18px;
+  left: 28px;
+  bottom: 28px;
+  width: 760px;
+  background: rgba(10, 14, 19, 0.94);
+  border: 1px solid #22303d;
+  border-radius: 16px;
+  padding: 18px 28px 22px;
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
   z-index: 60;
+  animation: tour-rise 380ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-.tour-caption.on-card { background: rgba(7, 9, 12, 0.86); border-color: #1a2430; }
+.tour-caption h2 {
+  margin: 0 0 10px;
+  font-size: 31px;
+  line-height: 1.18;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+}
 .tour-caption p {
   margin: 0;
-  font-size: 20px;
-  line-height: 1.45;
-  letter-spacing: -0.01em;
-  text-align: center;
-  text-wrap: balance;
-  color: var(--ink);
+  font-size: 19px;
+  line-height: 1.4;
+  color: #c3cfda;
+  text-wrap: pretty;
 }
 
-.tour-progress { display: flex; gap: 4px; justify-content: center; margin-bottom: 12px; }
+.tour-progress { display: flex; gap: 4px; margin-bottom: 14px; }
 .tour-progress span { width: 26px; height: 2px; border-radius: 2px; background: var(--line); transition: background 260ms ease; }
 .tour-progress span.on { background: var(--accent); }
 
+@keyframes tour-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* Title cards. */
 .tour-card {
   position: fixed; inset: 0;
   background: radial-gradient(circle at 50% 38%, #111923, var(--bg) 62%);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 4px;
+  padding-bottom: 40px;
   z-index: 50;
-  animation: tour-fade-in 400ms ease;
+  animation: tour-fade-in 500ms ease;
 }
 @keyframes tour-fade-in { from { opacity: 0; } to { opacity: 1; } }
-.tour-card h1 { margin: 22px 0 14px; font-size: 60px; letter-spacing: -0.03em; font-weight: 600; color: var(--ink); }
-.tour-card p { margin: 0; font-size: 21px; color: var(--muted); letter-spacing: -0.01em; }
+.tour-card .kicker {
+  margin: 26px 0 0; font-size: 15px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); font-weight: 600;
+}
+.tour-card h1 { margin: 20px 0 22px; font-size: 68px; line-height: 1.05; letter-spacing: -0.03em; font-weight: 650; color: var(--ink); }
+.tour-card .kicker + h1 { margin-top: 10px; }
+.tour-card .lines { display: grid; gap: 12px; text-align: center; }
+.tour-card .lines p {
+  margin: 0; font-size: 27px; line-height: 1.3; color: #c3cfda; letter-spacing: -0.01em;
+  opacity: 0; animation: tour-line 520ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+@keyframes tour-line { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
 /* The mark: a ring left open, the question in the gap. Same as the store icon. */
 .tour-mark {
-  width: 72px; height: 72px; border-radius: 50%;
-  border: 7px solid var(--accent);
+  width: 84px; height: 84px; border-radius: 50%;
+  border: 8px solid var(--accent);
   border-right-color: var(--line);
   position: relative;
 }
 .tour-mark::after {
-  content: ""; position: absolute; right: -11px; top: 50%; transform: translateY(-50%);
-  width: 10px; height: 10px; border-radius: 50%; background: var(--attention);
+  content: ""; position: absolute; right: -13px; top: 50%; transform: translateY(-50%);
+  width: 12px; height: 12px; border-radius: 50%; background: var(--attention);
 }

@@ -60,7 +60,10 @@ const HOST = (() => {
   // every render, because a card that grows by one row and is never re-measured
   // is a card with its last line cut off on a device nobody tested on.
   function reportSize() {
-    const height = Math.ceil(document.documentElement.scrollHeight);
+    // The body's own box, not the document's scrollHeight: scrollHeight is
+    // never smaller than the iframe, so a card that follows a taller one
+    // would keep the taller one's empty space below its last row.
+    const height = Math.ceil(document.body.getBoundingClientRect().height);
     notify("ui/notifications/size-changed", { height });
   }
 
