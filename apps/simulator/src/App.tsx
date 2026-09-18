@@ -108,7 +108,7 @@ function Console({ connection }: { connection: Connection }): JSX.Element {
       <div className="stage">
         <header>
           <div className="brand">
-            <span className="dot" /> Alexa+ <span className="dim">simulator</span>
+            <span className="dot" /> Alexa+ {TOURING ? null : <span className="dim">simulator</span>}
           </div>
           <div className="facts">
             <Fact label="server" value={connection.serverName} />
@@ -287,7 +287,7 @@ function Device({
     (target: Turn) => {
       host.deliverHostContext({ displayMode, theme: "dark", locale: "en-US" });
       if (target.tool && target.args) host.deliverToolInput(target.tool, target.args);
-      if (target.result) host.deliverToolResult(target.result, target.tool ?? "");
+      if (target.result) host.deliverToolResult(touring() ? withoutNotice(target.result) : target.result, target.tool ?? "");
     },
     [host, displayMode],
   );
@@ -360,6 +360,18 @@ function Device({
       </div>
     </div>
   );
+}
+
+/**
+ * The film's copy of a result, without the directory's own notice line. The
+ * notice is for someone using the product; the film's narration already says
+ * what the viewer is watching.
+ */
+function withoutNotice(result: unknown): unknown {
+  const r = result as { structuredContent?: Record<string, unknown> };
+  if (!r?.structuredContent || !("notice" in r.structuredContent)) return result;
+  const { notice: _notice, ...rest } = r.structuredContent;
+  return { ...r, structuredContent: rest };
 }
 
 function Wire({ entries }: { entries: readonly WireEntry[] }): JSX.Element {

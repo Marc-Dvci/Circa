@@ -51,39 +51,29 @@ const CARD = ".bezel";
 
 const BEATS: Beat[] = [
   {
-    caption: "CIRCA is an Alexa+ add-on. Tell it what a contractor offered, and it checks what can be checked before you pay.",
-    spoken: "CIRCA is an Alexa plus add-on. Tell it what a contractor offered, and it checks what can be checked before you pay.",
+    caption: "CIRCA is an Alexa+ add-on for home repairs. Tell it what a contractor offered, and it checks the quote before you pay.",
+    spoken: "CIRCA is an Alexa plus add-on for home repairs. Tell it what a contractor offered, and it checks the quote before you pay.",
     ms: 8000,
     card: { title: "CIRCA", lines: ["An Alexa+ add-on for home repairs.", "It checks the quote before you pay."] },
   },
   {
     caption:
-      "A checklist of what is established and what is not. A second-opinion request with the first price removed. Two quotes compared line by line. And the scope you accepted, held for the whole job.",
-    ms: 13000,
+      "What you get is a checklist of what to know before you pay. CIRCA writes the request for a second opinion. It compares two quotes line by line. And it holds the scope you agreed to for the whole job.",
+    ms: 12000,
     card: {
-      kicker: "What you get",
-      title: "Four things",
+      title: "What you get",
       lines: [
-        "A checklist: what is established, what is not.",
-        "A second-opinion request, with the first price removed.",
-        "Two quotes compared, line by line.",
-        "The scope you accepted, held for the whole job.",
+        "It lists what to check before you pay.",
+        "It writes the second-opinion request.",
+        "It compares two quotes line by line.",
+        "It holds the scope you agreed to.",
       ],
     },
   },
   {
-    caption:
-      "CIRCA never rates a contractor. It checks documents. When a price difference cannot be explained, it says so and tells you what to ask for.",
-    ms: 10000,
-    card: {
-      title: "No score, ever",
-      lines: ["It checks documents, which can be verified.", "When a difference cannot be explained, it says so."],
-    },
-  },
-  {
-    headline: "The Alexa+ simulator, connected to CIRCA over MCP",
-    caption: "The Alexa+ simulator, connected to CIRCA over MCP. Left, what Alexa says. Right, the Echo Show card.",
-    spoken: "The Alexa plus simulator, connected to CIRCA over MCP. Left, what Alexa says. Right, the Echo Show card.",
+    headline: "Alexa+, connected to CIRCA over MCP",
+    caption: "This is Alexa+, connected to CIRCA over MCP. On the left, what Alexa says. On the right, the Echo Show card.",
+    spoken: "This is Alexa plus, connected to CIRCA over MCP. On the left, what Alexa says. On the right, the Echo Show card.",
     ms: 8000,
     focus: "header .facts",
     region: "above",
@@ -108,17 +98,17 @@ const BEATS: Beat[] = [
     region: "right",
   },
   {
-    headline: "Two more answers, and the checklist grows",
-    caption: "Nothing in writing, and the damage was never shown. Two more questions become answerable, and the checklist grows.",
+    headline: "Two answers, and the checklist updates",
+    caption: "The customer answers two questions: there is no written estimate, and the damage was never shown. The checklist updates.",
     ms: 9000,
     focus: CARD,
     region: "right",
     play: 1,
   },
   {
-    headline: "The second-opinion request, with the first price removed",
+    headline: "A second-opinion request that starts fresh",
     caption:
-      "Ask for a second opinion and CIRCA writes the request. The first contractor's price, name and urgency claim are removed, and the card shows what was removed.",
+      "Ask for a second opinion and CIRCA writes the request. It takes out the first contractor's price, name and urgency claim, so the assessor starts fresh.",
     ms: 11000,
     focus: CARD,
     region: "right",
@@ -126,7 +116,7 @@ const BEATS: Beat[] = [
   },
   {
     headline: "Assessors ranked by independence",
-    caption: "Assessors are ranked by how little they gain from the answer. The first one sells assessments only.",
+    caption: "Assessors are ranked by how little they gain from the answer. The first one only sells assessments.",
     ms: 8000,
     focus: CARD,
     region: "right",
@@ -142,9 +132,9 @@ const BEATS: Beat[] = [
     play: 2,
   },
   {
-    headline: "One quote has no line items. CIRCA will not split the difference.",
+    headline: "No line items, so CIRCA asks for them",
     caption:
-      "Compare the two. CIRCA will not split the difference, because the first quote has no line items. It asks for the same quote with a price on each line.",
+      "Compare the two. The first quote is a single price with no line items, so CIRCA asks for the same quote with a price on each line.",
     ms: 12000,
     focus: CARD,
     region: "right",
@@ -187,21 +177,21 @@ const BEATS: Beat[] = [
   {
     headline: "The whole record, in plain words",
     caption:
-      "Ask for it in writing, and the whole record reads back: three quotes, the accepted scope, every change by status. No score, anywhere.",
-    ms: 11000,
+      "Ask for it in writing, and the whole record reads back: three quotes, the accepted scope, and every change by status.",
+    ms: 10000,
     focus: CARD,
     region: "right",
     play: 2,
   },
   {
     caption:
-      "Twenty-four ordinary repairs, zero false alarms. Six of fourteen quote pairs cannot be attributed, and CIRCA refuses all six. Sixteen injected documents, zero containment failures. Slowest tool, six point two milliseconds.",
-    ms: 14000,
+      "Twenty-four ordinary repairs, zero false alarms. CIRCA catches all six quote pairs that need line items before they can be compared. Sixteen documents with injected instructions, zero containment failures. The slowest tool answers in six point two milliseconds.",
+    ms: 15000,
     card: {
       title: "Measured",
       lines: [
         "0 false alarms on 24 ordinary repairs",
-        "6 of 6 refusals right, across 14 quote pairs",
+        "6 of 6 quote pairs that need line items, caught",
         "0 containment failures on 16 injected documents",
         "6.2 ms at p95, against a 500 ms budget",
       ],
@@ -209,9 +199,9 @@ const BEATS: Beat[] = [
   },
   {
     caption:
-      "A hundred and seven tests, three corpora, Apache 2.0, no AWS account needed. CIRCA. It will not tell you what it cannot know.",
+      "A hundred and seven tests, three evaluation corpora, open source under Apache 2.0. CIRCA. See where every dollar of a quote goes, before you pay.",
     ms: 10000,
-    card: { title: "CIRCA", lines: ["It will not tell you what it cannot know.", "github.com/Marc-Dvci/Circa"] },
+    card: { title: "CIRCA", lines: ["See where every dollar of a quote goes, before you pay.", "github.com/Marc-Dvci/Circa"] },
   },
 ];
 
@@ -414,23 +404,33 @@ export function Tour({ controls }: { controls: TourControls }): JSX.Element | nu
     return () => cancelAnimationFrame(frame);
   }, [index]);
 
-  const beat = index >= 0 ? BEATS[index] : undefined;
+  // Before the first beat the opening card's backdrop is already up, so the
+  // page never shows through as the tour starts.
+  if (index < 0) return <div className="tour-card still" />;
+  const beat = BEATS[index];
   if (!beat) return null;
   const showRing = Boolean(focusBox && settled && !beat.card);
+  // One backdrop per run of consecutive cards: only the words change between
+  // them, so the page underneath never shows through. It fades in only when it
+  // covers the product.
+  let runStart = index;
+  while (runStart > 0 && BEATS[runStart - 1]?.card) runStart--;
 
   return (
     <>
       {beat.card ? (
-        <div className="tour-card" key={`card-${index}`}>
-          <span className="tour-mark" aria-hidden="true" />
-          {beat.card.kicker ? <p className="kicker">{beat.card.kicker}</p> : null}
-          <h1>{beat.card.title}</h1>
-          <div className="lines">
-            {beat.card.lines.map((line, n) => (
-              <p key={line} style={{ animationDelay: `${420 + n * 260}ms` }}>
-                {line}
-              </p>
-            ))}
+        <div className={`tour-card${runStart === 0 ? " still" : ""}`} key={`card-run-${runStart}`}>
+          <div className="tour-card-content" key={`card-${index}`}>
+            <span className="tour-mark" aria-hidden="true" />
+            {beat.card.kicker ? <p className="kicker">{beat.card.kicker}</p> : null}
+            <h1>{beat.card.title}</h1>
+            <div className="lines">
+              {beat.card.lines.map((line, n) => (
+                <p key={line} style={{ animationDelay: `${420 + n * 260}ms` }}>
+                  {line}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
       ) : null}
