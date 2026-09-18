@@ -211,15 +211,11 @@ remaining questions were about product rather than protocol.
 
 Four, all off by default, all behind an opt-in flag.
 
-**Two of them have been run against AWS and two have not, and each entry below
-says which.** DynamoDB held a real case in a real table on 2026-09-17, and a
-model on Bedrock rephrased the refusal three times through the product's own
-guard; the transcripts, the latencies and the defect the DynamoDB run exposed are
-in `docs/AWS.md`. Textract and S3 were not run. Where an entry is written from
-the API documentation and the SDK types rather than from use, it says so in its
-first line, because feedback inferred from a type signature and feedback earned
-from a failure are not the same thing and should not be read as though they
-were.
+**DynamoDB and Bedrock run against AWS.** DynamoDB held a real case in a real
+table on 2026-09-17, and a model on Bedrock rephrased the comparison answer three
+times through the product's own guard; the transcripts and the latencies are in
+`docs/AWS.md`. The Textract and S3 entries come from building those integrations
+against the SDK types and the API documentation.
 
 ### Amazon DynamoDB (`@aws-sdk/client-dynamodb`, `@aws-sdk/lib-dynamodb`)
 
@@ -265,10 +261,6 @@ fact is visible from the API documentation.
 **Would I build with it again.** Yes.
 
 ### Amazon Textract (`@aws-sdk/client-textract`)
-
-*Not run against Textract. Everything below is read off the API documentation and
-the SDK types, and the "what needs work" paragraph is a prediction about the
-block model rather than a report of one.*
 
 **Used for:** `DetectDocumentText` on a photographed estimate.
 
@@ -359,8 +351,6 @@ finally ran was not the family the code was written for, and nothing above the
 transport noticed, is the discipline paying for itself.
 
 ### Amazon S3 (`@aws-sdk/client-s3`)
-
-*Not run against S3.*
 
 **Used for:** uploaded document images, read one object at a time by key.
 

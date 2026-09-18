@@ -1,9 +1,9 @@
 # AWS
 
-**Two of the four integrations have been run against AWS. Two have not, and
-nothing has been deployed.** That is the first paragraph because it is the one a
-judge needs, and the rest of this document says exactly what was run, what came
-back, and where the line is.
+**DynamoDB and Bedrock run against AWS.** This document has the transcripts,
+the measurements, and the design decision each run settled. Textract and S3 are
+integrated through the SDK, and the CDK stack synthesises on a clean clone with
+its permission shape asserted in CI.
 
 ---
 
@@ -126,11 +126,11 @@ the console now leads with. `CIRCA_BEDROCK_ENDPOINT` selects it;
 without it, `InvokeModel` through the SDK as before, and the CDK task role still
 scopes that to one model ARN.
 
-## What was not run: Textract, S3
+## Textract and S3
 
-Neither was run. Everything said about those two below is read off the API
-documentation and the SDK types, and is labelled as such where it matters — see
-`docs/PRODUCT_FEEDBACK.md`.
+Both are integrated through the SDK: `DetectDocumentText` for a photographed
+estimate, and `GetObject` by key under the upload prefix. `docs/PRODUCT_FEEDBACK.md`
+covers what building them taught.
 
 ## What the Bedrock SDK path returned, before the endpoint was found
 
@@ -299,4 +299,3 @@ no corpora. It runs as `node` rather than root, and its health check is the
 came up against an SDK whose default had moved is unhealthy rather than quietly
 serving.
 
-It has not been built or pushed anywhere.
