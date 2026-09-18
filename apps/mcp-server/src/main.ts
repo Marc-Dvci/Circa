@@ -19,6 +19,8 @@ async function main(): Promise<void> {
     port,
     auth,
     ...(process.env["CIRCA_PUBLIC_URL"] ? { publicUrl: process.env["CIRCA_PUBLIC_URL"] } : {}),
+    ...(process.env["CIRCA_HOST"] ? { host: process.env["CIRCA_HOST"] } : {}),
+    ...(process.env["CIRCA_STATIC"] ? { staticDir: process.env["CIRCA_STATIC"] } : {}),
   });
 
   const lines = [
@@ -31,6 +33,7 @@ async function main(): Promise<void> {
     `  providers      ${context.providers.describe()}`,
     `  auth           ${auth ? "OAuth 2.1 + PKCE S256 (demo authorization server)" : "off — set CIRCA_AUTH=1 to require a bearer token"}`,
     ``,
+    ...(process.env["CIRCA_STATIC"] ? [`  alexa+ host    ${server.url}/`] : []),
     `  health         ${server.url}/health`,
     `  metrics        ${server.url}/metrics`,
   ];

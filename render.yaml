@@ -1,0 +1,32 @@
+# The hosted demo: https://circa.onrender.com
+#
+# One service is the whole product: the MCP server on $PORT, with the built
+# Alexa+ host served from the same origin. A visitor opens / and drives the
+# add-on in the browser; /?tour=1 plays the guided tour; any MCP client can
+# connect to /mcp over Streamable HTTP (protocol 2025-11-25).
+#
+# Deploy: Render dashboard -> New -> Blueprint -> pick this repository.
+
+services:
+  - type: web
+    name: circa
+    runtime: node
+    plan: free
+    region: oregon
+    branch: main
+    # Dev dependencies are the build: vite builds the Alexa+ host, and tsx runs
+    # the TypeScript server directly.
+    buildCommand: corepack enable && pnpm install --frozen-lockfile --prod=false && pnpm build
+    startCommand: pnpm mcp
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # The server binds loopback unless this is set on purpose, which is the
+      # right default everywhere except here.
+      - key: CIRCA_HOST
+        value: 0.0.0.0
+      - key: CIRCA_STATIC
+        value: dist/simulator
+      - key: CIRCA_PUBLIC_URL
+        value: https://circa.onrender.com

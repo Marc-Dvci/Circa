@@ -30,6 +30,10 @@ export interface HttpOptions {
   publicUrl?: string;
   auth?: boolean;
   path?: string;
+  /** Address to bind. Loopback unless a host platform needs every interface. */
+  host?: string;
+  /** A built Alexa+ host to serve from the same origin, so one process is the whole site. */
+  staticDir?: string;
 }
 
 export interface RunningServer {
@@ -160,6 +164,9 @@ export function createApp(context: ServerContext, options: HttpOptions = {}): { 
   app.get(mcpPath, bySession);
   app.delete(mcpPath, bySession);
 
+  // Registered last, so nothing it holds can shadow the MCP endpoint.
+  if (options.staticDir) app.use(express.static(options.staticDir));
+
   const closeAll = async (): Promise<void> => {
     for (const [id, session] of sessions) {
       sessions.delete(id);
@@ -184,7 +191,7 @@ export async function startHttpServer(context: ServerContext, options: HttpOptio
    * the client will actually use turns that into EADDRINUSE, which is the truth.
    */
   const http = await new Promise<HttpServer>((resolve, reject) => {
-    const server = app.listen(requested, "127.0.0.1", () => resolve(server));
+    const server = app.listen(requested, options.host ?? "127.0.0.1", () => resolve(server));
     server.on("error", reject);
   });
   const address = http.address();
