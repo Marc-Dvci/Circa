@@ -5,12 +5,12 @@ import { loadTransferDocuments, type TransferDocument, type TransferLine } from 
 /**
  * The transfer corpus: what the engine reads on documents it was not built on.
  *
- * The three regression corpora are a gate. This one was labelled first and read
- * second: 28 estimates in
- * the formats, regions and phrasings a product meets in the field, each priced
- * line labelled with the taxonomy ids a person would say it proposes, committed
- * before this file existed. The numbers are reported, never gated. A corpus
- * that must be green is a corpus that gets tuned.
+ * The three regression corpora are a gate. These two sets were labelled first
+ * and read second, in the formats, regions and phrasings a product meets in the
+ * field, each priced line labelled with the taxonomy ids a person would say it
+ * proposes. `docs/EVAL.md` has which engine each set was labelled against.
+ * The numbers are reported, never gated. A corpus that must be green is a
+ * corpus that gets tuned.
  *
  * Four questions, in the order a customer would meet them:
  *
