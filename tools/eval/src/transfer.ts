@@ -184,8 +184,8 @@ function scoreDocument(doc: TransferDocument): TransferDocumentResult {
   return result;
 }
 
-export async function evaluateTransfer(): Promise<TransferReport> {
-  const docs = await loadTransferDocuments();
+export async function evaluateTransfer(file?: string): Promise<TransferReport> {
+  const docs = await loadTransferDocuments(file);
   const results = docs.map(scoreDocument);
   const report: TransferReport = {
     documents: results.length,

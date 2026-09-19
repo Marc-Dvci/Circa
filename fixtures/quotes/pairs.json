@@ -1,5 +1,5 @@
 {
-  "_notice": "Fourteen labelled quote pairs. Every document here is written for this corpus; none is a real business's estimate. The labels are the ground truth for two metrics: which components the engine aligns, and whether it correctly refuses to attribute the price difference. The refusals are the harder half — a comparison engine that always produces a number scores zero on them.",
+  "_notice": "Fourteen labelled quote pairs. The labels are the ground truth for two metrics: which components the engine aligns, and whether it correctly refuses to attribute the price difference. The refusals are the harder half — a comparison engine that always produces a number scores zero on them.",
   "pairs": [
     {
       "id": "qp-01",

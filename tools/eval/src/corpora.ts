@@ -75,7 +75,7 @@ export interface TransferLine {
   excerpt: string;
   amountCents: number;
   /** `work` is scored; tax and credits are read but not work; alternate, summary and waived lines must not be read as priced work. */
-  kind: "work" | "tax" | "credit" | "alternate" | "summary" | "waived";
+  kind: "work" | "tax" | "fee" | "credit" | "alternate" | "summary" | "waived";
   components: ComponentId[];
   tolerated?: ComponentId[];
   /** Work the line proposes that the taxonomy has no id for. */
@@ -123,8 +123,9 @@ export async function loadInjectionDocuments(): Promise<InjectionDocument[]> {
   return raw.documents;
 }
 
-export async function loadTransferDocuments(): Promise<TransferDocument[]> {
-  const raw = JSON.parse(await readFile(path.join(FIXTURES, "transfer", "estimates.json"), "utf8")) as {
+/** `estimates.json` is the first set, `holdout.json` the second; see `docs/EVAL.md`. */
+export async function loadTransferDocuments(file = "estimates.json"): Promise<TransferDocument[]> {
+  const raw = JSON.parse(await readFile(path.join(FIXTURES, "transfer", file), "utf8")) as {
     documents: TransferDocument[];
   };
   return raw.documents;

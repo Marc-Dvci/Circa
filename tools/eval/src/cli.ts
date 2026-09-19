@@ -108,12 +108,20 @@ async function main(): Promise<void> {
     if (report.containmentFailures > 0 || report.falsePositives > 0) failed = true;
   }
 
-  if (only("transfer")) {
-    const report = await evaluateTransfer();
-    json["transfer"] = report;
+  // Two sets, reported apart. The first was labelled against the engine at
+  // cc2a5a5 and the fixes it prompted were made against it, so it now reads as
+  // development data. The second was labelled against the engine after those
+  // fixes, at 6a62ce8, and read once. Neither is a gate.
+  for (const [key, file, heading] of [
+    ["transfer", "estimates.json", "TRANSFER, SET 1  28 estimates labelled at cc2a5a5; the parser fixes since were made against them"],
+    ["holdout", "holdout.json", "TRANSFER, SET 2  24 estimates labelled at 6a62ce8, after those fixes, and held out"],
+  ] as const) {
+    if (!only(key) && !(key === "holdout" && args.has("--transfer"))) continue;
+    const report = await evaluateTransfer(file);
+    json[key] = report;
     const dollars = (cents: number): string => `$${Math.round(cents / 100).toLocaleString("en-US")}`;
     lines.push("");
-    lines.push(`TRANSFER  ${report.documents} estimates labelled before they were read; reported, never gated`);
+    lines.push(heading);
     lines.push(bar("totals read", `${report.totalsRead} of ${report.documents}`));
     lines.push(bar("itemisation level read", `${report.itemisationRead} of ${report.documents}`));
     lines.push(bar("priced lines read", `${pct(report.linesRead / report.workLines)}  (${report.linesRead} of ${report.workLines}; ${dollars(report.linesReadCents)} of ${dollars(report.workCents)})`));
@@ -123,7 +131,7 @@ async function main(): Promise<void> {
     lines.push(bar("work outside the taxonomy", `${report.outsideLines} lines, ${dollars(report.outsideCents)} of ${dollars(report.workCents)}`));
     lines.push(bar("proposed components found", `${pct(report.foundComponents / report.proposedComponents)}  (${report.foundComponents} of ${report.proposedComponents})`));
     lines.push(bar("documents fully read", `${report.fullyRead} of ${report.documents}`));
-    if (args.has("--transfer") || args.has("--verbose")) {
+    if (args.has(`--${key}`) || args.has("--transfer") || args.has("--verbose")) {
       lines.push("");
       lines.push("  by format");
       for (const [tag, s] of Object.entries(report.byTag).sort(([a], [b]) => a.localeCompare(b))) {

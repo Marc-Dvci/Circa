@@ -6,6 +6,7 @@ pnpm eval --scenarios  # 48 repairs, half of them ordinary
 pnpm eval --quotes     # 14 labelled quote pairs
 pnpm eval --injection  # 16 attacks and 8 controls
 pnpm eval --lexicon    # what the engine actually contains
+pnpm eval --transfer   # two sets labelled before they were read, reported apart
 ```
 
 Exit code 0 means every metric met its bar. The corpora are checked into
@@ -117,17 +118,85 @@ rather than a note.
 
 ---
 
+## Transfer: what does it read on estimates it was not built on?
+
+**Two sets of estimates, each labelled before the engine read it. Reported,
+never gated.**
+
+```bash
+pnpm eval --transfer   # both sets, per document and per format
+pnpm eval --holdout    # the held-out set alone
+```
+
+The three corpora above were written alongside the engine, so they measure
+regression discipline. These two measure transfer, and the order of the commits
+is the evidence:
+
+| set | estimates | labelled against | committed | then |
+|---|---|---|---|---|
+| 1 | 28 | engine at `cc2a5a5` | `f1ff496` | read, and the parser changes in `6a62ce8` were made against it |
+| 2 | 24 | engine at `6a62ce8` | `c82124f` | read once |
+
+Set 1 is now development data. Set 2 is the held-out number. Each priced line
+carries the taxonomy ids a reader would say it proposes, the ids a reader would
+accept on it, and the work on it that the taxonomy has no id for. The formats
+are the ones a product meets outside a demo: estimate-software columns, an
+insurance adjuster's estimate and a supplement, scanned and handwritten tickets,
+pounds sterling, Canadian and Australian terms, Spanish, emails and text
+messages, options and good/better/best tiers, credits, tax, overhead and profit,
+allowances, wrapped descriptions, pipe tables.
+
+| | set 1, first read | set 1 now | **set 2, held out** |
+|---|---|---|---|
+| priced lines read | 85.1% (114 of 134) | 100% (134 of 134) | **94.6%** (105 of 111) |
+| read lines mapped to their work | 60.2% (62 of 103) | 92.6% (113 of 122) | **73.1%** (57 of 78) |
+| proposed components found | 73.9% (116 of 157) | 93.0% (146 of 157) | **83.5%** (76 of 91) |
+| lines asserting work not proposed | 9, $12,419 | 5, $18,092 | **9, $34,300** |
+| options or summaries read as work | 5, $23,985 | 0 | **2, $26,750** |
+| money on work outside the taxonomy | $24,010 of $149,484 | same | **$24,946 of $106,517** |
+| documents fully read | 1 of 28 | 17 of 28 | **9 of 24** |
+
+**Coverage is the failure mode, as a lexicon predicts.** On the held-out set,
+23% of the priced money is on work the taxonomy has no id for: a TPO membrane,
+a water softener, deck boards, a line set, a chimney rebuild, 38 named pieces of
+work across 28 lines. The lexicon grew from 777 to 861 forms on set 1, and set 2
+still found that share. An unmapped line is carried as unclassified money, the
+way "Seal penetrations" is in the demo, so it lowers what a comparison can
+attribute and never adds work to either side.
+
+**Asserted work is the costlier error, and set 2 names its sources.** A
+good/better/best proposal put $26,750 of unselected tiers into the proposal.
+Two exclusions written in brackets ("paint excluded", "painting by owner") were
+read as painting. An invoice's "Amount due" line was read as a line item, which
+doubled its total. One estimate printed its amounts as `4,980.00 USD`, and none
+of its six lines was read. Room names without a trade noun ("Hallway and
+stairwell walls") mapped four of six painting lines to nothing.
+
+**What set 1 changed** (`6a62ce8`, pinned by seven tests in
+`tests/normalizer.test.ts`): amounts with no currency sign, in pounds, leading
+the line, or in brackets as a credit; pipe tables; descriptions that wrap onto
+the line carrying their amount; option, alternate and add-on lines held out of
+the total and the proposal; tax and credit lines read as money and never as
+work; totals and deposits stated in a sentence; table column headings; "by
+others" as an exclusion; a bare system name read as the whole system only when
+its own clause says what is done to it; and 84 regional and trade forms, from
+"consumer unit" and "switchboard" to "eavestrough", "downpipe" and "pipe jack".
+The three corpora above stayed at 0% false alarms, 100/100 refusals and zero
+containment failures through every one of these changes.
+
+---
+
 ## The engine, counted
 
 | | |
 |---|---|
 | taxonomy components | 103, across 5 trades |
-| lexical forms | 777 |
-| phrases claimed by two components | 10 |
+| lexical forms | 861 |
+| phrases claimed by two components | 12 |
 | verification rules | 18, across 4 dimensions |
 | injection detectors | 22, across 7 categories |
 
-The ten ambiguous phrases are enumerated rather than resolved. "Cap" is a chimney
+The twelve ambiguous phrases are enumerated rather than resolved. "Cap" is a chimney
 cap or a capacitor, "vent" is a ridge vent or a flue, "valve" is three plumbing
 components the trade cannot settle between. Where the trade disambiguates them,
 the normaliser uses the trade; where it does not, the phrase maps to nothing and

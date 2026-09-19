@@ -113,12 +113,19 @@ right**, with no false refusals. A comparison engine that always produces a
 number scores zero on the refusals; one that never produces a number scores zero
 on the other eight.
 
+**On 24 held-out estimates, 94.6% of priced lines are read and 73.1% of those
+map to the work they propose.** That set was labelled against a frozen engine
+and committed before it was read (`c82124f`), in formats the corpora above do
+not contain. It reports what the lexicon misses, by money: 23% of the priced
+total is work the taxonomy has no id for. `docs/EVAL.md`, "Transfer", has both
+sets and every failure by name.
+
 The third corpus reports detection and containment separately on purpose.
 Detection may miss; containment must be zero, and is.
 
 ```bash
 pnpm bench     # 360 calls over the wire: slowest tool 6.2 ms at p95, budget 500 ms
-pnpm verify    # typecheck, 107 tests, all three corpora
+pnpm verify    # typecheck, 114 tests, the three corpora and both transfer sets
 pnpm check    # what is actually live here
 ```
 
