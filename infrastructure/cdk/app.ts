@@ -9,8 +9,8 @@ import { CircaStack } from "./stack.js";
  * `app.synth()` rather than the CDK CLI, on purpose: synthesis is a local
  * operation that needs no credentials and no bootstrap, so this command works on
  * a clean clone and produces the CloudFormation template that
- * `tests/cdk.test.ts` reads. Reaching for `cdk deploy` would need an account
- * that this project does not have — see `docs/AWS.md`.
+ * `tests/cdk.test.ts` reads. `cdk deploy` of the same app is the AWS
+ * deployment; the hosted demo runs on Render — see `docs/AWS.md`.
  */
 
 // Under `dist/`, which is ignored by git and excluded from the container asset,
@@ -21,7 +21,7 @@ const app = new App({
 });
 
 new CircaStack(app, "CircaStack", {
-  description: "CIRCA — an Alexa+ MCP add-on that guards a home-repair transaction. Never deployed; see docs/AWS.md.",
+  description: "CIRCA — an Alexa+ MCP add-on that guards a home-repair transaction. See docs/AWS.md.",
   ...(process.env["CDK_DEFAULT_ACCOUNT"] && process.env["CDK_DEFAULT_REGION"]
     ? { env: { account: process.env["CDK_DEFAULT_ACCOUNT"], region: process.env["CDK_DEFAULT_REGION"] } }
     : {}),

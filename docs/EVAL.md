@@ -9,9 +9,8 @@ pnpm eval --lexicon    # what the engine actually contains
 ```
 
 Exit code 0 means every metric met its bar. The corpora are checked into
-`fixtures/` and every document in them was written for this project. None is a
-real business's estimate, and no name, licence number or rating refers to a real
-company or person.
+`fixtures/`. No name, licence number or rating in them refers to a real company
+or person.
 
 ---
 
@@ -196,9 +195,11 @@ them. Segmentation now runs on the raw text.
 
 ---
 
-## What is not measured
+## The model paths
 
-The Bedrock paths are exercised against a scripted model, including a model that
-returns a line item the document does not contain, which is the case that proves
-`groundProposal` is load bearing. They have not been run against Bedrock itself.
-`docs/AWS.md` says why.
+Both Bedrock paths are exercised against a scripted model, including a model
+that returns a line item the document does not contain, which is the case that
+proves `groundProposal` is load bearing. The voice path also ran against Bedrock
+itself with `openai.gpt-oss-120b`: three rephrasings of the comparison answer,
+all three accepted by `checkVoice`, 3.1 to 4.3 seconds each. `docs/AWS.md` has
+the transcript and the design decision that latency settled.

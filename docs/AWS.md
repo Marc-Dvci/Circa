@@ -264,8 +264,9 @@ pnpm test          # tests/cdk.test.ts reads that template back
 
 `infrastructure/cdk/app.ts` calls `app.synth()` directly rather than shelling out
 to the CDK CLI, so synthesis needs no credentials, no bootstrap and no account,
-and works on a clean clone. `cdk deploy` would need an account this project does
-not have.
+and works on a clean clone. The hosted demo runs on Render from `render.yaml`;
+the stack below is the AWS deployment, and its permission shape is what the
+tests hold fixed.
 
 What it would create: a DynamoDB table, an S3 bucket, a two-AZ VPC, a Fargate
 service behind an application load balancer, and a task role.

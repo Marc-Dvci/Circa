@@ -1,0 +1,35 @@
+# Every commit: typecheck, the test suite, the three evaluation corpora, the
+# CDK synthesis, and the Alexa+ host build. `pnpm verify` is the same command a
+# clean clone runs; this file only pins where it runs.
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # pnpm at the version pinned by package.json's packageManager field.
+      - run: corepack enable
+
+      - run: pnpm install --frozen-lockfile
+
+      # Typecheck, 107 tests (the MCP conformance suite binds real ports), and
+      # the corpora. Exit code 0 means every metric met its bar.
+      - run: pnpm verify
+
+      # The CloudFormation template the tests read, produced on a clean clone.
+      - run: pnpm cdk:synth
+
+      # The Alexa+ host, as Render builds it.
+      - run: pnpm build

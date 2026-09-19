@@ -6,11 +6,10 @@ import { CircaStack, DEFAULT_MODEL_ID } from "../infrastructure/cdk/stack.js";
 /**
  * The stack, read as CloudFormation.
  *
- * `infrastructure/cdk` has never been deployed — there is no account behind
- * these credentials, and `docs/AWS.md` says so plainly. What can still be
- * checked is the part that matters: the shape of what the running server would
- * be allowed to do. An IAM policy is a claim about a blast radius, and a claim
- * is worth asserting whether or not anything is currently running under it.
+ * What is checked here is the part that matters: the shape of what the
+ * running server is allowed to do. An IAM policy is a claim about a blast
+ * radius, and a claim is worth asserting whether or not anything is currently
+ * running under it.
  *
  * These assertions are on the synthesised template rather than on the
  * construct's own properties, because the template is what would be applied.
