@@ -31,6 +31,7 @@ const NEGATION_CUES: readonly RegExp[] = [
   /\bdoesn t include\b/,
   /\bdon t include\b/,
   /\bexcluding\b/,
+  /\bby others\b/,
   /\bexcludes\b/,
   /\bexclusive of\b/,
   /\bexclusion\b/,
@@ -126,6 +127,7 @@ function matchComponents(
   normalised: string,
   trade: Trade,
   action: WorkAction,
+  verbStated = true,
 ): { matches: Match[]; ambiguous: NormalisedItem["ambiguous"] } {
   const taken: boolean[] = new Array(normalised.length).fill(false);
   const matches: Match[] = [];
@@ -181,7 +183,7 @@ function matchComponents(
   // `actions` fires only under those verbs, which is what keeps "seal roof
   // penetrations" from becoming a roof replacement.
   if (matches.length === 0) {
-    scan(FALLBACK_LEXICON.filter((entry) => !entry.actions || entry.actions.includes(action)));
+    scan(FALLBACK_LEXICON.filter((entry) => !entry.actions || (verbStated && entry.actions.includes(action))));
   }
 
   matches.sort((a, b) => a.start - b.start);
@@ -236,12 +238,17 @@ export function normaliseLineItem(
     const normalised = normaliseText(segment);
     // The verb is resolved before the components, because a fallback form can
     // depend on it.
-    const verb: { action: WorkAction; phrase: string } | null = findAction(normalised) ?? lastAction;
+    const stated = findAction(normalised);
+    const verb: { action: WorkAction; phrase: string } | null = stated ?? lastAction;
     if (verb) lastAction = verb;
     const { matches, ambiguous: segmentAmbiguous } = matchComponents(
       normalised,
       trade,
       verb?.action ?? defaultAction,
+      // A bare system name is the whole system only when this clause says what
+      // is done to it. "The roof meets the wall" under a document-wide REPLACE
+      // was a whole-roof replacement.
+      stated !== null,
     );
     for (const entry of segmentAmbiguous) {
       if (seenAmbiguous.has(entry.phrase)) continue;

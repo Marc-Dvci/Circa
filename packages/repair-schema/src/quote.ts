@@ -19,6 +19,7 @@ export const LineItemKindSchema = z.enum([
   "COMBINED",
   "FEE", // permit, dump, trip
   "ALLOWANCE", // a placeholder budget, not a priced commitment
+  "OPTIONAL", // an alternate or add-on priced outside the total; read, never counted as proposed work
   "UNKNOWN",
 ]);
 export type LineItemKind = z.infer<typeof LineItemKindSchema>;
@@ -129,7 +130,8 @@ export const ITEMISED_COVERAGE = 0.9;
 export const LUMP_SUM_COVERAGE = 0.4;
 
 export function computeItemisation(quote: Pick<Quote, "total" | "lineItems">): Itemisation {
-  const priced = quote.lineItems.filter((li) => typeof li.amount === "number");
+  const counted = quote.lineItems.filter((li) => li.kind !== "OPTIONAL");
+  const priced = counted.filter((li) => typeof li.amount === "number");
   const attributedCents = priced.reduce((sum, li) => sum + (li.amount ?? 0), 0);
   const totalCents = quote.total;
   const coverage = totalCents === 0 ? 0 : Math.min(1, Math.max(0, attributedCents / totalCents));
@@ -140,6 +142,6 @@ export function computeItemisation(quote: Pick<Quote, "total" | "lineItems">): I
     attributedCents,
     totalCents,
     coverage,
-    unpricedItems: quote.lineItems.length - priced.length,
+    unpricedItems: counted.length - priced.length,
   };
 }

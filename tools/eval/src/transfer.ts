@@ -34,6 +34,8 @@ export interface TransferLineResult {
   amountCents: number;
   /** A line item with this line number and this amount exists. */
   read: boolean;
+  /** Read, and counted toward the quote's proposed work rather than held out as an option. */
+  readAsWork: boolean;
   /** Every labelled component is present. Only meaningful when `components` is non-empty. */
   mapped: boolean;
   missing: ComponentId[];
@@ -99,7 +101,10 @@ export interface TransferReport {
 
 function positiveWork(quote: Quote): Set<ComponentId> {
   const out = new Set<ComponentId>();
-  for (const item of quote.lineItems) for (const w of item.work) out.add(w.component);
+  for (const item of quote.lineItems) {
+    if (item.kind === "OPTIONAL") continue;
+    for (const w of item.work) out.add(w.component);
+  }
   return out;
 }
 
@@ -126,13 +131,15 @@ function scoreDocument(doc: TransferDocument): TransferDocumentResult {
     const wanted = label.components;
     const accepted = new Set<ComponentId>([...wanted, ...(label.tolerated ?? [])]);
     const missing = wanted.filter((c) => !work.has(c));
-    const asserted = [...work].filter((c) => !accepted.has(c));
+    // An option held out of the total asserts nothing about the proposal.
+    const asserted = item?.kind === "OPTIONAL" ? [] : [...work].filter((c) => !accepted.has(c));
     return {
       line: label.line,
       excerpt: label.excerpt,
       kind: label.kind,
       amountCents: label.amountCents,
       read,
+      readAsWork: read && item?.kind !== "OPTIONAL",
       mapped: read && missing.length === 0,
       missing,
       asserted,
@@ -228,7 +235,7 @@ export async function evaluateTransfer(): Promise<TransferReport> {
       if (line.kind !== "work") {
         // Money that must not be read as work. Tax and credits are fine to
         // read; an alternate, add-on or summary read as a priced line is not.
-        if (["alternate", "summary", "waived"].includes(line.kind) && line.read) {
+        if (["alternate", "summary", "waived"].includes(line.kind) && line.readAsWork) {
           report.nonWorkLinesRead += 1;
           report.nonWorkCentsRead += line.amountCents;
         }

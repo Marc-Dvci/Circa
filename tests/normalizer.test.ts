@@ -316,3 +316,64 @@ Total: $1,850.00
     expect(shingles?.relation).toBe("SUBSUMED_BY_A");
   });
 });
+
+describe("estimate formats", () => {
+  const parse = (text: string, trade: Parameters<typeof parseQuoteText>[0]["trade"] = "roofing") =>
+    parseQuoteText({ id: "q", caseId: "c", text, trade, source: "CONTRACTOR", defaultAction: "REPLACE", capturedAt: "2026-09-01T00:00:00.000Z" });
+
+  it("reads amounts with no currency sign, in pounds, and leading the line", () => {
+    const bare = parse("1. Drip edge   186.00 LF  2.85   530.10\nReplacement Cost Value (RCV)   530.10");
+    expect(bare.lineItems[0]!.amount).toBe(53_010);
+    expect(bare.total).toBe(53_010);
+    expect(parse("Supply and fit new consumer unit   £ 640.00", "electrical").lineItems[0]!.amount).toBe(64_000);
+    const leading = parse("$285 - replace dual run capacitor and contactor", "hvac");
+    expect(leading.lineItems[0]!.amount).toBe(28_500);
+    expect(leading.lineItems[0]!.work.map((w) => w.component)).toContain("hvac.capacitor");
+  });
+
+  it("reads a pipe table and puts the money on the row it was on", () => {
+    const quote = parse("| # | Description | Amount |\n|---|---|---|\n| 1 | Drip edge, all eaves | $480.00 |\n| | **Total** | **$480.00** |");
+    expect(quote.lineItems).toHaveLength(1);
+    expect(quote.lineItems[0]!.evidence?.line).toBe(3);
+    expect(quote.total).toBe(48_000);
+  });
+
+  it("joins a description that wraps onto the line carrying its amount", () => {
+    const quote = parse("Install 6 inch seamless gutters, 42 LF, two\ndownspouts w/ splash blocks   $ 595.00\nTota1   $ 595.00");
+    expect(quote.lineItems).toHaveLength(1);
+    expect(quote.lineItems[0]!.work.map((w) => w.component)).toEqual(expect.arrayContaining(["roof.gutter", "roof.downspout"]));
+    expect(quote.total).toBe(59_500);
+  });
+
+  it("holds options and add-ons out of the total and out of the proposed work", () => {
+    const quote = parse(
+      "Replace condenser ........ $4,180.00\nOption B: variable speed condenser, add ........ $3,900.00\nAdd-on: duct sealing ........ $1,150.00\nTotal ........ $4,180.00",
+      "hvac",
+    );
+    expect(quote.lineItems.filter((li) => li.kind === "OPTIONAL")).toHaveLength(2);
+    expect(quote.itemisation?.level).toBe("ITEMISED");
+    expect(quote.itemisation?.attributedCents).toBe(418_000);
+  });
+
+  it("reads a credit and a tax line as money, never as work", () => {
+    const quote = parse("Decking, 9 sheets   $ 765.00\nCredit: unused ice & water shield allowance   ($ 60.00)\nSales tax (materials)   $12.40");
+    const [, credit, tax] = quote.lineItems;
+    expect(credit!.amount).toBe(-6_000);
+    expect(credit!.work).toHaveLength(0);
+    expect(tax!.work).toHaveLength(0);
+  });
+
+  it("reads a total and a deposit stated in a sentence", () => {
+    const quote = parse(
+      "The Contractor agrees to install new shingles for the total sum of Twelve Thousand Dollars ($12,000.00).\nA deposit of $3,000.00 is due at signing.",
+    );
+    expect(quote.total).toBe(1_200_000);
+    expect(quote.deposit).toBe(300_000);
+    expect(parse("Deposit required: 50% ($4,642.50)").deposit).toBe(464_250);
+  });
+
+  it("does not read a bare system name as the whole system without a verb in the clause", () => {
+    const work = normaliseLineItem("the leak is where the roof meets the wall", "roofing", "REPLACE").work;
+    expect(work.map((w) => w.component)).not.toContain("roof.full_replacement");
+  });
+});

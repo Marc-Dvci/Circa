@@ -27,7 +27,7 @@ export function isKnownComponent(id: string): id is ComponentId {
  * are lexemes.
  */
 export function normaliseText(text: string): string {
-  return ` ${text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim()} `;
+  return ` ${text.toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, " ").trim()} `;
 }
 
 /**

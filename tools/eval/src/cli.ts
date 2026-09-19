@@ -144,7 +144,7 @@ async function main(): Promise<void> {
           if (line.kind === "work" && !line.read) flags.push(`unread L${line.line} "${line.excerpt.slice(0, 40)}"`);
           else if (line.kind === "work" && !line.mapped) flags.push(`L${line.line} missing ${line.missing.join(",")}`);
           if (line.asserted.length) flags.push(`L${line.line} asserts ${line.asserted.join(",")}`);
-          if (["alternate", "summary", "waived"].includes(line.kind) && line.read) flags.push(`L${line.line} ${line.kind} read as work`);
+          if (["alternate", "summary", "waived"].includes(line.kind) && line.readAsWork) flags.push(`L${line.line} ${line.kind} read as work`);
         }
         if (result.missed.length) flags.push(`missed ${result.missed.join(",")}`);
         if (result.asserted.length) flags.push(`asserts ${result.asserted.join(",")}`);

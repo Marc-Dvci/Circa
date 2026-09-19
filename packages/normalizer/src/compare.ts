@@ -59,6 +59,9 @@ function buildSide(quote: Quote): Side {
   let unmappedValue = 0;
 
   for (const item of quote.lineItems) {
+    // An alternate or add-on is priced outside the total and proposes nothing
+    // until the customer picks it.
+    if (item.kind === "OPTIONAL") continue;
     if (item.work.length === 0) {
       unmappedIds.push(item.id);
       unmappedValue += item.amount ?? 0;
@@ -109,7 +112,9 @@ function buildSide(quote: Quote): Side {
    * granularity a comparison needs. Both are required, and only one of them is
    * arithmetic.
    */
-  const pricedItems = quote.lineItems.filter((li) => typeof li.amount === "number" && li.work.length > 0);
+  const pricedItems = quote.lineItems.filter(
+    (li) => typeof li.amount === "number" && li.work.length > 0 && li.kind !== "OPTIONAL",
+  );
   const containerPriced =
     pricedItems.length > 0 &&
     pricedItems.every((li) => li.work.some((w) => (component(w.component)?.includes ?? []).length > 0));
@@ -288,7 +293,7 @@ function splitByLineItem(
   let only = 0;
   let straddling = 0;
   for (const item of side.quote.lineItems) {
-    if (typeof item.amount !== "number") continue;
+    if (typeof item.amount !== "number" || item.kind === "OPTIONAL") continue;
     const inShared = sharedLines.has(item.id);
     const inOnly = onlyLines.has(item.id);
     if (inShared && inOnly) straddling += item.amount;
