@@ -5,8 +5,8 @@ import { loadTransferDocuments, type TransferDocument, type TransferLine } from 
 /**
  * The transfer corpus: what the engine reads on documents it was not built on.
  *
- * The three regression corpora were written alongside the engine and are green
- * by construction. This one was labelled first and read second: 28 estimates in
+ * The three regression corpora are a gate. This one was labelled first and read
+ * second: 28 estimates in
  * the formats, regions and phrasings a product meets in the field, each priced
  * line labelled with the taxonomy ids a person would say it proposes, committed
  * before this file existed. The numbers are reported, never gated. A corpus
