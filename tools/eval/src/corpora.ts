@@ -1,7 +1,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import type { OfferContext, Trade } from "#schema";
+import type { ComponentId, OfferContext, Trade } from "#schema";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const FIXTURES = path.resolve(HERE, "../../../fixtures");
@@ -70,6 +70,37 @@ export interface InjectionDocument {
   text: string;
 }
 
+export interface TransferLine {
+  line: number;
+  excerpt: string;
+  amountCents: number;
+  /** `work` is scored; tax and credits are read but not work; alternate, summary and waived lines must not be read as priced work. */
+  kind: "work" | "tax" | "credit" | "alternate" | "summary" | "waived";
+  components: ComponentId[];
+  tolerated?: ComponentId[];
+  /** Work the line proposes that the taxonomy has no id for. */
+  outside?: string[];
+}
+
+export interface TransferDocument {
+  id: string;
+  title: string;
+  trade: Trade;
+  tags: string[];
+  contractorName?: string;
+  text: string;
+  expect: {
+    totalCents: number;
+    itemisation: "ITEMISED" | "PARTIAL" | "LUMP_SUM";
+    depositCents?: number;
+    lines: TransferLine[];
+    proposes: ComponentId[];
+    tolerated?: ComponentId[];
+    outside?: string[];
+    excludes?: ComponentId[];
+  };
+}
+
 export async function loadScenarios(): Promise<Scenario[]> {
   const dir = path.join(FIXTURES, "scenarios");
   const files = (await readdir(dir)).filter((f) => f.endsWith(".json")).sort();
@@ -88,6 +119,13 @@ export async function loadQuotePairs(): Promise<QuotePair[]> {
 export async function loadInjectionDocuments(): Promise<InjectionDocument[]> {
   const raw = JSON.parse(await readFile(path.join(FIXTURES, "injection", "documents.json"), "utf8")) as {
     documents: InjectionDocument[];
+  };
+  return raw.documents;
+}
+
+export async function loadTransferDocuments(): Promise<TransferDocument[]> {
+  const raw = JSON.parse(await readFile(path.join(FIXTURES, "transfer", "estimates.json"), "utf8")) as {
+    documents: TransferDocument[];
   };
   return raw.documents;
 }

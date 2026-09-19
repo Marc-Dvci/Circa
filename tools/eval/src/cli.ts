@@ -3,6 +3,7 @@ import { AMBIGUOUS_PHRASES, TAXONOMY_STATS } from "#taxonomy";
 import { RULE_IDS } from "#verification";
 import { INJECTION_CATEGORIES, INJECTION_DETECTOR_COUNT } from "#documents";
 import { evaluateInjection, evaluateQuotePairs, evaluateScenarios } from "./run.js";
+import { evaluateTransfer } from "./transfer.js";
 
 /**
  * `pnpm eval`.
@@ -105,6 +106,53 @@ async function main(): Promise<void> {
     // Detection may miss; containment may not, and a control that fires makes
     // the label meaningless. Only those two fail the gate.
     if (report.containmentFailures > 0 || report.falsePositives > 0) failed = true;
+  }
+
+  if (only("transfer")) {
+    const report = await evaluateTransfer();
+    json["transfer"] = report;
+    const dollars = (cents: number): string => `$${Math.round(cents / 100).toLocaleString("en-US")}`;
+    lines.push("");
+    lines.push(`TRANSFER  ${report.documents} estimates labelled before they were read; reported, never gated`);
+    lines.push(bar("totals read", `${report.totalsRead} of ${report.documents}`));
+    lines.push(bar("itemisation level read", `${report.itemisationRead} of ${report.documents}`));
+    lines.push(bar("priced lines read", `${pct(report.linesRead / report.workLines)}  (${report.linesRead} of ${report.workLines}; ${dollars(report.linesReadCents)} of ${dollars(report.workCents)})`));
+    lines.push(bar("read lines mapped to their work", `${pct(report.mapped / report.mappable)}  (${report.mapped} of ${report.mappable}; ${dollars(report.mappedCents)} of ${dollars(report.mappableCents)})`));
+    lines.push(bar("lines asserting work not proposed", `${report.linesWithAssertion}  (${dollars(report.assertedCents)})`));
+    lines.push(bar("options or summaries read as work", `${report.nonWorkLinesRead}  (${dollars(report.nonWorkCentsRead)})`));
+    lines.push(bar("work outside the taxonomy", `${report.outsideLines} lines, ${dollars(report.outsideCents)} of ${dollars(report.workCents)}`));
+    lines.push(bar("proposed components found", `${pct(report.foundComponents / report.proposedComponents)}  (${report.foundComponents} of ${report.proposedComponents})`));
+    lines.push(bar("documents fully read", `${report.fullyRead} of ${report.documents}`));
+    if (args.has("--transfer") || args.has("--verbose")) {
+      lines.push("");
+      lines.push("  by format");
+      for (const [tag, s] of Object.entries(report.byTag).sort(([a], [b]) => a.localeCompare(b))) {
+        lines.push(
+          bar(`  ${tag}`, `${s.documents} doc${s.documents === 1 ? "" : "s"}: lines read ${s.linesRead}/${s.workLines}, mapped ${s.mapped}/${s.mappable}, assertions ${s.assertions}`),
+        );
+      }
+      lines.push("");
+      lines.push("  outside the taxonomy");
+      for (const [name, n] of Object.entries(report.outsideNames).sort(([, a], [, b]) => b - a)) lines.push(bar(`  ${name}`, String(n)));
+      lines.push("");
+      for (const result of report.results) {
+        const flags: string[] = [];
+        if (!result.totalRead) flags.push(`total ${result.actualTotalCents / 100} for ${result.totalCents / 100}`);
+        if (!result.itemisationRead) flags.push(`itemisation ${result.actualItemisation}`);
+        if (result.depositRead === false) flags.push("deposit missed");
+        for (const line of result.lines) {
+          if (line.kind === "work" && !line.read) flags.push(`unread L${line.line} "${line.excerpt.slice(0, 40)}"`);
+          else if (line.kind === "work" && !line.mapped) flags.push(`L${line.line} missing ${line.missing.join(",")}`);
+          if (line.asserted.length) flags.push(`L${line.line} asserts ${line.asserted.join(",")}`);
+          if (["alternate", "summary", "waived"].includes(line.kind) && line.read) flags.push(`L${line.line} ${line.kind} read as work`);
+        }
+        if (result.missed.length) flags.push(`missed ${result.missed.join(",")}`);
+        if (result.asserted.length) flags.push(`asserts ${result.asserted.join(",")}`);
+        if (result.excludedAsserted.length) flags.push(`asserts excluded ${result.excludedAsserted.join(",")}`);
+        lines.push(`    ${result.id}  ${result.fullyRead ? "read" : "    "}  ${result.title}`);
+        for (const flag of flags) lines.push(`      ${flag}`);
+      }
+    }
   }
 
   if (only("lexicon")) {
