@@ -1,0 +1,2426 @@
+{
+  "_notice": "Twenty-eight estimates labelled against the engine frozen at commit cc2a5a5, before the runner that reads them was written. Formats, regions and phrasings that the three regression corpora do not contain: estimate-software tables, an insurance adjuster's estimate, scanned and handwritten tickets, pounds sterling, Canadian and Australian terminology, Spanish, prose, options and add-ons, credits and tax lines, wrapped descriptions. Labels are what a person reading the document would say each priced line proposes, as taxonomy ids; `outside` names work the taxonomy has no id for; `tolerated` are ids a reader would accept on the line without calling them wrong. No name, licence number or claim number refers to a real company or person.",
+  "documents": [
+    {
+      "id": "tr-01",
+      "title": "Estimate software layout, columns with rate and amount",
+      "trade": "roofing",
+      "tags": [
+        "software-table"
+      ],
+      "contractorName": "Summit Ridge Roofing",
+      "text": "ESTIMATE #1047\nSummit Ridge Roofing LLC\nDate: 03/14/2026        Valid until: 04/13/2026\nBill to: Homeowner, 1 Example Ln\n\nQty   Description                                              Rate        Amount\n1     Tear-off existing 1 layer 3-tab, dispose                 $1,150.00   $1,150.00\n28    Owens Corning Duration architectural shingles, per SQ    $185.00     $5,180.00\n28    Synthetic underlayment, per SQ                           $32.00      $896.00\n120   Ice & water shield at eaves and valleys, LF              $2.10       $252.00\n1     Pipe boots (4) and ridge vent, replace                   $610.00     $610.00\n1     Drip edge, aluminum, all eaves and rakes                 $480.00     $480.00\n1     Decking replacement as needed, allowance 4 sheets @ $85  $340.00     $340.00\n1     Permit (City of Aurora)                                  $175.00     $175.00\n\n                                                   Subtotal    $9,083.00\n                                                   Total       $9,083.00\nDeposit: 30% due on signing, balance on completion.\nWarranty: 10 year workmanship, manufacturer 50 year limited.",
+      "expect": {
+        "totalCents": 908300,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 7,
+            "excerpt": "1     Tear-off existing 1 layer 3-tab, dispose                 $1,150.00   $1,15",
+            "amountCents": 115000,
+            "kind": "work",
+            "components": [
+              "roof.tearoff"
+            ],
+            "tolerated": [
+              "gen.disposal",
+              "roof.shingles"
+            ]
+          },
+          {
+            "line": 8,
+            "excerpt": "28    Owens Corning Duration architectural shingles, per SQ    $185.00     $5,18",
+            "amountCents": 518000,
+            "kind": "work",
+            "components": [
+              "roof.shingles"
+            ]
+          },
+          {
+            "line": 9,
+            "excerpt": "28    Synthetic underlayment, per SQ                           $32.00      $896.",
+            "amountCents": 89600,
+            "kind": "work",
+            "components": [
+              "roof.underlayment"
+            ]
+          },
+          {
+            "line": 10,
+            "excerpt": "120   Ice & water shield at eaves and valleys, LF              $2.10       $252.",
+            "amountCents": 25200,
+            "kind": "work",
+            "components": [
+              "roof.underlayment"
+            ]
+          },
+          {
+            "line": 11,
+            "excerpt": "1     Pipe boots (4) and ridge vent, replace                   $610.00     $610.",
+            "amountCents": 61000,
+            "kind": "work",
+            "components": [
+              "roof.pipe_boot",
+              "roof.ridge_vent"
+            ]
+          },
+          {
+            "line": 12,
+            "excerpt": "1     Drip edge, aluminum, all eaves and rakes                 $480.00     $480.",
+            "amountCents": 48000,
+            "kind": "work",
+            "components": [
+              "roof.drip_edge"
+            ]
+          },
+          {
+            "line": 13,
+            "excerpt": "1     Decking replacement as needed, allowance 4 sheets @ $85  $340.00     $340.",
+            "amountCents": 34000,
+            "kind": "work",
+            "components": [
+              "roof.decking"
+            ]
+          },
+          {
+            "line": 14,
+            "excerpt": "1     Permit (City of Aurora)                                  $175.00     $175.",
+            "amountCents": 17500,
+            "kind": "work",
+            "components": [
+              "gen.permit"
+            ]
+          }
+        ],
+        "proposes": [
+          "roof.tearoff",
+          "roof.shingles",
+          "roof.underlayment",
+          "roof.pipe_boot",
+          "roof.ridge_vent",
+          "roof.drip_edge",
+          "roof.decking",
+          "gen.permit"
+        ],
+        "tolerated": [
+          "gen.disposal",
+          "gen.warranty"
+        ]
+      }
+    },
+    {
+      "id": "tr-02",
+      "title": "Insurance adjuster estimate, Xactimate-style codes, no dollar signs",
+      "trade": "roofing",
+      "tags": [
+        "insurance",
+        "no-dollar-sign"
+      ],
+      "text": "Insurance Repair Estimate - Claim 22-4471-R\nPrepared by: Castellano Adjusting Services\nRoof - Main Dwelling (Steep, 6/12)\n\nDESCRIPTION                                           QTY       UNIT     RCV\n1. Tear off, haul and dispose of comp. shingles       24.00 SQ  61.20    1,468.80\n2. Laminated - comp. shingle rfg. - w/out felt        26.40 SQ  312.50   8,250.00\n3. Roofing felt - 15 lb.                              24.00 SQ  36.10    866.40\n4. Ice & water barrier                                210.00 SF 1.62     340.20\n5. Drip edge                                          186.00 LF 2.85     530.10\n6. R&R Flashing - pipe jack                           3.00 EA   48.30    144.90\n7. R&R Ridge cap - composition shingles               52.00 LF  7.90     410.80\n8. Roof vent - turtle type - Metal                    4.00 EA   72.40    289.60\n\nLine Item Totals:                                                        12,300.80\nMaterial Sales Tax @ 7.5%                                                 421.17\nReplacement Cost Value (RCV)                                             12,721.97\nLess Depreciation                                                        (2,380.00)\nNet Claim                                                                10,341.97",
+      "expect": {
+        "totalCents": 1272197,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 6,
+            "excerpt": "1. Tear off, haul and dispose of comp. shingles       24.00 SQ  61.20    1,468.8",
+            "amountCents": 146880,
+            "kind": "work",
+            "components": [
+              "roof.tearoff"
+            ],
+            "tolerated": [
+              "gen.disposal",
+              "roof.shingles"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "2. Laminated - comp. shingle rfg. - w/out felt        26.40 SQ  312.50   8,250.0",
+            "amountCents": 825000,
+            "kind": "work",
+            "components": [
+              "roof.shingles"
+            ]
+          },
+          {
+            "line": 8,
+            "excerpt": "3. Roofing felt - 15 lb.                              24.00 SQ  36.10    866.40",
+            "amountCents": 86640,
+            "kind": "work",
+            "components": [
+              "roof.underlayment"
+            ]
+          },
+          {
+            "line": 9,
+            "excerpt": "4. Ice & water barrier                                210.00 SF 1.62     340.20",
+            "amountCents": 34020,
+            "kind": "work",
+            "components": [
+              "roof.underlayment"
+            ]
+          },
+          {
+            "line": 10,
+            "excerpt": "5. Drip edge                                          186.00 LF 2.85     530.10",
+            "amountCents": 53010,
+            "kind": "work",
+            "components": [
+              "roof.drip_edge"
+            ]
+          },
+          {
+            "line": 11,
+            "excerpt": "6. R&R Flashing - pipe jack                           3.00 EA   48.30    144.90",
+            "amountCents": 14490,
+            "kind": "work",
+            "components": [
+              "roof.pipe_boot"
+            ],
+            "tolerated": [
+              "roof.flashing"
+            ]
+          },
+          {
+            "line": 12,
+            "excerpt": "7. R&R Ridge cap - composition shingles               52.00 LF  7.90     410.80",
+            "amountCents": 41080,
+            "kind": "work",
+            "components": [
+              "roof.ridge_vent"
+            ],
+            "tolerated": [
+              "roof.shingles"
+            ]
+          },
+          {
+            "line": 13,
+            "excerpt": "8. Roof vent - turtle type - Metal                    4.00 EA   72.40    289.60",
+            "amountCents": 28960,
+            "kind": "work",
+            "components": [
+              "roof.attic_ventilation"
+            ]
+          },
+          {
+            "line": 16,
+            "excerpt": "Material Sales Tax @ 7.5%                                                 421.17",
+            "amountCents": 42117,
+            "kind": "tax",
+            "components": []
+          }
+        ],
+        "proposes": [
+          "roof.tearoff",
+          "roof.shingles",
+          "roof.underlayment",
+          "roof.drip_edge",
+          "roof.pipe_boot",
+          "roof.ridge_vent",
+          "roof.attic_ventilation"
+        ],
+        "tolerated": [
+          "gen.disposal",
+          "roof.flashing"
+        ]
+      }
+    },
+    {
+      "id": "tr-03",
+      "title": "Handwritten ticket, scanned: misspellings, no punctuation, total without a dollar sign",
+      "trade": "plumbing",
+      "tags": [
+        "handwritten",
+        "ocr",
+        "no-dollar-sign"
+      ],
+      "text": "Hernandez Plumbing  lic # 55-0912\n3/2\n\nreplace 40 gal gas hot water heatr   Rheem   $ 1,150\nnew T&P valve + expansion tank included\nhaul off old unit                       $  40\nlabor  4hrs                              $ 350\npermit                                  $ 95\n\nTOTAL 1635.00\n1/2 down",
+      "expect": {
+        "totalCents": 163500,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 4,
+            "excerpt": "replace 40 gal gas hot water heatr   Rheem   $ 1,150",
+            "amountCents": 115000,
+            "kind": "work",
+            "components": [
+              "plumb.water_heater"
+            ]
+          },
+          {
+            "line": 6,
+            "excerpt": "haul off old unit                       $  40",
+            "amountCents": 4000,
+            "kind": "work",
+            "components": [
+              "gen.disposal"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "labor  4hrs                              $ 350",
+            "amountCents": 35000,
+            "kind": "work",
+            "components": [
+              "gen.labor"
+            ]
+          },
+          {
+            "line": 8,
+            "excerpt": "permit                                  $ 95",
+            "amountCents": 9500,
+            "kind": "work",
+            "components": [
+              "gen.permit"
+            ]
+          }
+        ],
+        "proposes": [
+          "plumb.water_heater",
+          "plumb.expansion_tank",
+          "gen.disposal",
+          "gen.labor",
+          "gen.permit"
+        ],
+        "tolerated": [
+          "plumb.pressure_regulator"
+        ]
+      }
+    },
+    {
+      "id": "tr-04",
+      "title": "United Kingdom quotation in pounds sterling, consumer unit and RCDs",
+      "trade": "electrical",
+      "tags": [
+        "regional-uk",
+        "currency-gbp"
+      ],
+      "text": "J. Whitfield Electrical Ltd - NICEIC Approved Contractor\nQuotation Q-2261                                   Date 12 March 2026\n\nSupply and fit new 18th edition consumer unit (Hager, 10 way, dual RCD, SPD)     £ 640.00\nReplace main earthing conductor and bonding to gas and water                     £ 180.00\nInstall 2 x additional double sockets in kitchen                                 £ 220.00\nElectrical Installation Certificate and Building Control notification            £  95.00\n                                                                    Sub total    £1,135.00\n                                                                    VAT @ 20%    £  227.00\n                                                                    Total        £1,362.00\nPayment on completion. 12 months guarantee on workmanship.",
+      "expect": {
+        "totalCents": 136200,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 4,
+            "excerpt": "Supply and fit new 18th edition consumer unit (Hager, 10 way, dual RCD, SPD)    ",
+            "amountCents": 64000,
+            "kind": "work",
+            "components": [
+              "elec.panel"
+            ],
+            "tolerated": [
+              "elec.breaker",
+              "elec.gfci"
+            ],
+            "outside": [
+              "surge protection device"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "Replace main earthing conductor and bonding to gas and water                    ",
+            "amountCents": 18000,
+            "kind": "work",
+            "components": [
+              "elec.grounding"
+            ]
+          },
+          {
+            "line": 6,
+            "excerpt": "Install 2 x additional double sockets in kitchen                                ",
+            "amountCents": 22000,
+            "kind": "work",
+            "components": [
+              "elec.outlet"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "Electrical Installation Certificate and Building Control notification           ",
+            "amountCents": 9500,
+            "kind": "work",
+            "components": [],
+            "tolerated": [
+              "gen.permit",
+              "gen.inspection"
+            ],
+            "outside": [
+              "installation certificate"
+            ]
+          },
+          {
+            "line": 9,
+            "excerpt": "VAT @ 20%    £  227.00",
+            "amountCents": 22700,
+            "kind": "tax",
+            "components": []
+          }
+        ],
+        "proposes": [
+          "elec.panel",
+          "elec.grounding",
+          "elec.outlet"
+        ],
+        "tolerated": [
+          "elec.breaker",
+          "elec.gfci",
+          "gen.permit",
+          "gen.inspection",
+          "gen.warranty"
+        ],
+        "outside": [
+          "surge protection device",
+          "installation certificate"
+        ]
+      }
+    },
+    {
+      "id": "tr-05",
+      "title": "Canadian HVAC estimate with GST, B-vent and provincial inspection",
+      "trade": "hvac",
+      "tags": [
+        "regional-canada",
+        "software-table",
+        "tax"
+      ],
+      "text": "NORTHWIND HEATING & COOLING INC.\nEstimate 2026-0388                                           Kelowna, BC\nPrepared for: Homeowner\n\nItem                                                            Amount (CAD)\nRemove existing mid-efficiency furnace and dispose               $   350.00\nSupply & install Lennox EL296V 96% two-stage gas furnace, 80k    $ 5,450.00\nNew B-vent venting and combustion air intake                     $   480.00\nEcobee smart thermostat                                          $   310.00\nGas permit and TSBC inspection                                   $   165.00\nSheet metal transition and plenum adaptor                        $   275.00\n                                                    Subtotal     $ 7,030.00\n                                                    GST 5%       $   351.50\n                                                    Total        $ 7,381.50\nTerms: 10% deposit, balance net 15 days after start-up.\nFinancing available through FinanceIt OAC.",
+      "expect": {
+        "totalCents": 738150,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 6,
+            "excerpt": "Remove existing mid-efficiency furnace and dispose               $   350.00",
+            "amountCents": 35000,
+            "kind": "work",
+            "components": [
+              "hvac.furnace",
+              "gen.disposal"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "Supply & install Lennox EL296V 96% two-stage gas furnace, 80k    $ 5,450.00",
+            "amountCents": 545000,
+            "kind": "work",
+            "components": [
+              "hvac.furnace"
+            ]
+          },
+          {
+            "line": 8,
+            "excerpt": "New B-vent venting and combustion air intake                     $   480.00",
+            "amountCents": 48000,
+            "kind": "work",
+            "components": [
+              "hvac.flue"
+            ]
+          },
+          {
+            "line": 9,
+            "excerpt": "Ecobee smart thermostat                                          $   310.00",
+            "amountCents": 31000,
+            "kind": "work",
+            "components": [
+              "hvac.thermostat"
+            ]
+          },
+          {
+            "line": 10,
+            "excerpt": "Gas permit and TSBC inspection                                   $   165.00",
+            "amountCents": 16500,
+            "kind": "work",
+            "components": [
+              "gen.permit"
+            ],
+            "tolerated": [
+              "gen.inspection"
+            ]
+          },
+          {
+            "line": 11,
+            "excerpt": "Sheet metal transition and plenum adaptor                        $   275.00",
+            "amountCents": 27500,
+            "kind": "work",
+            "components": [
+              "hvac.ductwork"
+            ]
+          },
+          {
+            "line": 13,
+            "excerpt": "GST 5%       $   351.50",
+            "amountCents": 35150,
+            "kind": "tax",
+            "components": []
+          }
+        ],
+        "proposes": [
+          "hvac.furnace",
+          "gen.disposal",
+          "hvac.flue",
+          "hvac.thermostat",
+          "gen.permit",
+          "hvac.ductwork"
+        ],
+        "tolerated": [
+          "gen.inspection"
+        ]
+      }
+    },
+    {
+      "id": "tr-06",
+      "title": "Australian plumbing quote, hot water system, tempering valve, compliance certificate",
+      "trade": "plumbing",
+      "tags": [
+        "regional-australia"
+      ],
+      "contractorName": "Bayside Plumbing & Gas",
+      "text": "Bayside Plumbing & Gas Pty Ltd    ABN 61 000 000 000    Lic. 224781C\nQUOTE No. 8812                                                   Melbourne VIC\n\nScope: replace leaking Rheem 250L electric hot water system, like for like.\n\nSupply Rheem Stellar 250L electric hot water unit                    $1,690.00\nLabour to remove and install, including new tempering valve          $  480.00\nTap ware and drain to new tundish                                    $  145.00\nDisposal of old unit                                                 $   60.00\nCompliance certificate lodged with VBA                               $   75.00\nTotal (inc. GST)                                                     $2,450.00\nPayment: 50% deposit on acceptance, balance on completion. Direct debit or card.",
+      "expect": {
+        "totalCents": 245000,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 6,
+            "excerpt": "Supply Rheem Stellar 250L electric hot water unit                    $1,690.00",
+            "amountCents": 169000,
+            "kind": "work",
+            "components": [
+              "plumb.water_heater"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "Labour to remove and install, including new tempering valve          $  480.00",
+            "amountCents": 48000,
+            "kind": "work",
+            "components": [
+              "gen.labor"
+            ],
+            "tolerated": [
+              "plumb.water_heater"
+            ],
+            "outside": [
+              "tempering valve"
+            ]
+          },
+          {
+            "line": 8,
+            "excerpt": "Tap ware and drain to new tundish                                    $  145.00",
+            "amountCents": 14500,
+            "kind": "work",
+            "components": [
+              "plumb.drain_line"
+            ],
+            "tolerated": [
+              "plumb.faucet"
+            ]
+          },
+          {
+            "line": 9,
+            "excerpt": "Disposal of old unit                                                 $   60.00",
+            "amountCents": 6000,
+            "kind": "work",
+            "components": [
+              "gen.disposal"
+            ]
+          },
+          {
+            "line": 10,
+            "excerpt": "Compliance certificate lodged with VBA                               $   75.00",
+            "amountCents": 7500,
+            "kind": "work",
+            "components": [],
+            "tolerated": [
+              "gen.permit",
+              "gen.inspection"
+            ],
+            "outside": [
+              "compliance certificate"
+            ]
+          }
+        ],
+        "proposes": [
+          "plumb.water_heater",
+          "gen.labor",
+          "plumb.drain_line",
+          "gen.disposal"
+        ],
+        "tolerated": [
+          "plumb.faucet",
+          "gen.permit",
+          "gen.inspection"
+        ],
+        "outside": [
+          "tempering valve",
+          "compliance certificate"
+        ]
+      }
+    },
+    {
+      "id": "tr-07",
+      "title": "An email: prose scope, one price, no line items",
+      "trade": "roofing",
+      "tags": [
+        "prose",
+        "email",
+        "lump-sum"
+      ],
+      "contractorName": "Ridgeline Roof Repair",
+      "text": "Subject: Re: roof leak over the back bedroom\n\nHi Dana,\n\nThanks for having us out this morning. As discussed, the leak is coming from the\nstep flashing where the roof meets the second-storey wall; the shingles there are\nbrittle and the felt under them has gone. We would strip that section back about\n6 feet, put down new ice and water membrane, install new step and kick-out flashing,\nand reshingle to match as close as we can with the existing color. We'd also reseal\nthe two pipe boots while we're up there.\n\nAll in, including disposal and a 5 year leak-free warranty, it's $1,875. We can be\nthere Thursday if that works. Half up front and the rest when we're done is fine.\n\nBest,\nMarcus\nRidgeline Roof Repair",
+      "expect": {
+        "totalCents": 187500,
+        "itemisation": "LUMP_SUM",
+        "lines": [],
+        "proposes": [
+          "roof.flashing",
+          "roof.underlayment",
+          "roof.shingles",
+          "roof.pipe_boot",
+          "gen.disposal"
+        ],
+        "tolerated": [
+          "roof.chimney_flashing",
+          "roof.tearoff",
+          "gen.warranty"
+        ]
+      }
+    },
+    {
+      "id": "tr-08",
+      "title": "Service ticket with the amount at the start of each line, repair and replacement options",
+      "trade": "hvac",
+      "tags": [
+        "leading-amount",
+        "options"
+      ],
+      "text": "Cool Breeze Air - Service Ticket 30311 - no cool, unit 14 yrs old\nFindings: compressor drawing 41A LRA, contactor pitted, cap reads 28uF on a 45uF.\n\nRepair options:\n$285 - replace dual run capacitor 45/5 and contactor\n$189 - add 2 lb R-410A and leak seal (no guarantee)\n$89 - diagnostic fee (waived with repair over $250)\n\nReplacement option:\n$7,900 - Goodman 3 ton 14.3 SEER2 condenser + matched coil, new pad, whip and disconnect, 10 yr parts\n\nCustomer chose: repair. Total due today $474.",
+      "expect": {
+        "totalCents": 47400,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 5,
+            "excerpt": "$285 - replace dual run capacitor 45/5 and contactor",
+            "amountCents": 28500,
+            "kind": "work",
+            "components": [
+              "hvac.capacitor",
+              "hvac.contactor"
+            ]
+          },
+          {
+            "line": 6,
+            "excerpt": "$189 - add 2 lb R-410A and leak seal (no guarantee)",
+            "amountCents": 18900,
+            "kind": "work",
+            "components": [
+              "hvac.refrigerant"
+            ],
+            "outside": [
+              "leak sealant"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "$89 - diagnostic fee (waived with repair over $250)",
+            "amountCents": 8900,
+            "kind": "waived",
+            "components": [],
+            "tolerated": [
+              "gen.trip_charge",
+              "gen.inspection"
+            ]
+          },
+          {
+            "line": 10,
+            "excerpt": "$7,900 - Goodman 3 ton 14.3 SEER2 condenser + matched coil, new pad, whip and di",
+            "amountCents": 790000,
+            "kind": "alternate",
+            "components": []
+          }
+        ],
+        "proposes": [
+          "hvac.capacitor",
+          "hvac.contactor",
+          "hvac.refrigerant"
+        ],
+        "tolerated": [
+          "gen.trip_charge",
+          "gen.inspection"
+        ],
+        "outside": [
+          "leak sealant"
+        ]
+      }
+    },
+    {
+      "id": "tr-09",
+      "title": "Markdown pipe table pasted from a web portal, service upgrade with drywall",
+      "trade": "electrical",
+      "tags": [
+        "pipe-table",
+        "mixed-trade"
+      ],
+      "text": "| # | Description | Qty | Unit | Amount |\n|---|-------------|-----|------|--------|\n| 1 | Upgrade service to 200A: new meter base, mast, weatherhead, and Square D QO 200A 40-space panel | 1 | ea | $3,400.00 |\n| 2 | Two 8 ft ground rods and #4 bonding to water main | 1 | lot | $320.00 |\n| 3 | AFCI breakers for bedroom circuits (6) | 6 | ea | $390.00 |\n| 4 | GFCI receptacles, kitchen and baths (5) | 5 | ea | $275.00 |\n| 5 | Drywall patch and paint at panel location, 4 sq ft | 1 | lot | $180.00 |\n| 6 | Electrical permit and county inspection | 1 | ea | $210.00 |\n| | | | **Total** | **$4,775.00** |",
+      "expect": {
+        "totalCents": 477500,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 3,
+            "excerpt": "| 1 | Upgrade service to 200A: new meter base, mast, weatherhead, and Square D Q",
+            "amountCents": 340000,
+            "kind": "work",
+            "components": [
+              "elec.service_upgrade",
+              "elec.meter_base",
+              "elec.panel"
+            ]
+          },
+          {
+            "line": 4,
+            "excerpt": "| 2 | Two 8 ft ground rods and #4 bonding to water main | 1 | lot | $320.00 |",
+            "amountCents": 32000,
+            "kind": "work",
+            "components": [
+              "elec.grounding"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "| 3 | AFCI breakers for bedroom circuits (6) | 6 | ea | $390.00 |",
+            "amountCents": 39000,
+            "kind": "work",
+            "components": [
+              "elec.afci"
+            ],
+            "tolerated": [
+              "elec.breaker",
+              "elec.wiring"
+            ]
+          },
+          {
+            "line": 6,
+            "excerpt": "| 4 | GFCI receptacles, kitchen and baths (5) | 5 | ea | $275.00 |",
+            "amountCents": 27500,
+            "kind": "work",
+            "components": [
+              "elec.gfci"
+            ],
+            "tolerated": [
+              "elec.outlet"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "| 5 | Drywall patch and paint at panel location, 4 sq ft | 1 | lot | $180.00 |",
+            "amountCents": 18000,
+            "kind": "work",
+            "components": [
+              "gen.drywall",
+              "gen.paint"
+            ],
+            "tolerated": [
+              "elec.panel"
+            ]
+          },
+          {
+            "line": 8,
+            "excerpt": "| 6 | Electrical permit and county inspection | 1 | ea | $210.00 |",
+            "amountCents": 21000,
+            "kind": "work",
+            "components": [
+              "gen.permit"
+            ],
+            "tolerated": [
+              "gen.inspection"
+            ]
+          }
+        ],
+        "proposes": [
+          "elec.service_upgrade",
+          "elec.meter_base",
+          "elec.panel",
+          "elec.grounding",
+          "elec.afci",
+          "elec.gfci",
+          "gen.drywall",
+          "gen.paint",
+          "gen.permit"
+        ],
+        "tolerated": [
+          "elec.breaker",
+          "elec.outlet",
+          "elec.wiring",
+          "gen.inspection"
+        ]
+      }
+    },
+    {
+      "id": "tr-10",
+      "title": "Scanned estimate, OCR: wrapped descriptions with the amount on the second line, l read as 1",
+      "trade": "roofing",
+      "tags": [
+        "ocr",
+        "wrapped-lines"
+      ],
+      "contractorName": "Gable and Gutter Co.",
+      "text": "ESTIMATE\nGABLE AND GUTTER CO. 555 Industrial Pkwy\nJob: rear addition roof and gutters\nRemove and replace approx. 3 squares of architectural\nshingles at rear addition incl. underlayment              $ 1,275.00\nRemove and re-set step f1ashing at addition wall, new\ncounter-flashing let into mortar                          $   640.00\nInstall 6\" seamless K-style aluminum gutters, 42 LF, two\ndownspouts w/ splash blocks                               $   595.00\nFascia wrap, aluminum, 42 LF                              $   210.00\nHaul away debris                                          $    85.00\nTota1                                                     $ 2,805.00",
+      "expect": {
+        "totalCents": 280500,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 5,
+            "excerpt": "shingles at rear addition incl. underlayment              $ 1,275.00",
+            "amountCents": 127500,
+            "kind": "work",
+            "components": [
+              "roof.shingles",
+              "roof.underlayment"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "counter-flashing let into mortar                          $   640.00",
+            "amountCents": 64000,
+            "kind": "work",
+            "components": [
+              "roof.flashing"
+            ],
+            "tolerated": [
+              "roof.chimney_flashing"
+            ]
+          },
+          {
+            "line": 9,
+            "excerpt": "downspouts w/ splash blocks                               $   595.00",
+            "amountCents": 59500,
+            "kind": "work",
+            "components": [
+              "roof.gutter",
+              "roof.downspout"
+            ]
+          },
+          {
+            "line": 10,
+            "excerpt": "Fascia wrap, aluminum, 42 LF                              $   210.00",
+            "amountCents": 21000,
+            "kind": "work",
+            "components": [
+              "roof.fascia"
+            ]
+          },
+          {
+            "line": 11,
+            "excerpt": "Haul away debris                                          $    85.00",
+            "amountCents": 8500,
+            "kind": "work",
+            "components": [
+              "gen.disposal"
+            ]
+          }
+        ],
+        "proposes": [
+          "roof.shingles",
+          "roof.underlayment",
+          "roof.flashing",
+          "roof.gutter",
+          "roof.downspout",
+          "roof.fascia",
+          "gen.disposal"
+        ],
+        "tolerated": [
+          "roof.chimney_flashing"
+        ]
+      }
+    },
+    {
+      "id": "tr-11",
+      "title": "Spanish-language estimate, roofing",
+      "trade": "roofing",
+      "tags": [
+        "language-spanish"
+      ],
+      "text": "TECHOS GARCIA - Presupuesto\nQuitar tejas existentes y desechar                $ 900.00\nInstalar 20 cuadros de tejas arquitectonicas      $3,600.00\nPapel sintetico y proteccion de hielo y agua      $ 650.00\nReemplazar tapajuntas de chimenea                 $ 450.00\nPermiso                                           $ 150.00\nTotal                                             $5,750.00\n50% de anticipo",
+      "expect": {
+        "totalCents": 575000,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 2,
+            "excerpt": "Quitar tejas existentes y desechar                $ 900.00",
+            "amountCents": 90000,
+            "kind": "work",
+            "components": [
+              "roof.tearoff",
+              "gen.disposal"
+            ]
+          },
+          {
+            "line": 3,
+            "excerpt": "Instalar 20 cuadros de tejas arquitectonicas      $3,600.00",
+            "amountCents": 360000,
+            "kind": "work",
+            "components": [
+              "roof.shingles"
+            ]
+          },
+          {
+            "line": 4,
+            "excerpt": "Papel sintetico y proteccion de hielo y agua      $ 650.00",
+            "amountCents": 65000,
+            "kind": "work",
+            "components": [
+              "roof.underlayment"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "Reemplazar tapajuntas de chimenea                 $ 450.00",
+            "amountCents": 45000,
+            "kind": "work",
+            "components": [
+              "roof.chimney_flashing"
+            ]
+          },
+          {
+            "line": 6,
+            "excerpt": "Permiso                                           $ 150.00",
+            "amountCents": 15000,
+            "kind": "work",
+            "components": [
+              "gen.permit"
+            ]
+          }
+        ],
+        "proposes": [
+          "roof.tearoff",
+          "gen.disposal",
+          "roof.shingles",
+          "roof.underlayment",
+          "roof.chimney_flashing",
+          "gen.permit"
+        ]
+      }
+    },
+    {
+      "id": "tr-12",
+      "title": "Water heater failure with mitigation and rebuild: three trades on one proposal",
+      "trade": "plumbing",
+      "tags": [
+        "mixed-trade",
+        "wrapped-lines",
+        "section-headers"
+      ],
+      "contractorName": "HomeShield Restoration",
+      "text": "Restoration & Repair Proposal - HomeShield Restoration\nLoss: failed water heater, finished basement, discovered 2 days after\n\nMITIGATION\n  Water extraction and antimicrobial application, 380 sq ft ........ $   540.00\n  Drying equipment: 3 air movers + 1 LGR dehumidifier, 4 days ....... $   720.00\n  Remove wet carpet, pad and 2 ft of drywall flood cut, dispose ..... $   610.00\nPLUMBING (sub: Delgado Plumbing)\n  Replace 50 gal gas water heater, Bradford White, with pan and\n  new shutoff ...................................................... $ 1,890.00\nREBUILD\n  Hang, tape and finish drywall, 2 ft x 48 LF ...................... $   860.00\n  Prime and paint affected walls, 2 coats ........................... $   480.00\n  Carpet and pad, 380 sq ft, builder grade .......................... $ 1,520.00\nSubtotal ............................................................. $ 6,620.00\nTotal ................................................................ $ 6,620.00",
+      "expect": {
+        "totalCents": 662000,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 5,
+            "excerpt": "Water extraction and antimicrobial application, 380 sq ft ........ $   540.00",
+            "amountCents": 54000,
+            "kind": "work",
+            "components": [
+              "gen.water_damage"
+            ],
+            "tolerated": [
+              "gen.mold_remediation"
+            ]
+          },
+          {
+            "line": 6,
+            "excerpt": "Drying equipment: 3 air movers + 1 LGR dehumidifier, 4 days ....... $   720.00",
+            "amountCents": 72000,
+            "kind": "work",
+            "components": [
+              "gen.water_damage"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "Remove wet carpet, pad and 2 ft of drywall flood cut, dispose ..... $   610.00",
+            "amountCents": 61000,
+            "kind": "work",
+            "components": [
+              "gen.flooring",
+              "gen.drywall",
+              "gen.disposal"
+            ],
+            "tolerated": [
+              "gen.water_damage"
+            ]
+          },
+          {
+            "line": 10,
+            "excerpt": "new shutoff ...................................................... $ 1,890.00",
+            "amountCents": 189000,
+            "kind": "work",
+            "components": [
+              "plumb.water_heater",
+              "plumb.main_shutoff"
+            ],
+            "tolerated": [
+              "hvac.condensate"
+            ]
+          },
+          {
+            "line": 12,
+            "excerpt": "Hang, tape and finish drywall, 2 ft x 48 LF ...................... $   860.00",
+            "amountCents": 86000,
+            "kind": "work",
+            "components": [
+              "gen.drywall"
+            ]
+          },
+          {
+            "line": 13,
+            "excerpt": "Prime and paint affected walls, 2 coats ........................... $   480.00",
+            "amountCents": 48000,
+            "kind": "work",
+            "components": [
+              "gen.paint"
+            ]
+          },
+          {
+            "line": 14,
+            "excerpt": "Carpet and pad, 380 sq ft, builder grade .......................... $ 1,520.00",
+            "amountCents": 152000,
+            "kind": "work",
+            "components": [
+              "gen.flooring"
+            ]
+          }
+        ],
+        "proposes": [
+          "gen.water_damage",
+          "gen.flooring",
+          "gen.drywall",
+          "gen.disposal",
+          "plumb.water_heater",
+          "plumb.main_shutoff",
+          "gen.paint"
+        ],
+        "tolerated": [
+          "gen.mold_remediation"
+        ]
+      }
+    },
+    {
+      "id": "tr-13",
+      "title": "Full system proposal with model numbers, an option and add-ons priced outside the total",
+      "trade": "hvac",
+      "tags": [
+        "options",
+        "brand-model",
+        "software-table"
+      ],
+      "contractorName": "Meridian Comfort Systems",
+      "text": "PROPOSAL - Meridian Comfort Systems - Lic. CAC1819944\nOption A (recommended)\n  Carrier 24SCA536 3-ton 15.2 SEER2 condenser ......................... $ 4,180.00\n  Carrier FX4DNF037 air handler with 10 kW heat strip ................ $ 3,240.00\n  New 3/4\" x 3/8\" line set, 35 ft, and line set flush ................ $   690.00\n  Condensate: new float switch, secondary pan, PVC drain to exterior . $   260.00\n  Disconnect, whip, hurricane pad and tie-downs ...................... $   310.00\n  Manual J load calculation, mechanical permit, final inspection ...... $   425.00\n  Reclaim refrigerant and haul off existing equipment ................. $   180.00\n  Option A Total ....................................................... $ 9,285.00\nOption B: Carrier Infinity 24VNA6 variable speed, add ................ $ 3,900.00\nAdd-on: UV light at coil ............................................... $   450.00\nAdd-on: Duct sanitizing and sealing, all accessible ducts .............. $ 1,150.00\nTotal .................................................................. $ 9,285.00\nDeposit required: 50% ($4,642.50). Balance on completion. Cash, check or card.",
+      "expect": {
+        "totalCents": 928500,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 3,
+            "excerpt": "Carrier 24SCA536 3-ton 15.2 SEER2 condenser ......................... $ 4,180.00",
+            "amountCents": 418000,
+            "kind": "work",
+            "components": [
+              "hvac.ac_condenser"
+            ]
+          },
+          {
+            "line": 4,
+            "excerpt": "Carrier FX4DNF037 air handler with 10 kW heat strip ................ $ 3,240.00",
+            "amountCents": 324000,
+            "kind": "work",
+            "components": [
+              "hvac.air_handler"
+            ],
+            "outside": [
+              "heat strip"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "New 3/4\" x 3/8\" line set, 35 ft, and line set flush ................ $   690.00",
+            "amountCents": 69000,
+            "kind": "work",
+            "components": [],
+            "tolerated": [
+              "hvac.refrigerant"
+            ],
+            "outside": [
+              "line set"
+            ]
+          },
+          {
+            "line": 6,
+            "excerpt": "Condensate: new float switch, secondary pan, PVC drain to exterior . $   260.00",
+            "amountCents": 26000,
+            "kind": "work",
+            "components": [
+              "hvac.condensate"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "Disconnect, whip, hurricane pad and tie-downs ...................... $   310.00",
+            "amountCents": 31000,
+            "kind": "work",
+            "components": [],
+            "outside": [
+              "disconnect",
+              "equipment pad"
+            ]
+          },
+          {
+            "line": 8,
+            "excerpt": "Manual J load calculation, mechanical permit, final inspection ...... $   425.00",
+            "amountCents": 42500,
+            "kind": "work",
+            "components": [
+              "gen.permit"
+            ],
+            "tolerated": [
+              "gen.inspection"
+            ]
+          },
+          {
+            "line": 9,
+            "excerpt": "Reclaim refrigerant and haul off existing equipment ................. $   180.00",
+            "amountCents": 18000,
+            "kind": "work",
+            "components": [
+              "gen.disposal"
+            ],
+            "tolerated": [
+              "hvac.refrigerant",
+              "hvac.system_replacement"
+            ]
+          },
+          {
+            "line": 10,
+            "excerpt": "Option A Total ....................................................... $ 9,285.0",
+            "amountCents": 928500,
+            "kind": "summary",
+            "components": []
+          },
+          {
+            "line": 11,
+            "excerpt": "Option B: Carrier Infinity 24VNA6 variable speed, add ................ $ 3,900.0",
+            "amountCents": 390000,
+            "kind": "alternate",
+            "components": []
+          },
+          {
+            "line": 12,
+            "excerpt": "Add-on: UV light at coil ............................................... $   450",
+            "amountCents": 45000,
+            "kind": "alternate",
+            "components": []
+          },
+          {
+            "line": 13,
+            "excerpt": "Add-on: Duct sanitizing and sealing, all accessible ducts .............. $ 1,150",
+            "amountCents": 115000,
+            "kind": "alternate",
+            "components": []
+          }
+        ],
+        "proposes": [
+          "hvac.ac_condenser",
+          "hvac.air_handler",
+          "hvac.condensate",
+          "gen.permit",
+          "gen.disposal"
+        ],
+        "tolerated": [
+          "hvac.refrigerant",
+          "gen.inspection",
+          "hvac.system_replacement",
+          "hvac.evaporator_coil"
+        ],
+        "outside": [
+          "heat strip",
+          "line set",
+          "disconnect",
+          "equipment pad"
+        ],
+        "depositCents": 464250
+      }
+    },
+    {
+      "id": "tr-14",
+      "title": "Whole-house repipe: a three-line item, exclusions, work by others",
+      "trade": "plumbing",
+      "tags": [
+        "wrapped-lines",
+        "exclusions"
+      ],
+      "contractorName": "Blue Crane Plumbing",
+      "text": "Estimate - Blue Crane Plumbing - whole-house repipe, 2 bath 1 story slab\nMaterials and labor to repipe all hot and cold supply lines with Uponor PEX-A,\nhome-run manifold in garage, new 1/4-turn stops at every fixture, and new\nmain shut-off at entry ........................................................ $ 8,400.00\nReplace 3 hose bibs with frost-free sillcocks .................................. $   360.00\nAccess openings in drywall as required, patched to smooth (paint by others) .... $   950.00\nPressure test and city inspection .............................................. $   275.00\nPlumbing permit ................................................................ $   190.00\nTotal ........................................................................... $10,175.00\nExcludes: drain/waste lines, water heater, fixture replacement, painting",
+      "expect": {
+        "totalCents": 1017500,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 4,
+            "excerpt": "main shut-off at entry ........................................................ ",
+            "amountCents": 840000,
+            "kind": "work",
+            "components": [
+              "plumb.pipe_pex",
+              "plumb.supply_line",
+              "plumb.main_shutoff"
+            ],
+            "tolerated": [
+              "plumb.pipe_copper",
+              "gen.labor",
+              "gen.materials"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "Replace 3 hose bibs with frost-free sillcocks ..................................",
+            "amountCents": 36000,
+            "kind": "work",
+            "components": [
+              "plumb.hose_bib"
+            ]
+          },
+          {
+            "line": 6,
+            "excerpt": "Access openings in drywall as required, patched to smooth (paint by others) ....",
+            "amountCents": 95000,
+            "kind": "work",
+            "components": [
+              "gen.drywall"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "Pressure test and city inspection ..............................................",
+            "amountCents": 27500,
+            "kind": "work",
+            "components": [
+              "gen.inspection"
+            ],
+            "tolerated": [
+              "plumb.leak_detection"
+            ]
+          },
+          {
+            "line": 8,
+            "excerpt": "Plumbing permit ................................................................",
+            "amountCents": 19000,
+            "kind": "work",
+            "components": [
+              "gen.permit"
+            ]
+          }
+        ],
+        "proposes": [
+          "plumb.pipe_pex",
+          "plumb.supply_line",
+          "plumb.main_shutoff",
+          "plumb.hose_bib",
+          "gen.drywall",
+          "gen.inspection",
+          "gen.permit"
+        ],
+        "tolerated": [
+          "plumb.pipe_copper",
+          "gen.labor",
+          "gen.materials",
+          "plumb.leak_detection"
+        ],
+        "excludes": [
+          "plumb.drain_line",
+          "plumb.water_heater",
+          "gen.paint"
+        ]
+      }
+    },
+    {
+      "id": "tr-15",
+      "title": "Sewer line: inspection, jetting, a spot repair and a trenchless alternate",
+      "trade": "plumbing",
+      "tags": [
+        "options"
+      ],
+      "text": "ROOTER PROS  -  Sewer & Drain  -  24/7\nInvoice/Estimate 77102\nCamera inspection of main sewer line, 85 ft to city tap, with locate ....... $   295.00\nHydro-jet main line to clear root intrusion ................................ $   650.00\nSpot repair: excavate and replace 6 ft of clay pipe at 42 ft, SDR-35, backfill $ 3,850.00\nAlternate: CIPP liner, full length 85 ft, no dig ........................... $ 9,200.00\nDumpster and spoils haul-off ................................................ $   400.00\nTraffic control / sidewalk permit ........................................... $   325.00\nTOTAL (spot repair option) .................................................. $ 5,520.00",
+      "expect": {
+        "totalCents": 552000,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 3,
+            "excerpt": "Camera inspection of main sewer line, 85 ft to city tap, with locate ....... $  ",
+            "amountCents": 29500,
+            "kind": "work",
+            "components": [
+              "plumb.leak_detection"
+            ],
+            "tolerated": [
+              "plumb.sewer_line",
+              "gen.inspection"
+            ]
+          },
+          {
+            "line": 4,
+            "excerpt": "Hydro-jet main line to clear root intrusion ................................ $  ",
+            "amountCents": 65000,
+            "kind": "work",
+            "components": [
+              "plumb.sewer_line"
+            ],
+            "outside": [
+              "hydro jetting"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "Spot repair: excavate and replace 6 ft of clay pipe at 42 ft, SDR-35, backfill $",
+            "amountCents": 385000,
+            "kind": "work",
+            "components": [
+              "plumb.sewer_line"
+            ]
+          },
+          {
+            "line": 6,
+            "excerpt": "Alternate: CIPP liner, full length 85 ft, no dig ........................... $ 9",
+            "amountCents": 920000,
+            "kind": "alternate",
+            "components": []
+          },
+          {
+            "line": 7,
+            "excerpt": "Dumpster and spoils haul-off ................................................ $ ",
+            "amountCents": 40000,
+            "kind": "work",
+            "components": [
+              "gen.disposal"
+            ]
+          },
+          {
+            "line": 8,
+            "excerpt": "Traffic control / sidewalk permit ........................................... $ ",
+            "amountCents": 32500,
+            "kind": "work",
+            "components": [
+              "gen.permit"
+            ]
+          }
+        ],
+        "proposes": [
+          "plumb.leak_detection",
+          "plumb.sewer_line",
+          "gen.disposal",
+          "gen.permit"
+        ],
+        "tolerated": [
+          "gen.inspection"
+        ],
+        "outside": [
+          "hydro jetting"
+        ]
+      }
+    },
+    {
+      "id": "tr-16",
+      "title": "After-hours furnace repair: parts the taxonomy does not name",
+      "trade": "hvac",
+      "tags": [
+        "small-repair"
+      ],
+      "text": "Same-Day Furnace Service - Work Order 5521 - Sunday 7:40 pm\nAfter-hours diagnostic ............ $149.00\nReplace hot surface ignitor ....... $265.00\nClean flame sensor ................ $ 45.00\nReplace 16x25x1 filter ............ $ 18.00\nTotal ............................. $477.00\nPaid by card",
+      "expect": {
+        "totalCents": 47700,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 2,
+            "excerpt": "After-hours diagnostic ............ $149.00",
+            "amountCents": 14900,
+            "kind": "work",
+            "components": [
+              "gen.emergency_callout"
+            ],
+            "tolerated": [
+              "gen.trip_charge",
+              "gen.inspection"
+            ]
+          },
+          {
+            "line": 3,
+            "excerpt": "Replace hot surface ignitor ....... $265.00",
+            "amountCents": 26500,
+            "kind": "work",
+            "components": [],
+            "tolerated": [
+              "hvac.furnace"
+            ],
+            "outside": [
+              "ignitor"
+            ]
+          },
+          {
+            "line": 4,
+            "excerpt": "Clean flame sensor ................ $ 45.00",
+            "amountCents": 4500,
+            "kind": "work",
+            "components": [],
+            "tolerated": [
+              "hvac.furnace"
+            ],
+            "outside": [
+              "flame sensor"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "Replace 16x25x1 filter ............ $ 18.00",
+            "amountCents": 1800,
+            "kind": "work",
+            "components": [
+              "hvac.filter"
+            ]
+          }
+        ],
+        "proposes": [
+          "gen.emergency_callout",
+          "hvac.filter"
+        ],
+        "tolerated": [
+          "gen.trip_charge",
+          "gen.inspection",
+          "hvac.furnace"
+        ],
+        "outside": [
+          "ignitor",
+          "flame sensor"
+        ]
+      }
+    },
+    {
+      "id": "tr-17",
+      "title": "Gutter specialist: quantities, unit rates and a product the taxonomy lacks",
+      "trade": "roofing",
+      "tags": [
+        "software-table",
+        "unit-rates"
+      ],
+      "text": "GutterWorks NW - Quote\nJob address: (on file)      Rep: T. Nguyen      Valid 30 days\n\n180 LF   6\" K-style seamless aluminum gutter, .032, color: musket brown   @ $9.50/LF   $1,710.00\n6 ea     3x4 downspouts with elbows and straps                            @ $95.00     $  570.00\n180 LF   Aluminum gutter guard, micro-mesh                                @ $12.00/LF  $2,160.00\n1 lot    Remove and dispose existing gutters                                            $  240.00\n1 lot    Re-nail loose fascia board, 2 sections                                         $  120.00\nTotal                                                                                  $4,800.00\nNo deposit. Net 10 days from completion. 20 year material warranty.",
+      "expect": {
+        "totalCents": 480000,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 4,
+            "excerpt": "180 LF   6\" K-style seamless aluminum gutter, .032, color: musket brown   @ $9.5",
+            "amountCents": 171000,
+            "kind": "work",
+            "components": [
+              "roof.gutter"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "6 ea     3x4 downspouts with elbows and straps                            @ $95.",
+            "amountCents": 57000,
+            "kind": "work",
+            "components": [
+              "roof.downspout"
+            ]
+          },
+          {
+            "line": 6,
+            "excerpt": "180 LF   Aluminum gutter guard, micro-mesh                                @ $12.",
+            "amountCents": 216000,
+            "kind": "work",
+            "components": [],
+            "tolerated": [
+              "roof.gutter"
+            ],
+            "outside": [
+              "gutter guard"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "1 lot    Remove and dispose existing gutters                                    ",
+            "amountCents": 24000,
+            "kind": "work",
+            "components": [
+              "roof.gutter",
+              "gen.disposal"
+            ]
+          },
+          {
+            "line": 8,
+            "excerpt": "1 lot    Re-nail loose fascia board, 2 sections                                 ",
+            "amountCents": 12000,
+            "kind": "work",
+            "components": [
+              "roof.fascia"
+            ]
+          }
+        ],
+        "proposes": [
+          "roof.gutter",
+          "roof.downspout",
+          "gen.disposal",
+          "roof.fascia"
+        ],
+        "tolerated": [
+          "gen.warranty"
+        ],
+        "outside": [
+          "gutter guard"
+        ]
+      }
+    },
+    {
+      "id": "tr-18",
+      "title": "Window and door proposal: furnish-and-install phrasing, wrapped item",
+      "trade": "general",
+      "tags": [
+        "wrapped-lines",
+        "brand-model"
+      ],
+      "contractorName": "ClearView Windows & Doors",
+      "text": "ClearView Windows & Doors - Proposal #A-2210\nFurnish and install eight (8) Milgard Tuscany vinyl double-hung windows, low-E, argon,\nwhite, retrofit (Z-bar) installation, exterior trim caulked, interior stops re-set    $ 6,960.00\nF&I one (1) sliding patio door, 6068, low-E                                            $ 2,150.00\nHaul away old units                                                                    $   150.00\nTotal price                                                                            $ 9,260.00\nTerms: 1/3 deposit, 1/3 at delivery, 1/3 upon completion.\nLifetime warranty on frames and glass; 2 years labor.",
+      "expect": {
+        "totalCents": 926000,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 3,
+            "excerpt": "white, retrofit (Z-bar) installation, exterior trim caulked, interior stops re-s",
+            "amountCents": 696000,
+            "kind": "work",
+            "components": [
+              "gen.window"
+            ],
+            "tolerated": [
+              "gen.trim"
+            ]
+          },
+          {
+            "line": 4,
+            "excerpt": "F&I one (1) sliding patio door, 6068, low-E                                     ",
+            "amountCents": 215000,
+            "kind": "work",
+            "components": [
+              "gen.door"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "Haul away old units                                                             ",
+            "amountCents": 15000,
+            "kind": "work",
+            "components": [
+              "gen.disposal"
+            ]
+          }
+        ],
+        "proposes": [
+          "gen.window",
+          "gen.door",
+          "gen.disposal"
+        ],
+        "tolerated": [
+          "gen.trim",
+          "gen.warranty",
+          "gen.labor"
+        ]
+      }
+    },
+    {
+      "id": "tr-19",
+      "title": "A change order: additions, a credit in parentheses, a revised contract total",
+      "trade": "roofing",
+      "tags": [
+        "change-order",
+        "credit"
+      ],
+      "contractorName": "Summit Ridge Roofing",
+      "text": "CHANGE ORDER #2  -  Contract 2026-114  -  Summit Ridge Roofing LLC\nReason: rotted decking found under tear-off, NE slope, beyond the 4-sheet allowance in the contract.\nDescription                                                        Qty     Amount\nAdditional 1/2\" CDX plywood sheets, installed                       9      $ 765.00\nSister 2 rafter tails at eave, NE corner                            2      $ 340.00\nCredit: unused ice & water shield allowance                        -1     ($ 60.00)\nChange order total                                                         $1,045.00\nRevised contract total                                                     $10,128.00\nApproved by: ____________   Date: ________",
+      "expect": {
+        "totalCents": 104500,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 4,
+            "excerpt": "Additional 1/2\" CDX plywood sheets, installed                       9      $ 765",
+            "amountCents": 76500,
+            "kind": "work",
+            "components": [
+              "roof.decking"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "Sister 2 rafter tails at eave, NE corner                            2      $ 340",
+            "amountCents": 34000,
+            "kind": "work",
+            "components": [
+              "roof.rafters"
+            ],
+            "tolerated": [
+              "gen.framing"
+            ]
+          },
+          {
+            "line": 6,
+            "excerpt": "Credit: unused ice & water shield allowance                        -1     ($ 60.",
+            "amountCents": -6000,
+            "kind": "credit",
+            "components": []
+          }
+        ],
+        "proposes": [
+          "roof.decking",
+          "roof.rafters"
+        ],
+        "tolerated": [
+          "gen.framing"
+        ]
+      }
+    },
+    {
+      "id": "tr-20",
+      "title": "A signed agreement: the whole scope in one sentence, the price in words and figures",
+      "trade": "roofing",
+      "tags": [
+        "prose",
+        "contract",
+        "lump-sum"
+      ],
+      "contractorName": "Tidewater Roofing",
+      "text": "AGREEMENT\nContractor: Tidewater Roofing, Inc.     Owner: (name withheld)\nThe Contractor agrees to furnish all labor, materials, equipment and services necessary to\nremove the existing roof covering down to the deck, replace damaged sheathing not to exceed\nthree (3) sheets, install synthetic underlayment, ice and water shield at all eaves, valleys\nand penetrations, new drip edge, new pipe boots, and install GAF Timberline HDZ shingles\nwith ridge vent, for the total sum of Twelve Thousand Four Hundred Dollars ($12,400.00).\nA deposit of $3,000.00 is due at signing; the balance is due upon substantial completion.\nContractor warrants workmanship for ten (10) years.",
+      "expect": {
+        "totalCents": 1240000,
+        "itemisation": "LUMP_SUM",
+        "lines": [],
+        "proposes": [
+          "roof.tearoff",
+          "roof.decking",
+          "roof.underlayment",
+          "roof.drip_edge",
+          "roof.pipe_boot",
+          "roof.shingles",
+          "roof.ridge_vent"
+        ],
+        "tolerated": [
+          "roof.full_replacement",
+          "gen.labor",
+          "gen.materials",
+          "gen.warranty",
+          "roof.valley_flashing"
+        ],
+        "depositCents": 300000
+      }
+    },
+    {
+      "id": "tr-21",
+      "title": "Attic mold remediation after a roof leak, with a third-party clearance test",
+      "trade": "general",
+      "tags": [
+        "specialist"
+      ],
+      "text": "Estimate - PureAir Environmental - mold remediation, attic, ~120 sq ft affected\nContainment and negative air, HEPA filtration for duration of job         $   450.00\nHEPA vacuum and antimicrobial treatment of rafters and sheathing, 120 sf  $   780.00\nRemove and bag contaminated blown-in insulation, 120 sf, dispose          $   520.00\nEncapsulant coating on treated wood                                        $   310.00\nPost-remediation clearance test by third-party IH                         $   350.00\nRe-insulate: blown-in cellulose to R-38, 120 sf (after roof repair by others) $ 390.00\nTotal                                                                      $ 2,800.00",
+      "expect": {
+        "totalCents": 280000,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 2,
+            "excerpt": "Containment and negative air, HEPA filtration for duration of job         $   45",
+            "amountCents": 45000,
+            "kind": "work",
+            "components": [
+              "gen.mold_remediation"
+            ],
+            "tolerated": [
+              "gen.protection",
+              "hvac.filter"
+            ]
+          },
+          {
+            "line": 3,
+            "excerpt": "HEPA vacuum and antimicrobial treatment of rafters and sheathing, 120 sf  $   78",
+            "amountCents": 78000,
+            "kind": "work",
+            "components": [
+              "gen.mold_remediation"
+            ],
+            "tolerated": [
+              "roof.rafters",
+              "roof.decking"
+            ]
+          },
+          {
+            "line": 4,
+            "excerpt": "Remove and bag contaminated blown-in insulation, 120 sf, dispose          $   52",
+            "amountCents": 52000,
+            "kind": "work",
+            "components": [
+              "gen.insulation",
+              "gen.disposal"
+            ],
+            "tolerated": [
+              "gen.mold_remediation"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "Encapsulant coating on treated wood                                        $   3",
+            "amountCents": 31000,
+            "kind": "work",
+            "components": [
+              "gen.mold_remediation"
+            ],
+            "outside": [
+              "encapsulant"
+            ]
+          },
+          {
+            "line": 6,
+            "excerpt": "Post-remediation clearance test by third-party IH                         $   35",
+            "amountCents": 35000,
+            "kind": "work",
+            "components": [
+              "gen.inspection"
+            ],
+            "tolerated": [
+              "gen.mold_remediation"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "Re-insulate: blown-in cellulose to R-38, 120 sf (after roof repair by others) $ ",
+            "amountCents": 39000,
+            "kind": "work",
+            "components": [
+              "gen.insulation"
+            ]
+          }
+        ],
+        "proposes": [
+          "gen.mold_remediation",
+          "gen.insulation",
+          "gen.disposal",
+          "gen.inspection"
+        ],
+        "tolerated": [
+          "gen.protection",
+          "roof.rafters",
+          "roof.decking",
+          "hvac.filter"
+        ],
+        "outside": [
+          "encapsulant"
+        ],
+        "excludes": [
+          "roof.full_replacement",
+          "roof.shingles"
+        ]
+      }
+    },
+    {
+      "id": "tr-22",
+      "title": "EV charger circuit: amounts without cents, a note that negates a service upgrade",
+      "trade": "electrical",
+      "tags": [
+        "wrapped-lines",
+        "notes"
+      ],
+      "text": "VoltHouse Electric - Estimate\nInstall 60A circuit for Tesla Wall Connector: 6/3 NM-B from panel to garage,\napprox. 45 ft, 2-pole 60A breaker, wall connector mounted and commissioned (charger supplied by customer)   $1,150\nLoad calculation and permit (city)   $210\nInstall 2 LED shop lights in garage on existing switch   $260\nTotal $1,620\nNote: panel has 4 open spaces, no service upgrade needed.",
+      "expect": {
+        "totalCents": 162000,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 3,
+            "excerpt": "approx. 45 ft, 2-pole 60A breaker, wall connector mounted and commissioned (char",
+            "amountCents": 115000,
+            "kind": "work",
+            "components": [
+              "elec.ev_charger",
+              "elec.wiring",
+              "elec.breaker"
+            ]
+          },
+          {
+            "line": 4,
+            "excerpt": "Load calculation and permit (city)   $210",
+            "amountCents": 21000,
+            "kind": "work",
+            "components": [
+              "gen.permit"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "Install 2 LED shop lights in garage on existing switch   $260",
+            "amountCents": 26000,
+            "kind": "work",
+            "components": [
+              "elec.fixture"
+            ],
+            "tolerated": [
+              "elec.switch"
+            ]
+          }
+        ],
+        "proposes": [
+          "elec.ev_charger",
+          "elec.wiring",
+          "elec.breaker",
+          "gen.permit",
+          "elec.fixture"
+        ],
+        "tolerated": [
+          "elec.switch",
+          "elec.panel"
+        ],
+        "excludes": [
+          "elec.service_upgrade"
+        ]
+      }
+    },
+    {
+      "id": "tr-23",
+      "title": "Bathroom renovation: every trade at once, half the work outside the taxonomy",
+      "trade": "general",
+      "tags": [
+        "mixed-trade",
+        "renovation"
+      ],
+      "text": "Bathroom Renovation Quote - Hallmark Home Improvements\nDemo existing tub, surround, vanity, toilet and floor tile; haul away        $ 1,100.00\nRough plumbing: relocate drain for new shower, new shower valve (Moen), supply stubs  $ 1,650.00\nElectrical: GFCI circuit for vanity, exhaust fan on timer, 4 recessed lights  $   980.00\nTile: 60 sq ft floor porcelain, 90 sq ft shower walls, waterproofing (Kerdi)   $ 3,900.00\nInstall customer-supplied vanity, top, faucet and toilet                        $   650.00\nFrameless glass shower door, supplied and installed                             $ 1,450.00\nDrywall repair, prime and paint, ceiling and walls                              $   720.00\nTotal                                                                           $10,450.00",
+      "expect": {
+        "totalCents": 1045000,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 2,
+            "excerpt": "Demo existing tub, surround, vanity, toilet and floor tile; haul away        $ 1",
+            "amountCents": 110000,
+            "kind": "work",
+            "components": [
+              "gen.disposal",
+              "plumb.toilet",
+              "gen.flooring"
+            ],
+            "outside": [
+              "tub",
+              "vanity"
+            ]
+          },
+          {
+            "line": 3,
+            "excerpt": "Rough plumbing: relocate drain for new shower, new shower valve (Moen), supply s",
+            "amountCents": 165000,
+            "kind": "work",
+            "components": [
+              "plumb.drain_line",
+              "plumb.shower_valve",
+              "plumb.supply_line"
+            ]
+          },
+          {
+            "line": 4,
+            "excerpt": "Electrical: GFCI circuit for vanity, exhaust fan on timer, 4 recessed lights  $ ",
+            "amountCents": 98000,
+            "kind": "work",
+            "components": [
+              "elec.gfci",
+              "elec.fixture"
+            ],
+            "tolerated": [
+              "elec.wiring",
+              "elec.outlet",
+              "elec.switch"
+            ],
+            "outside": [
+              "exhaust fan"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "Tile: 60 sq ft floor porcelain, 90 sq ft shower walls, waterproofing (Kerdi)   $",
+            "amountCents": 390000,
+            "kind": "work",
+            "components": [],
+            "tolerated": [
+              "gen.flooring"
+            ],
+            "outside": [
+              "tile",
+              "waterproofing membrane"
+            ]
+          },
+          {
+            "line": 6,
+            "excerpt": "Install customer-supplied vanity, top, faucet and toilet                        ",
+            "amountCents": 65000,
+            "kind": "work",
+            "components": [
+              "plumb.faucet",
+              "plumb.toilet"
+            ],
+            "outside": [
+              "vanity"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "Frameless glass shower door, supplied and installed                             ",
+            "amountCents": 145000,
+            "kind": "work",
+            "components": [],
+            "tolerated": [
+              "gen.door"
+            ],
+            "outside": [
+              "shower door"
+            ]
+          },
+          {
+            "line": 8,
+            "excerpt": "Drywall repair, prime and paint, ceiling and walls                              ",
+            "amountCents": 72000,
+            "kind": "work",
+            "components": [
+              "gen.drywall",
+              "gen.paint"
+            ]
+          }
+        ],
+        "proposes": [
+          "gen.disposal",
+          "plumb.toilet",
+          "gen.flooring",
+          "plumb.drain_line",
+          "plumb.shower_valve",
+          "plumb.supply_line",
+          "elec.gfci",
+          "elec.fixture",
+          "plumb.faucet",
+          "gen.drywall",
+          "gen.paint"
+        ],
+        "tolerated": [
+          "elec.wiring",
+          "elec.outlet",
+          "elec.switch",
+          "gen.door"
+        ],
+        "outside": [
+          "tub",
+          "vanity",
+          "exhaust fan",
+          "tile",
+          "waterproofing membrane",
+          "shower door"
+        ]
+      }
+    },
+    {
+      "id": "tr-24",
+      "title": "Tab-separated export: a discount and a tax line between subtotal and total",
+      "trade": "plumbing",
+      "tags": [
+        "software-table",
+        "tab-separated",
+        "credit",
+        "tax"
+      ],
+      "text": "Estimate\t#E-3391\tPipeline Plumbing Co.\nDescription\tQty\tRate\tTotal\nReplace kitchen sink drain assembly, P-trap and trap arm to wall\t1\t$285.00\t$285.00\nInstall new garbage disposal, InSinkErator Evolution 3/4 HP, customer-supplied\t1\t$225.00\t$225.00\nReplace angle stops (2) and supply lines to faucet\t1\t$140.00\t$140.00\nService call\t1\t$79.00\t$79.00\n\tSubtotal\t\t$729.00\n\tOnline booking discount\t\t-$50.00\n\tSales tax (materials)\t\t$12.40\n\tTotal\t\t$691.40",
+      "expect": {
+        "totalCents": 69140,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 3,
+            "excerpt": "Replace kitchen sink drain assembly, P-trap and trap arm to wall\t1\t$285.00\t$285.",
+            "amountCents": 28500,
+            "kind": "work",
+            "components": [
+              "plumb.p_trap",
+              "plumb.drain_line"
+            ],
+            "tolerated": [
+              "plumb.sink"
+            ]
+          },
+          {
+            "line": 4,
+            "excerpt": "Install new garbage disposal, InSinkErator Evolution 3/4 HP, customer-supplied\t1",
+            "amountCents": 22500,
+            "kind": "work",
+            "components": [
+              "plumb.garbage_disposal"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "Replace angle stops (2) and supply lines to faucet\t1\t$140.00\t$140.00",
+            "amountCents": 14000,
+            "kind": "work",
+            "components": [
+              "plumb.supply_line"
+            ],
+            "tolerated": [
+              "plumb.faucet",
+              "plumb.main_shutoff"
+            ],
+            "outside": [
+              "angle stop valves"
+            ]
+          },
+          {
+            "line": 6,
+            "excerpt": "Service call\t1\t$79.00\t$79.00",
+            "amountCents": 7900,
+            "kind": "work",
+            "components": [
+              "gen.trip_charge"
+            ]
+          },
+          {
+            "line": 8,
+            "excerpt": "Online booking discount\t\t-$50.00",
+            "amountCents": -5000,
+            "kind": "credit",
+            "components": []
+          },
+          {
+            "line": 9,
+            "excerpt": "Sales tax (materials)\t\t$12.40",
+            "amountCents": 1240,
+            "kind": "tax",
+            "components": []
+          }
+        ],
+        "proposes": [
+          "plumb.p_trap",
+          "plumb.drain_line",
+          "plumb.garbage_disposal",
+          "plumb.supply_line",
+          "gen.trip_charge"
+        ],
+        "tolerated": [
+          "plumb.sink",
+          "plumb.faucet",
+          "plumb.main_shutoff"
+        ],
+        "outside": [
+          "angle stop valves"
+        ]
+      }
+    },
+    {
+      "id": "tr-25",
+      "title": "Canadian metal roof estimate: eavestrough, downpipes, HST, a roofing system the taxonomy lacks",
+      "trade": "roofing",
+      "tags": [
+        "regional-canada",
+        "tax"
+      ],
+      "text": "MAPLE RIDGE EXTERIORS - Estimate - Halifax, NS\nStrip existing asphalt shingles, one layer, and dispose                       $ 1,900.00\nInstall 26 ga standing seam steel roofing, 22 squares, charcoal, incl. clips  $14,300.00\nSynthetic underlay and ice & water at eaves (3 ft) and valleys                 $ 1,150.00\nNew eavestrough, 5\" aluminum, 140 LF, and 4 downpipes                          $ 1,680.00\nReplace 2 plumbing stacks flashings (rubber to steel)                          $   380.00\nSnow guards, 2 rows above entries                                              $   640.00\nHST 15%                                                                        $ 3,007.50\nTotal                                                                          $23,057.50\nDeposit 25% on signing.",
+      "expect": {
+        "totalCents": 2305750,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 2,
+            "excerpt": "Strip existing asphalt shingles, one layer, and dispose                       $ ",
+            "amountCents": 190000,
+            "kind": "work",
+            "components": [
+              "roof.tearoff",
+              "gen.disposal"
+            ],
+            "tolerated": [
+              "roof.shingles"
+            ]
+          },
+          {
+            "line": 3,
+            "excerpt": "Install 26 ga standing seam steel roofing, 22 squares, charcoal, incl. clips  $1",
+            "amountCents": 1430000,
+            "kind": "work",
+            "components": [],
+            "tolerated": [
+              "roof.full_replacement"
+            ],
+            "outside": [
+              "standing seam metal roofing"
+            ]
+          },
+          {
+            "line": 4,
+            "excerpt": "Synthetic underlay and ice & water at eaves (3 ft) and valleys                 $",
+            "amountCents": 115000,
+            "kind": "work",
+            "components": [
+              "roof.underlayment"
+            ],
+            "tolerated": [
+              "roof.valley_flashing"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "New eavestrough, 5\" aluminum, 140 LF, and 4 downpipes                          $",
+            "amountCents": 168000,
+            "kind": "work",
+            "components": [
+              "roof.gutter",
+              "roof.downspout"
+            ]
+          },
+          {
+            "line": 6,
+            "excerpt": "Replace 2 plumbing stacks flashings (rubber to steel)                          $",
+            "amountCents": 38000,
+            "kind": "work",
+            "components": [
+              "roof.pipe_boot"
+            ],
+            "tolerated": [
+              "roof.flashing"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "Snow guards, 2 rows above entries                                              $",
+            "amountCents": 64000,
+            "kind": "work",
+            "components": [],
+            "outside": [
+              "snow guards"
+            ]
+          },
+          {
+            "line": 8,
+            "excerpt": "HST 15%                                                                        $",
+            "amountCents": 300750,
+            "kind": "tax",
+            "components": []
+          }
+        ],
+        "proposes": [
+          "roof.tearoff",
+          "gen.disposal",
+          "roof.underlayment",
+          "roof.gutter",
+          "roof.downspout",
+          "roof.pipe_boot"
+        ],
+        "tolerated": [
+          "roof.shingles",
+          "roof.full_replacement",
+          "roof.valley_flashing",
+          "roof.flashing"
+        ],
+        "outside": [
+          "standing seam metal roofing",
+          "snow guards"
+        ]
+      }
+    },
+    {
+      "id": "tr-26",
+      "title": "Australian switchboard upgrade: RCBOs, safety switches, a Form 4 certificate",
+      "trade": "electrical",
+      "tags": [
+        "regional-australia"
+      ],
+      "text": "SPARK CITY ELECTRICAL - Quote 4471 - Brisbane QLD - Lic 78912\nUpgrade switchboard: new enclosure, main switch, 8 x RCBO safety switches, surge protection   $1,480.00\nReplace 3 x ceiling fans (Hunter Pacific, supplied) and install 2 x new fan/light switches    $  690.00\nTest and tag, install 2 x smoke alarms, interconnected, photoelectric (QLD compliance)         $  420.00\nCertificate of testing and compliance (Form 4)                                                 $   80.00\nTotal inc GST                                                                                  $2,670.00",
+      "expect": {
+        "totalCents": 267000,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 2,
+            "excerpt": "Upgrade switchboard: new enclosure, main switch, 8 x RCBO safety switches, surge",
+            "amountCents": 148000,
+            "kind": "work",
+            "components": [
+              "elec.panel"
+            ],
+            "tolerated": [
+              "elec.breaker",
+              "elec.gfci",
+              "elec.afci",
+              "elec.switch"
+            ],
+            "outside": [
+              "surge protection device"
+            ]
+          },
+          {
+            "line": 3,
+            "excerpt": "Replace 3 x ceiling fans (Hunter Pacific, supplied) and install 2 x new fan/ligh",
+            "amountCents": 69000,
+            "kind": "work",
+            "components": [
+              "elec.ceiling_fan",
+              "elec.switch"
+            ],
+            "tolerated": [
+              "elec.fixture"
+            ]
+          },
+          {
+            "line": 4,
+            "excerpt": "Test and tag, install 2 x smoke alarms, interconnected, photoelectric (QLD compl",
+            "amountCents": 42000,
+            "kind": "work",
+            "components": [
+              "elec.smoke_detector"
+            ],
+            "tolerated": [
+              "gen.inspection"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "Certificate of testing and compliance (Form 4)                                  ",
+            "amountCents": 8000,
+            "kind": "work",
+            "components": [],
+            "tolerated": [
+              "gen.permit",
+              "gen.inspection"
+            ],
+            "outside": [
+              "compliance certificate"
+            ]
+          }
+        ],
+        "proposes": [
+          "elec.panel",
+          "elec.ceiling_fan",
+          "elec.switch",
+          "elec.smoke_detector"
+        ],
+        "tolerated": [
+          "elec.breaker",
+          "elec.gfci",
+          "elec.afci",
+          "elec.fixture",
+          "gen.inspection",
+          "gen.permit"
+        ],
+        "outside": [
+          "surge protection device",
+          "compliance certificate"
+        ]
+      }
+    },
+    {
+      "id": "tr-27",
+      "title": "A text message: two prices, one proposed, no document at all",
+      "trade": "hvac",
+      "tags": [
+        "prose",
+        "message",
+        "lump-sum",
+        "options"
+      ],
+      "text": "hey its Dave from D&L heating. so the heat exchanger is cracked, i showed you the scope pics. can't legally run it. new 80% furnace installed with new t-stat, permit, haul the old one, $4,200 even. or the 96% high efficiency is $5,600 but needs pvc venting out the side. need half to order. lmk",
+      "expect": {
+        "totalCents": 420000,
+        "itemisation": "LUMP_SUM",
+        "lines": [],
+        "proposes": [
+          "hvac.furnace",
+          "hvac.thermostat",
+          "gen.permit",
+          "gen.disposal"
+        ],
+        "tolerated": [
+          "hvac.heat_exchanger",
+          "hvac.flue",
+          "gen.inspection",
+          "hvac.system_replacement"
+        ]
+      }
+    },
+    {
+      "id": "tr-28",
+      "title": "Two-page detailed re-roof with section headers, per-square rates and a zero-priced line",
+      "trade": "roofing",
+      "tags": [
+        "section-headers",
+        "unit-rates",
+        "multi-page"
+      ],
+      "contractorName": "Cornerstone Roofing",
+      "text": "Page 1 of 2\nCORNERSTONE ROOFING - Detailed Estimate - Re-roof, 31 SQ, 7/12 pitch, 2 layers\nSECTION 1 - TEAR-OFF\n  Tear-off 2 layers, 31 SQ @ $95/SQ .......................... $ 2,945.00\n  Dumpster, 30 yd, incl. landfill fees ........................ $   650.00\nSECTION 2 - INSTALL\n  CertainTeed Landmark Pro, 31 SQ @ $265/SQ ................... $ 8,215.00\n  Starter strip and hip & ridge cap, 240 LF ................... $   720.00\n  Synthetic underlayment, 31 SQ ............................... $   930.00\n  Ice & water shield, eaves and valleys, 8 rolls .............. $   640.00\n  New pipe jacks (5), split boots at 2 electrical masts ....... $   275.00\n  Replace 3 box vents with ridge vent, 60 LF .................. $   540.00\n  Drip edge and rake metal, 2x4 white ......................... $   495.00\nPage 2 of 2\nSECTION 3 - OTHER\n  Rotten decking, 7/16 OSB, per sheet installed (allowance 6) . $   510.00\n  Replace skylight flashing kit, 1 ea ......................... $   380.00\n  Building permit ............................................. $   185.00\n  Magnetic nail sweep and cleanup ............................. $     0.00\nSubtotal .................................................... $16,485.00\nTotal ....................................................... $16,485.00\nPayment: 10% at contract, 40% at material delivery, 50% at completion.",
+      "expect": {
+        "totalCents": 1648500,
+        "itemisation": "ITEMISED",
+        "lines": [
+          {
+            "line": 4,
+            "excerpt": "Tear-off 2 layers, 31 SQ @ $95/SQ .......................... $ 2,945.00",
+            "amountCents": 294500,
+            "kind": "work",
+            "components": [
+              "roof.tearoff"
+            ]
+          },
+          {
+            "line": 5,
+            "excerpt": "Dumpster, 30 yd, incl. landfill fees ........................ $   650.00",
+            "amountCents": 65000,
+            "kind": "work",
+            "components": [
+              "gen.disposal"
+            ]
+          },
+          {
+            "line": 7,
+            "excerpt": "CertainTeed Landmark Pro, 31 SQ @ $265/SQ ................... $ 8,215.00",
+            "amountCents": 821500,
+            "kind": "work",
+            "components": [
+              "roof.shingles"
+            ]
+          },
+          {
+            "line": 8,
+            "excerpt": "Starter strip and hip & ridge cap, 240 LF ................... $   720.00",
+            "amountCents": 72000,
+            "kind": "work",
+            "components": [
+              "roof.starter",
+              "roof.ridge_vent"
+            ]
+          },
+          {
+            "line": 9,
+            "excerpt": "Synthetic underlayment, 31 SQ ............................... $   930.00",
+            "amountCents": 93000,
+            "kind": "work",
+            "components": [
+              "roof.underlayment"
+            ]
+          },
+          {
+            "line": 10,
+            "excerpt": "Ice & water shield, eaves and valleys, 8 rolls .............. $   640.00",
+            "amountCents": 64000,
+            "kind": "work",
+            "components": [
+              "roof.underlayment"
+            ],
+            "tolerated": [
+              "roof.valley_flashing"
+            ]
+          },
+          {
+            "line": 11,
+            "excerpt": "New pipe jacks (5), split boots at 2 electrical masts ....... $   275.00",
+            "amountCents": 27500,
+            "kind": "work",
+            "components": [
+              "roof.pipe_boot"
+            ]
+          },
+          {
+            "line": 12,
+            "excerpt": "Replace 3 box vents with ridge vent, 60 LF .................. $   540.00",
+            "amountCents": 54000,
+            "kind": "work",
+            "components": [
+              "roof.ridge_vent",
+              "roof.attic_ventilation"
+            ]
+          },
+          {
+            "line": 13,
+            "excerpt": "Drip edge and rake metal, 2x4 white ......................... $   495.00",
+            "amountCents": 49500,
+            "kind": "work",
+            "components": [
+              "roof.drip_edge"
+            ]
+          },
+          {
+            "line": 16,
+            "excerpt": "Rotten decking, 7/16 OSB, per sheet installed (allowance 6) . $   510.00",
+            "amountCents": 51000,
+            "kind": "work",
+            "components": [
+              "roof.decking"
+            ]
+          },
+          {
+            "line": 17,
+            "excerpt": "Replace skylight flashing kit, 1 ea ......................... $   380.00",
+            "amountCents": 38000,
+            "kind": "work",
+            "components": [
+              "roof.skylight",
+              "roof.flashing"
+            ]
+          },
+          {
+            "line": 18,
+            "excerpt": "Building permit ............................................. $   185.00",
+            "amountCents": 18500,
+            "kind": "work",
+            "components": [
+              "gen.permit"
+            ]
+          },
+          {
+            "line": 19,
+            "excerpt": "Magnetic nail sweep and cleanup ............................. $     0.00",
+            "amountCents": 0,
+            "kind": "work",
+            "components": [
+              "gen.cleanup"
+            ]
+          }
+        ],
+        "proposes": [
+          "roof.tearoff",
+          "gen.disposal",
+          "roof.shingles",
+          "roof.starter",
+          "roof.ridge_vent",
+          "roof.underlayment",
+          "roof.pipe_boot",
+          "roof.attic_ventilation",
+          "roof.drip_edge",
+          "roof.decking",
+          "roof.skylight",
+          "roof.flashing",
+          "gen.permit",
+          "gen.cleanup"
+        ],
+        "tolerated": [
+          "roof.valley_flashing",
+          "roof.full_replacement"
+        ]
+      }
+    }
+  ]
+}
