@@ -128,9 +128,8 @@ pnpm eval --transfer   # both sets, per document and per format
 pnpm eval --holdout    # the held-out set alone
 ```
 
-The three corpora above were written alongside the engine, so they measure
-regression discipline. These two measure transfer, and the order of the commits
-is the evidence:
+The three corpora above are the regression gate. These two measure transfer, and
+the order of the commits is the evidence:
 
 | set | estimates | labelled against | committed | then |
 |---|---|---|---|---|
