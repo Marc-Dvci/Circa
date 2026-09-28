@@ -1,9 +1,9 @@
 # AWS
 
-**DynamoDB and Bedrock run against AWS.** This document has the transcripts,
-the measurements, and the design decision each run settled. Textract and S3 are
-integrated through the SDK, and the CDK stack synthesises on a clean clone with
-its permission shape asserted in CI.
+**DynamoDB, Bedrock and S3 run against AWS.** This document has the transcripts,
+the measurements, and the design decision each run settled. Textract reads
+uploaded photos and PDFs through the same path, and the CDK stack synthesises on
+a clean clone with its permission shape asserted in CI.
 
 ---
 
@@ -126,11 +126,49 @@ the console now leads with. `CIRCA_BEDROCK_ENDPOINT` selects it;
 without it, `InvokeModel` through the SDK as before, and the CDK task role still
 scopes that to one model ARN.
 
-## Textract and S3
+## What was actually run: S3, 2026-09-28
 
-Both are integrated through the SDK: `DetectDocumentText` for a photographed
-estimate, and `GetObject` by key under the upload prefix. `docs/PRODUCT_FEEDBACK.md`
-covers what building them taught.
+The demo's payoff, with the itemised re-quote arriving as an upload rather than
+typed text. `pnpm upload:check` puts the document in a real bucket under the
+user's upload prefix, then drives the MCP server over the SDK's own client on a
+real socket: `add_quote` receives only the object key, the server reads the
+object back from S3, and the same parser as the typed path itemises it.
+
+```
+$ CIRCA_BUCKET=circa-documents-416964654816 AWS_REGION=us-east-1 pnpm upload:check
+
+CIRCA: an uploaded quote, through S3
+
+  bucket                    circa-documents-416964654816
+  protocol                  2025-11-25
+  s3 PutObject              uploads/user_demo/79c5a388-ff58-4626-a452-2f953a68853d.txt (0 KB, 409 ms)
+  add_quote from the upload 137 ms (S3 GetObject + parser)
+    it said                 "Added Apex Exteriors at $6,500, itemised across 5 lines. [...]"
+  compare_quotes            4 ms
+    it said                 "[...] Of the $4,650 gap, $4,030 is work one includes and the
+                             other does not, and $420 is the same work at a different price.
+                             $200 is not accounted for by either, and all of it sits on one
+                             line I could not classify: "Seal penetrations". [...]"
+  same answer as typed text yes
+  another user's key        refused: "I could not do that: I can only read documents you uploaded yourself"
+```
+
+The same decomposition, figure for figure, from an object read back out of S3.
+The script exits non-zero if any of the four figures is missing or if the
+foreign key is accepted.
+
+**The refusal happens before S3 is asked.** The task role may read `uploads/*`,
+which is every household, because a role cannot be scoped to the user of the
+request. The check that a key sits under the requesting user's own prefix is
+therefore `packages/documents/src/s3.ts`'s job, and `tests/uploads.test.ts`
+counts requests on the S3 double to show that a foreign key, a `..` key and a
+bare prefix are refused with zero requests sent.
+
+With `CIRCA_TEXTRACT=1`, the upload is `fixtures/documents/apex-revised-estimate-4471.png`,
+a photo of the same re-quote, and `DetectDocumentText` reads it on the way to the
+same parser. `tests/uploads.test.ts` runs that route through the MCP server
+against a Textract double that answers in `DetectDocumentText`'s LINE-block shape,
+and asserts the same four figures.
 
 ## What the Bedrock SDK path returned, before the endpoint was found
 
@@ -249,9 +287,19 @@ nothing about what CIRCA concludes.
 
 ### Amazon S3, for uploaded documents
 
-The SDK is a dependency and the bucket is in the stack: encrypted, public access
-blocked, versioned, uploads expiring after 90 days. The running server reads one
-object at a time by key.
+`packages/documents/src/s3.ts`. `PutObject` under `uploads/<user>/` with a random
+key, `GetObject` by key, and no listing anywhere. `add_quote` takes a
+`documentKey` in place of `text` when a bucket is configured, and the parameter
+does not exist when one is not, so the model is never offered an input the
+server cannot honour.
+
+```bash
+CIRCA_BUCKET=<bucket> pnpm mcp
+```
+
+The bucket in the stack is encrypted, public access blocked, versioned, and
+expires uploads after 90 days. The bucket the run above used carries the same
+settings.
 
 ---
 

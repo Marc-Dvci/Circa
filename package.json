@@ -21,6 +21,7 @@
     "demo": "tsx tools/demo/src/run.ts",
     "tour": "tsx tools/demo/src/run.ts --tour",
     "check": "tsx tools/demo/src/doctor.ts",
+    "upload:check": "tsx tools/demo/src/upload.ts",
     "cdk:synth": "tsx infrastructure/cdk/app.ts",
     "docs:demo": "tsx tools/demo/src/docgen.ts",
     "simulator:dev": "vite --config apps/simulator/vite.config.ts",

@@ -125,7 +125,7 @@ Detection may miss; containment must be zero, and is.
 
 ```bash
 pnpm bench     # 360 calls over the wire: slowest tool 6.2 ms at p95, budget 500 ms
-pnpm verify    # typecheck, 114 tests, the three corpora and both transfer sets
+pnpm verify    # typecheck, 121 tests, the three corpora and both transfer sets
 pnpm check    # what is actually live here
 ```
 
@@ -162,7 +162,7 @@ ship inverted with a green suite.
 | [`docs/MODEL.md`](MODEL.md) | The seven policy numbers in the product and the reason for each. Everything else is counted or compared. |
 | [`docs/EVAL.md`](EVAL.md) | The corpora, and the seven defects they found in code that 38 passing unit tests already covered. |
 | [`docs/THREAT_MODEL.md`](THREAT_MODEL.md) | A contractor's own document is the attacker-controlled channel. Four things stop it, and the detector is last. |
-| [`docs/FRICTION_LOG.md`](FRICTION_LOG.md) | Eight entries. Every documented behaviour re-read on the live page before it was written down. |
+| [`docs/FRICTION_LOG.md`](FRICTION_LOG.md) | Seven entries. Every documented behaviour re-read on the live page before it was written down. |
 | [`docs/AWS.md`](AWS.md) | Four integrations, none deployed, and exactly why. |
 | [`docs/MCP.md`](MCP.md) | The 16 tools, the 6 views, and the SEP-1865 wire in both directions. |
 
@@ -184,7 +184,7 @@ and then gives the checklist. Thirteen forbidden language patterns are enforced
 by a function that throws, and every rule statement and spoken sentence passes
 through it.
 
-**Nothing is deployed to AWS.** The credentials on the build machine resolve
-through the SDK's provider chain and are refused by STS with
-`InvalidClientTokenId`. Every AWS path is written, typed against the vendor SDKs,
-tested against enforcing doubles, and off by default.
+**DynamoDB, Bedrock and S3 have run against AWS**, with the transcripts in
+`docs/AWS.md`. Every AWS path is typed against the vendor SDK, tested against an
+enforcing double in CI, and off by default, so a clean clone runs the whole
+product with no account.

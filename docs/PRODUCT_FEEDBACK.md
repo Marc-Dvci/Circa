@@ -59,49 +59,29 @@ entire product into one place that decides what a result says.
 
 ---
 
-## The Alexa+ MCP Toolkit: the CLI, the Local Inspector and the Web Simulator
+## The Alexa+ add-on manifest
 
-**Not used, and the reason is the first thing worth reporting.**
+**Used for:** `addon-package/addon.json`, the manifest that registers CIRCA as an
+Alexa+ add-on, written against the schema reference in the
+[MCP QuickStart Guide](https://developer.amazon.com/docs/alexaplus/add-ons/mcp-toolkit-quickstart.html).
+`tests/addon.test.ts` asserts the nesting, the six icon sizes, the 600x900
+carousel image and every documented character limit, so the manifest is checked
+on every push.
 
-The [MCP QuickStart Guide](https://developer.amazon.com/docs/alexaplus/add-ons/mcp-toolkit-quickstart.html)
-opens with "**Step 1. Download and install CLI and authenticate**", and that
-heading is the whole of the install instructions. There is no download link, no
-package name, no `npm i -g`, no `brew install`, no installer, and no link
-anywhere else on the page. The next line is `alexa-ai configure`, which is what
-you run *after* the step the page does not describe.
+**What worked well.** The schema reference is good: it gives the nesting, every
+character limit, the required icon sizes and the endpoint `type`. Writing to it
+took twenty minutes and produced a document a test can check.
 
-The obvious guess is worse than no guess: `alexa-ai` on the public npm registry
-is an unrelated third-party package — a WhatsApp chatbot at version 2.5.0,
-published by someone with no connection to Amazon. A developer following the
-quickstart, hitting a missing step, and doing the natural thing installs a
-stranger's package globally. That is a supply-chain hazard created by a missing
-sentence, and it is the single highest-value fix on this page.
-
-So the toolkit is absent from this project, and everything it would have done was
-done by hand instead:
-
-| toolkit | what CIRCA did instead |
-|---|---|
-| `alexa-ai new mcp` scaffolds `addon-package/addon.json` | `addon-package/addon.json` written against the schema reference on the quickstart page, with `tests/addon.test.ts` asserting the nesting, the six icon sizes, the 600x900 carousel image and every documented character limit |
-| Local Inspector | `tests/mcp-conformance.test.ts` drives the SDK's own client over Streamable HTTP on a real socket, and `tests/mcp-apps.test.ts` runs the view and the host against each other in a DOM |
-| Web Simulator | `apps/simulator`, a host rather than a mock: it holds no product knowledge and draws only what arrives in a tool result |
-
-**What I can say about the manifest without the CLI.** The schema reference is
-good: it gives the nesting, every character limit, the required icon sizes and
-the endpoint `type`. Writing to it by hand took twenty minutes and produced a
-document a test can check. Two things would have saved time. The field
-constraints table lists `mediaAssets.icons.light` as "All 6 sizes required:
-72x72, 64x64, 88x88, 126x126, 180x180, 241x241" — an order that is neither
-ascending nor a dimension anyone would guess, so it has to be copied exactly and
-there is no schema file to copy it from. And nothing states whether the media
-URIs must already resolve at submission time or whether they are fetched at
+**What needs work.** The field constraints table lists `mediaAssets.icons.light`
+as "All 6 sizes required: 72x72, 64x64, 88x88, 126x126, 180x180, 241x241", an
+order that is neither ascending nor a dimension anyone would guess, so it has to
+be copied exactly and there is no schema file to copy it from. Nothing states
+whether the media URIs must already resolve at submission time or are fetched at
 certification, which decides whether a repository can host them.
 
-**What I would want most, after an install link.** A published JSON Schema for
-`addon.json`, and `alexa-ai validate` as a command that runs without
-authenticating. Both of those are things a project can put in CI; `deploy` and
-`submit` are not, and a toolkit whose only offline verb is `new` leaves a
-manifest unchecked until the first upload.
+**What I would want most.** A published JSON Schema for `addon.json`, and an
+offline `validate` command that runs without authenticating. Both are things a
+project can put in CI, so a manifest is checked long before its first upload.
 
 ---
 
@@ -211,11 +191,13 @@ remaining questions were about product rather than protocol.
 
 Four, all off by default, all behind an opt-in flag.
 
-**DynamoDB and Bedrock run against AWS.** DynamoDB held a real case in a real
-table on 2026-09-17, and a model on Bedrock rephrased the comparison answer three
-times through the product's own guard; the transcripts and the latencies are in
-`docs/AWS.md`. The Textract and S3 entries come from building those integrations
-against the SDK types and the API documentation.
+**DynamoDB, Bedrock and S3 run against AWS.** DynamoDB held a real case in a
+real table on 2026-09-17, a model on Bedrock rephrased the comparison answer
+three times through the product's own guard, and on 2026-09-28 the demo's
+itemised quote went into a real bucket and came back out through `add_quote` to
+the same comparison, figure for figure. The transcripts and the latencies are in
+`docs/AWS.md`. The Textract entry comes from building that integration against
+the SDK types and the API documentation.
 
 ### Amazon DynamoDB (`@aws-sdk/client-dynamodb`, `@aws-sdk/lib-dynamodb`)
 
@@ -352,10 +334,20 @@ transport noticed, is the discipline paying for itself.
 
 ### Amazon S3 (`@aws-sdk/client-s3`)
 
-**Used for:** uploaded document images, read one object at a time by key.
+**Used for:** uploaded quotes, put under the user's own prefix with a random key
+and read back one object at a time by key, never listed.
 
 **What worked well.** Nothing surprising, which is the correct outcome for this
-service.
+service. From Europe to `us-east-1`, a `PutObject` took 409 ms and `add_quote`
+reading the object back and parsing it took 137 ms end to end.
+
+**What needs work.** A task role cannot be scoped to the user of the request, so
+a server holding `s3:GetObject` on `uploads/*` can read every household's
+uploads, and the check that a key belongs to the person asking has to live in
+application code. CIRCA does it in `packages/documents/src/s3.ts` and tests that a
+foreign key is refused with zero requests sent. A short documented pattern for
+per-user prefixes behind a shared service role would help every multi-tenant
+integration get this right the first time.
 
 **Would I build with it again.** Yes.
 

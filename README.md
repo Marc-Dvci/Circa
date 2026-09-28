@@ -66,7 +66,7 @@ two sides negotiated, so it can be read rather than taken on trust.
 Everything else:
 
 ```bash
-pnpm verify        # typecheck, 114 tests, three evaluation corpora, two transfer sets
+pnpm verify        # typecheck, 121 tests, three evaluation corpora, two transfer sets
 pnpm eval          # the corpora on their own, with the metrics below
 pnpm bench         # latency per tool against the 500 ms Alexa+ budget
 pnpm check         # what is actually live here: store, credentials, optional paths
@@ -130,7 +130,7 @@ Every number below comes from a command in this repository.
 
 | | | how |
 |---|---|---|
-| tests | 114 | `pnpm test` |
+| tests | 121 | `pnpm test` |
 | typecheck | clean | `pnpm typecheck` |
 | protocol negotiated | **2025-11-25** | `tests/mcp-conformance.test.ts`, a real SDK client on a real socket |
 | MCP tools | 16 | `pnpm eval`, `/health` |
@@ -222,9 +222,9 @@ caller that would notice if it stopped being true: `pnpm circa` reaches the same
 | [`docs/THREAT_MODEL.md`](docs/THREAT_MODEL.md) | Prompt injection through a contractor's document, and what stops it |
 | [`docs/AUTH.md`](docs/AUTH.md) | Account linking: OAuth 2.1, PKCE S256, and one deliberate RFC deviation |
 | [`docs/PRIVACY.md`](docs/PRIVACY.md) | What is stored, for how long, and how to delete it |
-| [`docs/AWS.md`](docs/AWS.md) | Bedrock, Textract, DynamoDB, S3, CDK, and why nothing is deployed |
+| [`docs/AWS.md`](docs/AWS.md) | DynamoDB, Bedrock and S3 run against AWS, Textract, and the CDK stack |
 | [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) | The video, beat by beat, generated from the script the demo runs |
-| [`docs/FRICTION_LOG.md`](docs/FRICTION_LOG.md) | Eight entries against Alexa+, MCP, MCP Apps, the Alexa+ toolkit and AWS |
+| [`docs/FRICTION_LOG.md`](docs/FRICTION_LOG.md) | Seven entries against Alexa+, MCP, MCP Apps and AWS |
 | [`docs/PRODUCT_FEEDBACK.md`](docs/PRODUCT_FEEDBACK.md) | Every tool, API and SDK used, and whether I would build with it again |
 | [`docs/JUDGE.md`](docs/JUDGE.md) | Five minutes, in order |
 | [`docs/TERMS.md`](docs/TERMS.md) | Terms of use, referenced by the add-on manifest |

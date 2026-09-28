@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { isolate, type IsolatedDocument } from "./isolate.js";
+import type { S3Uploads } from "./s3.js";
 
 /**
  * Getting text out of a document.
@@ -124,8 +125,35 @@ export async function ingestFile(
   mediaType: IsolatedDocument["mediaType"] = "text/plain",
   env: NodeJS.ProcessEnv = process.env,
 ): Promise<IsolatedDocument> {
-  const bytes = await readFile(path);
-  const extractor = await chooseExtractor(mediaType, env);
+  return ingestBytes(await readFile(path), sourceLabel, mediaType, env);
+}
+
+/**
+ * An uploaded document, read from S3 by key and extracted.
+ *
+ * The same route as a local file from the bytes onwards, so a photographed
+ * quote and a typed one reach the parser through one function.
+ */
+export async function ingestUpload(
+  uploads: S3Uploads,
+  userId: string,
+  key: string,
+  sourceLabel: string,
+  env: NodeJS.ProcessEnv = process.env,
+  extractor?: DocumentExtractor,
+): Promise<IsolatedDocument> {
+  const upload = await uploads.read(userId, key);
+  return ingestBytes(upload.bytes, sourceLabel, upload.mediaType, env, extractor);
+}
+
+export async function ingestBytes(
+  bytes: Uint8Array,
+  sourceLabel: string,
+  mediaType: IsolatedDocument["mediaType"] = "text/plain",
+  env: NodeJS.ProcessEnv = process.env,
+  chosen?: DocumentExtractor,
+): Promise<IsolatedDocument> {
+  const extractor = chosen ?? (await chooseExtractor(mediaType, env));
   const result = await extractor.extract(bytes, mediaType);
   return isolate({
     sourceLabel,

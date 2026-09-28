@@ -16,6 +16,7 @@ import {
 } from "#agent";
 import { DemoProviderRepository } from "#providers";
 import { describeAnswers } from "#store";
+import { ingestUpload } from "#documents";
 import type { ServerContext } from "./context.js";
 
 /**
@@ -378,10 +379,24 @@ export function registerTools(server: McpServer, context: ServerContext): void {
     {
       title: "Add a written quote",
       description:
-        "Add the text of a written quote or estimate to the case. The text is parsed into line items, amounts, exclusions and a total by code, never by a language model, because everything downstream treats the parsed result as fact.",
+        context.uploads
+          ? "Add a written quote or estimate to the case, as text or as the key of a photo or PDF the customer uploaded. A photo is read with Amazon Textract; either way the text is parsed into line items, amounts, exclusions and a total by code, never by a language model, because everything downstream treats the parsed result as fact."
+          : "Add the text of a written quote or estimate to the case. The text is parsed into line items, amounts, exclusions and a total by code, never by a language model, because everything downstream treats the parsed result as fact.",
       inputSchema: {
         caseId: z.string(),
-        text: z.string().min(10).describe("The quote as written, including line items and amounts."),
+        ...(context.uploads
+          ? {
+              text: z
+                .string()
+                .min(10)
+                .optional()
+                .describe("The quote as written, including line items and amounts. Give this or documentKey."),
+              documentKey: z
+                .string()
+                .optional()
+                .describe("The key of a photo or PDF of the quote the customer uploaded. Give this or text."),
+            }
+          : { text: z.string().min(10).describe("The quote as written, including line items and amounts.") }),
         contractorName: z.string().optional(),
         source: z
           .enum(["CONTRACTOR", "SECOND_OPINION", "MARKETPLACE"])
@@ -393,12 +408,38 @@ export function registerTools(server: McpServer, context: ServerContext): void {
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
       _meta: { ui: { resourceUri: "ui://circa/verification" } },
     },
-    timed("add_quote", async ({ caseId, text, contractorName, source, requestId }) => {
+    timed("add_quote", async (args: {
+      caseId: string;
+      text?: string;
+      documentKey?: string;
+      contractorName?: string;
+      source?: "CONTRACTOR" | "SECOND_OPINION" | "MARKETPLACE";
+      requestId?: string;
+    }) => {
+      const { caseId, documentKey, contractorName, source, requestId } = args;
+      let text = args.text;
+      let documentId: string | undefined;
+      if (documentKey !== undefined) {
+        if (!context.uploads) throw new Error("this add-on does not accept uploaded documents");
+        if (text !== undefined) throw new Error("give the quote as text or as an upload, not both");
+        const document = await ingestUpload(
+          context.uploads,
+          context.userId,
+          documentKey,
+          contractorName ?? "Uploaded quote",
+          process.env,
+          context.extractor,
+        );
+        text = document.untrustedText;
+        documentId = document.id;
+      }
+      if (text === undefined) throw new Error("I need the quote, as text or as an uploaded photo");
       const quote = await service.addQuote({
         caseId,
         text,
         source: source ?? "SECOND_OPINION",
         ...(contractorName ? { contractorName } : {}),
+        ...(documentId ? { documentId } : {}),
         ...(requestId ? { requestId } : {}),
       });
       const snap = await snapshot(caseId);

@@ -50,11 +50,3 @@ protected-resource metadata, RFC 8414 authorization-server metadata, RFC 8707
 resource binding — is implemented in `apps/mcp-server/src/oauth.ts` and driven
 end to end by `tests/oauth.test.ts`, including the five rejection paths and the
 two-linked-accounts isolation case. See `docs/AUTH.md`.
-
-## The toolkit
-
-`alexa-ai new mcp` would have scaffolded this directory. It was not used, because
-the quickstart's "Step 1. Download and install CLI" contains no download link,
-no package name and no install command, and the obvious guess installs an
-unrelated third-party package from npm. That is written up in
-`docs/PRODUCT_FEEDBACK.md`, which is where it is useful to Amazon.

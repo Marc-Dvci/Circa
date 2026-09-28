@@ -1,5 +1,6 @@
 import { CaseService, configureRepository } from "#store";
 import { DemoProviderRepository, type ProviderRepository } from "#providers";
+import { configureUploads, type DocumentExtractor, type S3Uploads } from "#documents";
 
 /**
  * What a tool handler is allowed to reach.
@@ -18,6 +19,13 @@ export interface ServerContext {
   clock: () => string;
   /** Who the case belongs to. Supplied by the auth layer when there is one. */
   userId: string;
+  /**
+   * Uploaded documents in S3, present when `CIRCA_BUCKET` names a bucket.
+   * Absent, `add_quote` takes typed text only and offers no `documentKey`.
+   */
+  uploads?: S3Uploads;
+  /** The extractor for uploaded documents; chosen by media type when unset. */
+  extractor?: DocumentExtractor;
 }
 
 export interface ToolTiming {
@@ -82,11 +90,14 @@ export async function createContext(
   overrides: Partial<ServerContext> = {},
 ): Promise<ServerContext> {
   const repository = overrides.service ? undefined : await configureRepository(env);
+  const uploads = "uploads" in overrides ? overrides.uploads : await configureUploads(env);
   return {
     service: overrides.service ?? new CaseService(repository!),
     providers: overrides.providers ?? new DemoProviderRepository(),
     metrics: overrides.metrics ?? new Metrics(),
     clock: overrides.clock ?? (() => new Date().toISOString()),
     userId: overrides.userId ?? env["CIRCA_USER"] ?? "user_demo",
+    ...(uploads ? { uploads } : {}),
+    ...(overrides.extractor ? { extractor: overrides.extractor } : {}),
   };
 }

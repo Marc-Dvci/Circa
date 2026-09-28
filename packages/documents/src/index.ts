@@ -7,4 +7,5 @@
 export * from "./injection.js";
 export * from "./isolate.js";
 export * from "./extract.js";
+export * from "./s3.js";
 export * from "./ground.js";
