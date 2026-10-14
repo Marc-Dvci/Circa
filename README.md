@@ -12,6 +12,8 @@ It is a self-hosted MCP server, protocol **2025-11-25** over Streamable HTTP,
 with six MCP Apps views for screen devices and a spoken answer that is complete
 without any of them.
 
+![Two Echo Show cards: the checklist after the first quote, and the comparison after the second](docs/img/writeup/circa-2-cards.png)
+
 ```
 You      Compare the two quotes.
 
@@ -44,6 +46,8 @@ CIRCA    Of the $4,650 difference, $4,030 is work only Apex Exteriors is
 ```
 
 The product's advice changed what the product could compute.
+
+![Where the $4,650 goes: $4,030 work only one quote proposes, $420 same work at a different price, $200 on one unclassified line](docs/img/writeup/circa-3-gap.png)
 
 ---
 
@@ -80,6 +84,8 @@ pnpm check:citations  # fetch every URL the rules cite and expect 200
 ---
 
 ## What it does
+
+![From the offer to change orders: checklist, second opinion, comparison, agreed scope](docs/img/writeup/circa-1-flow.png)
 
 **Records an offer and runs a checklist.** Eighteen deterministic rules across
 four dimensions. Sixteen of them cite published FTC or AARP consumer guidance by
@@ -125,6 +131,8 @@ every rule statement and spoken sentence passes through it.
 ---
 
 ## Measured
+
+![0 % false alarms on 24 ordinary repairs; 6 of 6 quote pairs needing line items caught; 0 of 16 injection documents got through; 6.2 ms slowest tool at p95](docs/img/writeup/circa-4-scorecard.png)
 
 Every number below comes from a command in this repository.
 
