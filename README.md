@@ -12,6 +12,8 @@ It is a self-hosted MCP server, protocol **2025-11-25** over Streamable HTTP,
 with six MCP Apps views for screen devices and a spoken answer that is complete
 without any of them.
 
+**Demo video:** <https://youtu.be/6z9R3HqnxAs>
+
 ![Two Echo Show cards: the checklist after the first quote, and the comparison after the second](docs/img/writeup/circa-2-cards.png)
 
 ```
@@ -231,7 +233,7 @@ caller that would notice if it stopped being true: `pnpm circa` reaches the same
 | [`docs/AUTH.md`](docs/AUTH.md) | Account linking: OAuth 2.1, PKCE S256, and one deliberate RFC deviation |
 | [`docs/PRIVACY.md`](docs/PRIVACY.md) | What is stored, for how long, and how to delete it |
 | [`docs/AWS.md`](docs/AWS.md) | DynamoDB, Bedrock and S3 run against AWS, Textract, and the CDK stack |
-| [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) | The video, beat by beat, generated from the script the demo runs |
+| [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) | The [video](https://youtu.be/6z9R3HqnxAs), beat by beat, generated from the script the demo runs |
 | [`docs/FRICTION_LOG.md`](docs/FRICTION_LOG.md) | Seven entries against Alexa+, MCP, MCP Apps and AWS |
 | [`docs/PRODUCT_FEEDBACK.md`](docs/PRODUCT_FEEDBACK.md) | Every tool, API and SDK used, and whether I would build with it again |
 | [`docs/JUDGE.md`](docs/JUDGE.md) | Five minutes, in order |
