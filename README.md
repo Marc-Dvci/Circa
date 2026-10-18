@@ -12,7 +12,20 @@ It is a self-hosted MCP server, protocol **2025-11-25** over Streamable HTTP,
 with six MCP Apps views for screen devices and a spoken answer that is complete
 without any of them.
 
+I audit for a living, and the first rule of an audit finding is that two numbers
+are not comparable until their scopes match. CIRCA applies that rule to a
+contractor's quote.
+
 **Demo video:** <https://youtu.be/6z9R3HqnxAs>
+
+## For judges
+
+| Criterion | Where to look |
+|---|---|
+| Tech implementation | The MCP server in `apps/mcp-server/` (sixteen tools, six MCP Apps views, OAuth 2.1), negotiated by a real SDK client in `tests/mcp-conformance.test.ts`; DynamoDB, S3 and Bedrock runs in `docs/AWS.md` |
+| Design | One payload for voice and screen: the spoken answer is complete without a card, and the card draws the same rows |
+| Potential impact | Home-repair decisions made at the door; [Measured](#measured): 0 of 24 ordinary repairs flagged, 94.6 % of priced lines read on held-out estimates |
+| Quality of the idea | A price gap is not a finding until the scopes align, so CIRCA says "not yet" and asks for line items; [What it refuses to do](#what-it-refuses-to-do) |
 
 ![Two Echo Show cards: the checklist after the first quote, and the comparison after the second](docs/img/writeup/circa-2-cards.png)
 
