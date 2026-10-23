@@ -199,7 +199,23 @@ const BEATS: Beat[] = [
   },
   {
     caption:
-      "A hundred and seven tests, three evaluation corpora, open source under Apache 2.0. CIRCA. See where every dollar of a quote goes, before you pay.",
+      "The same server runs three ways: as an Alexa+ add-on over MCP, as a classic skill for today's Alexa on AWS Lambda, and as an Agent Skill. The MCP Inspector and the official conformance suite check it on every push.",
+    spoken:
+      "The same server runs three ways: as an Alexa plus add-on over MCP, as a classic skill for today's Alexa on AWS Lambda, and as an Agent Skill. The MCP Inspector and the official conformance suite check it on every push.",
+    ms: 15000,
+    card: {
+      title: "Three ways onto Alexa",
+      lines: [
+        "Alexa+ add-on: MCP server, protocol 2025-11-25",
+        "Today's Alexa: classic skill on AWS Lambda, 18 of 18 turns",
+        "Agent Skill: SKILL.md, valid under skills-ref",
+        "Conformance suite: 7 of 7, after two fixes it found",
+      ],
+    },
+  },
+  {
+    caption:
+      "A hundred and forty-three tests, three evaluation corpora, open source under Apache 2.0. CIRCA. See where every dollar of a quote goes, before you pay.",
     ms: 10000,
     card: { title: "CIRCA", lines: ["See where every dollar of a quote goes, before you pay.", "github.com/Marc-Dvci/Circa"] },
   },
