@@ -58,36 +58,72 @@ export function parseSpokenAmount(text: string): number | undefined {
     const value = Number((digits[1] ?? "").replace(/,/g, ""));
     if (Number.isFinite(value) && value > 0) return value;
   }
-  const words = text.toLowerCase().match(/\b(?:[a-z]+[\s-]?)+\b/g) ?? [];
-  for (const phrase of words) {
-    const value = wordsToNumber(phrase);
-    if (value !== undefined && value >= 50) return value;
-  }
-  return undefined;
+  return spokenAmounts(text).find((value) => value >= 50);
 }
 
-function wordsToNumber(phrase: string): number | undefined {
+/**
+ * Every amount in an utterance, in the order spoken, digits or words.
+ *
+ * "six thousand five hundred, three thousand of it today" is two amounts, and
+ * the comma that separates them is not something a voice transcript promises
+ * to keep. Without it the words read as one number, 509,000, so a second
+ * "thousand" starts a second amount and takes the words since the last
+ * "hundred" with it.
+ */
+export function spokenAmounts(text: string): number[] {
+  const found: number[] = [];
+  for (const match of text.matchAll(/(\$?\s?[0-9][0-9,]*(?:\.[0-9]{2})?)|([a-z]+(?:[\s-]+[a-z]+)*)/gi)) {
+    if (match[1]) {
+      const value = Number(match[1].replace(/[$,\s]/g, ""));
+      if (Number.isFinite(value) && value > 0) found.push(value);
+    } else if (match[2]) {
+      found.push(...wordsToNumbers(match[2]));
+    }
+  }
+  return found;
+}
+
+function wordsToNumbers(phrase: string): number[] {
   const tokens = phrase.toLowerCase().split(/[\s-]+/).filter(Boolean);
+  const found: number[] = [];
   let total = 0;
   let current = 0;
+  /** What was added to `current` since the last "hundred". */
+  let tail = 0;
   let sawAny = false;
+  const flush = (): void => {
+    if (sawAny) found.push(total + current);
+    total = 0;
+    current = 0;
+    tail = 0;
+    sawAny = false;
+  };
   for (const token of tokens) {
     if (token === "and") continue;
     if (token in SPOKEN_NUMBERS) {
       current += SPOKEN_NUMBERS[token]!;
+      tail += SPOKEN_NUMBERS[token]!;
       sawAny = true;
     } else if (token === "hundred") {
       current = (current || 1) * 100;
+      tail = 0;
       sawAny = true;
     } else if (token === "thousand") {
-      total += (current || 1) * 1000;
+      if (total > 0) {
+        found.push(total + current - tail);
+        total = (tail || 1) * 1000;
+      } else {
+        total += (current || 1) * 1000;
+      }
       current = 0;
+      tail = 0;
       sawAny = true;
     } else if (sawAny) {
-      break;
+      flush();
     }
   }
-  return sawAny ? total + current : undefined;
+  flush();
+  return found;
 }
 
 interface Pattern {
@@ -207,7 +243,7 @@ const PATTERNS: readonly Pattern[] = [
   },
 ];
 
-function guessTrade(text: string): string {
+export function guessTrade(text: string): string {
   if (/\broof|shingle|flashing|gutter|chimney\b/i.test(text)) return "roofing";
   if (/\bplumb|pipe|drain|water heater|leak under|toilet|sewer\b/i.test(text)) return "plumbing";
   if (/\belectric|panel|breaker|outlet|wiring|amp\b/i.test(text)) return "electrical";
@@ -217,12 +253,21 @@ function guessTrade(text: string): string {
 
 function depositAmount(text: string): number | undefined {
   const match = /\b(?:deposit|up ?front|down ?payment|to start|to book)\b[^.]{0,40}/i.exec(text);
-  return match ? parseSpokenAmount(match[0]) : undefined;
+  if (match) return parseSpokenAmount(match[0]);
+  // "three thousand of it today": the share comes before the words that make it a deposit.
+  const share = /([^.;]*?)\bof it (?:today|tonight|now|up ?front|to start|before (?:they|we) start)\b/i.exec(text);
+  return share ? spokenAmounts(share[1] ?? "").filter((value) => value >= 50).at(-1) : undefined;
 }
 
+const URGENCY = String.raw`before (?:it|the) (?:rains?|storm)|tonight|today|right away|immediately|by (?:the )?end of (?:the )?day|first thing|collapse|cave in|any day now`;
+/** A reported clause: "they say water could get in tonight". */
+const REPORTED_URGENCY = new RegExp(String.raw`\b(?:they|he|she) (?:say|says|said|warn|warned|claim|claims)(?: that)? ([^.,;]*?\b(?:${URGENCY})\b[^.,;]*)`, "i");
+const ANY_URGENCY = new RegExp(String.raw`\b(?:${URGENCY})\b[^.]{0,60}`, "i");
+
 function urgencyClaim(text: string): string | undefined {
-  const match = /\b(?:before (?:it|the) (?:rains?|storm)|tonight|today|right away|immediately|by (?:the )?end of (?:the )?day|first thing|collapse|cave in|any day now)\b[^.]{0,60}/i.exec(text);
-  return match?.[0]?.trim();
+  // The claim is what they said, so their own clause wins over the first time word in the sentence.
+  const reported = REPORTED_URGENCY.exec(text)?.[1]?.trim();
+  return reported || ANY_URGENCY.exec(text)?.[0]?.trim();
 }
 
 /**

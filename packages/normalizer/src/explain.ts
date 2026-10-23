@@ -22,13 +22,18 @@ const NOT_IDENTIFIABLE: Record<string, string> = {
   DIFFERENT_KIND_OF_WORK: "one of these is an inspection and the other is a repair",
 };
 
+/** An unnamed contractor is "the first quote" mid-sentence and "The first quote" at the start of one. */
+function capitalise(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
 export function explainComparison(comparison: Comparison, quoteA: Quote, quoteB: Quote): string[] {
   const nameA = quoteA.contractorName ?? "the first quote";
   const nameB = quoteB.contractorName ?? "the second quote";
   const lines: string[] = [];
 
   lines.push(
-    `${nameA} is ${formatCents(quoteA.total)}. ${nameB} is ${formatCents(quoteB.total)}. That is a difference of ${formatCents(Math.abs(comparison.totals.difference))}.`,
+    `${capitalise(nameA)} is ${formatCents(quoteA.total)}. ${capitalise(nameB)} is ${formatCents(quoteB.total)}. That is a difference of ${formatCents(Math.abs(comparison.totals.difference))}.`,
   );
 
   if (comparison.verdict === "NOT_COMPARABLE") {

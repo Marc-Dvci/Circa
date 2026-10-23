@@ -14,7 +14,9 @@ The protocol version is asserted rather than declared.
 `StreamableHTTPClientTransport` to the server over a bound port and reads
 `transport.protocolVersion` after a real `initialize`. A hand-rolled client
 agreeing with a hand-rolled server would agree on any version at all, including
-one Alexa+ rejects.
+one Alexa+ rejects. Clients this repository did not write drive it too: the
+MCP Inspector and the official conformance suite, in
+[`docs/conformance`](conformance/README.md).
 
 ---
 
@@ -30,6 +32,14 @@ is exactly the case where a server wants to be able to say something without
 being asked. One transport per session, one server per transport, torn down
 together, with `onsessionclosed` removing the map entry rather than leaving it
 for a sweep that does not exist.
+
+A session id the server did not issue, or one that has ended, gets 404, which
+tells the client to initialize again; a request with no session id gets 400.
+The endpoint answers only to loopback, the configured public hostname and the
+hostname Render assigns (`hostHeaderValidation` from the SDK), and refuses a
+browser `Origin` on any other host with 403, so a page that rebinds a domain to
+127.0.0.1 cannot drive a local server. The official conformance suite found
+both gaps; `tests/mcp-conformance.test.ts` asserts both.
 
 `/health` reports the version the SDK will negotiate and the version Alexa+
 requires as two separate fields. Folding them into `"ok": true` would be green on

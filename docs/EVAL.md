@@ -206,7 +206,12 @@ the comparison reports unmapped work rather than guessing.
 ## What the corpora found
 
 Seven defects, all in code that 38 passing unit tests had already covered. Each
-is fixed and pinned by a test.
+is fixed and pinned by a test. Five more came later from clients this
+repository did not write: two on the transport from the official MCP
+conformance suite (`docs/conformance/README.md`), and three in the planner and
+the presenter from driving the engine through a voice transcript on the classic
+skill (`docs/ALEXA_SKILL.md`, "What it found"). The corpora below are unchanged
+by those fixes.
 
 1. **The refusal named a symptom that the lump sum itself caused.**
    `compareQuotes` tested `NO_COMMON_SCOPE` before `LUMP_SUM`. A spoken lump sum

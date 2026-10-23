@@ -1,0 +1,44 @@
+{
+  "manifest": {
+    "manifestVersion": "1.0",
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "name": "CIRCA quote check",
+          "summary": "A second opinion on a home repair before you say yes.",
+          "description": "CIRCA keeps the record of a home repair you are deciding about and checks what can be checked before money moves. Tell it what a contractor has offered and it runs a checklist that cites published FTC and AARP consumer guidance, writes a request for an independent assessment that leaves out the first price, compares two quotes on the work they describe, and holds the scope you accepted so a later request for more money can be measured against it. There is no score.",
+          "examplePhrases": [
+            "Alexa, open circa quote check",
+            "a roofer knocked on the door and says the flashing has failed",
+            "compare the two quotes"
+          ],
+          "keywords": ["home repair", "contractor", "quote", "second opinion"]
+        }
+      },
+      "isAvailableWorldwide": false,
+      "distributionCountries": ["US"],
+      "testingInstructions": "Open with 'open circa quote check'. Then: 'a roofer knocked on the door and says the flashing round the chimney has failed', 'they want six thousand five hundred, three thousand of it today, and they say water could get in tonight', 'compare the two quotes' after two quotes are on file. tools/alexa/src/simulate.ts runs the whole conversation.",
+      "category": "HOME_SERVICES"
+    },
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "usesPersonalInfo": false,
+      "isChildDirected": false,
+      "isExportCompliant": true,
+      "containsAds": false,
+      "locales": {
+        "en-US": {
+          "privacyPolicyUrl": "https://github.com/Marc-Dvci/Circa/blob/main/docs/PRIVACY.md",
+          "termsOfUseUrl": "https://github.com/Marc-Dvci/Circa/blob/main/docs/TERMS.md"
+        }
+      }
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "arn:aws:lambda:us-east-1:416964654816:function:circa-alexa-skill"
+        }
+      }
+    }
+  }
+}

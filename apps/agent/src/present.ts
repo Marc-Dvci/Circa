@@ -95,7 +95,8 @@ export function caseTitle(snapshot: CaseSnapshot): string {
   const offer = currentOffer(snapshot);
   const name = offer?.companyName ?? offer?.contractorName;
   const price = offer?.quotedPrice;
-  if (!name) return `${trade} · not yet quoted`;
+  // A contractor at the door rarely gives a company name; a price without one is still a quote.
+  if (!name) return price === undefined ? `${trade} · not yet quoted` : `${trade} · ${formatCents(price)}`;
   return price === undefined ? `${trade} · ${name}` : `${trade} · ${name} · ${formatCents(price)}`;
 }
 

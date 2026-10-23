@@ -1,0 +1,367 @@
+{
+  "suite": "@modelcontextprotocol/conformance",
+  "version": "0.2.0-alpha.12",
+  "requirements": "2025-11-25",
+  "ranAt": "2026-10-23T15:01:09.781Z",
+  "node": "v24.13.1",
+  "exitCode": 1,
+  "summary": {
+    "scored": 30,
+    "scoredPass": 8,
+    "scoredNotPassing": 22,
+    "notScored": 3,
+    "notScoredNotPassing": 2
+  },
+  "notes": [
+    "The suite counts checks, not scenarios: its summary reads 44 checks passed and 24 failed. The counts in this file are per scenario.",
+    "tools-call-simple-text passed, but its recorded result is an isError saying \"test_simple_text not found\". The pass does not show tool output.",
+    "tools-call-error passed, but its recorded result is an isError saying \"test_error_handling not found\". The pass does not show tool output."
+  ],
+  "scenarios": [
+    {
+      "id": "server-initialize",
+      "scored": true,
+      "status": "pass"
+    },
+    {
+      "id": "logging-set-level",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "logging-set-level",
+          "message": "Failed: Method not found"
+        }
+      ]
+    },
+    {
+      "id": "ping",
+      "scored": true,
+      "status": "pass"
+    },
+    {
+      "id": "completion-complete",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "completion-complete",
+          "message": "Failed: Method not found"
+        }
+      ]
+    },
+    {
+      "id": "tools-list",
+      "scored": true,
+      "status": "pass"
+    },
+    {
+      "id": "tools-call-simple-text",
+      "scored": true,
+      "status": "pass"
+    },
+    {
+      "id": "tools-call-image",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "tools-call-image",
+          "message": "No image content found"
+        }
+      ],
+      "reason": "missing fixture: \"test_image_content\""
+    },
+    {
+      "id": "tools-call-audio",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "tools-call-audio",
+          "message": "No audio content found"
+        }
+      ],
+      "reason": "missing fixture: \"test_audio_content\""
+    },
+    {
+      "id": "tools-call-embedded-resource",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "tools-call-embedded-resource",
+          "message": "No resource content found"
+        }
+      ],
+      "reason": "missing fixture: \"test_embedded_resource\""
+    },
+    {
+      "id": "tools-call-mixed-content",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "tools-call-mixed-content",
+          "message": "Expected multiple content items; Missing image content; Missing resource content"
+        }
+      ],
+      "reason": "missing fixture: \"test_multiple_content_types\""
+    },
+    {
+      "id": "tools-call-with-logging",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "tools-call-with-logging",
+          "message": "Failed: MCP error -32601: Method not found"
+        }
+      ]
+    },
+    {
+      "id": "tools-call-error",
+      "scored": true,
+      "status": "pass"
+    },
+    {
+      "id": "tools-call-with-progress",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "tools-call-with-progress",
+          "message": "No progress notifications received"
+        }
+      ],
+      "reason": "missing fixture: \"test_tool_with_progress\""
+    },
+    {
+      "id": "tools-call-sampling",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "tools-call-sampling",
+          "message": "Server did not request sampling from client"
+        }
+      ],
+      "reason": "missing fixture: \"test_sampling\""
+    },
+    {
+      "id": "tools-call-elicitation",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "tools-call-elicitation",
+          "message": "Server did not request elicitation from client"
+        }
+      ],
+      "reason": "missing fixture: \"test_elicitation\""
+    },
+    {
+      "id": "elicitation-sep1034-defaults",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "elicitation-sep1034-general",
+          "message": "Server did not request elicitation from client"
+        }
+      ],
+      "reason": "missing fixture: \"test_elicitation_sep1034_defaults\""
+    },
+    {
+      "id": "server-sse-multiple-streams",
+      "scored": true,
+      "status": "pass"
+    },
+    {
+      "id": "elicitation-sep1330-enums",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "elicitation-sep1330-general",
+          "message": "Server did not request elicitation from client"
+        }
+      ],
+      "reason": "missing fixture: \"test_elicitation_sep1330_enums\""
+    },
+    {
+      "id": "resources-list",
+      "scored": true,
+      "status": "pass"
+    },
+    {
+      "id": "resources-read-text",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "resources-read-text",
+          "message": "Failed: MCP error -32602: Resource test://static-text not found"
+        }
+      ],
+      "reason": "missing fixture: \"test://static-text\""
+    },
+    {
+      "id": "resources-read-binary",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "resources-read-binary",
+          "message": "Failed: MCP error -32602: Resource test://static-binary not found"
+        }
+      ],
+      "reason": "missing fixture: \"test://static-binary\""
+    },
+    {
+      "id": "resources-templates-read",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "resources-templates-read",
+          "message": "Failed: MCP error -32602: Resource test://template/123/data not found"
+        }
+      ],
+      "reason": "missing fixture: \"test://template/123/data\""
+    },
+    {
+      "id": "resources-subscribe",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "resources-subscribe",
+          "message": "Failed: Method not found"
+        }
+      ]
+    },
+    {
+      "id": "resources-unsubscribe",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "resources-unsubscribe",
+          "message": "Failed: Method not found"
+        }
+      ]
+    },
+    {
+      "id": "prompts-list",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "prompts-list",
+          "message": "Failed: Method not found"
+        }
+      ]
+    },
+    {
+      "id": "prompts-get-simple",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "prompts-get-simple",
+          "message": "Failed: Method not found"
+        }
+      ]
+    },
+    {
+      "id": "prompts-get-with-args",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "prompts-get-with-args",
+          "message": "Failed: Method not found"
+        }
+      ]
+    },
+    {
+      "id": "prompts-get-embedded-resource",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "prompts-get-embedded-resource",
+          "message": "Failed: Method not found"
+        }
+      ]
+    },
+    {
+      "id": "prompts-get-with-image",
+      "scored": true,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "prompts-get-with-image",
+          "message": "Failed: Method not found"
+        }
+      ]
+    },
+    {
+      "id": "dns-rebinding-protection",
+      "scored": true,
+      "status": "pass"
+    },
+    {
+      "id": "server-session-lifecycle",
+      "scored": false,
+      "status": "pass"
+    },
+    {
+      "id": "json-schema-2020-12",
+      "scored": false,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "json-schema-2020-12-tool-found",
+          "message": "Tool 'json_schema_2020_12_tool' not found. Available tools: start_repair_case, capture_offer, get_verification_status, answer_verification_question, structure_scope, find_independent_professionals, request_second_opinion, add_quote, compare_quotes, accept_scope, record_scope_change, review_scope_change, set_change_status, get_repair_dossier, list_repair_cases, delete_repair_case"
+        }
+      ],
+      "reason": "missing fixture: \"json_schema_2020_12_tool\""
+    },
+    {
+      "id": "server-sse-polling",
+      "scored": false,
+      "status": "fail",
+      "failures": [
+        {
+          "check": "incoming-sse-event",
+          "message": "Tool call failed"
+        }
+      ],
+      "warnings": [
+        {
+          "check": "server-sse-priming-event",
+          "message": "Server did not send priming event with id and empty data on POST SSE stream. This is recommended for resumability."
+        },
+        {
+          "check": "server-sse-retry-field",
+          "message": "Server did not send retry field. This is recommended for controlling client reconnection timing."
+        }
+      ],
+      "reason": "missing fixture: \"test_reconnection\""
+    }
+  ],
+  "applicable": {
+    "scenarios": [
+      "server-initialize",
+      "ping",
+      "tools-list",
+      "resources-list",
+      "server-sse-multiple-streams",
+      "dns-rebinding-protection",
+      "server-session-lifecycle"
+    ],
+    "pass": 7
+  }
+}

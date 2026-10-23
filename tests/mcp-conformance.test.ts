@@ -59,6 +59,44 @@ describe("streamable http conformance", () => {
     expect(response.status).toBe(400);
   });
 
+  // Both found by the official conformance suite (`pnpm conformance`), not by this file.
+  it("answers 404 to a session id it did not issue, so the client knows to initialize again", async () => {
+    const response = await fetch(`${running.url}/mcp`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        accept: "application/json, text/event-stream",
+        "mcp-session-id": "00000000-0000-4000-8000-000000000000",
+      },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 98, method: "tools/list", params: {} }),
+    });
+    expect(response.status).toBe(404);
+  });
+
+  it("refuses a request that names another host or comes from another origin (DNS rebinding)", async () => {
+    const initialize = JSON.stringify({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "initialize",
+      params: { protocolVersion: REQUIRED_PROTOCOL_VERSION, capabilities: {}, clientInfo: { name: "rebinding", version: "0" } },
+    });
+    const headers = { "content-type": "application/json", accept: "application/json, text/event-stream" };
+    const { request } = await import("node:http");
+    const status = await new Promise<number>((resolve, reject) => {
+      // fetch() will not let a caller set Host, which is the header this attack forges.
+      const req = request(`${running.url}/mcp`, { method: "POST", headers: { ...headers, host: "evil.example.com" } }, (res) => {
+        res.resume();
+        resolve(res.statusCode ?? 0);
+      });
+      req.on("error", reject);
+      req.end(initialize);
+    });
+    expect(status).toBeGreaterThanOrEqual(400);
+    expect(status).toBeLessThan(500);
+    const fromOrigin = await fetch(`${running.url}/mcp`, { method: "POST", headers: { ...headers, origin: "https://evil.example.com" }, body: initialize });
+    expect(fromOrigin.status).toBe(403);
+  });
+
   it("advertises the MCP Apps extension in its capabilities", () => {
     const capabilities = client.getServerCapabilities() as {
       extensions?: Record<string, { mimeTypes?: string[] }>;

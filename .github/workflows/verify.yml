@@ -1,5 +1,7 @@
 # Every commit: typecheck, the test suite, the three evaluation corpora, the
-# CDK synthesis, and the Alexa+ host build. `pnpm verify` is the same command a
+# CDK synthesis, and the Alexa+ host build, then the clients this repository
+# did not write: the MCP Inspector, the official MCP conformance suite, and
+# the Agent Skills reference validator. `pnpm verify` is the same command a
 # clean clone runs; this file only pins where it runs.
 name: verify
 
@@ -11,7 +13,7 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -24,12 +26,31 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Typecheck, 107 tests (the MCP conformance suite binds real ports), and
-      # the corpora. Exit code 0 means every metric met its bar.
+      # Typecheck, the tests (the MCP conformance file binds real ports; the
+      # Alexa skill file runs the conversation through Virtual Alexa; the Agent
+      # Skill file runs its worked example line by line), and the corpora.
+      # Exit code 0 means every metric met its bar.
       - run: pnpm verify
 
       # The CloudFormation template the tests read, produced on a clean clone.
       - run: pnpm cdk:synth
 
-      # The Alexa+ host, as Render builds it.
+      # The Alexa+ host, as Render builds it, and the classic skill's Lambda bundle.
       - run: pnpm build
+      - run: pnpm alexa:build
+
+      # MCP Inspector 2.12.0 drives the whole demo over Streamable HTTP and
+      # checks the protocol version, the tool and view counts and the answer.
+      - run: pnpm inspector --check
+
+      # The official conformance suite, 2025-11-25 requirements. Fails if any
+      # scenario that applies to this server stops passing.
+      - run: pnpm conformance --check
+
+      # The Agent Skills specification's reference validator, pinned to a commit.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          pip install "git+https://github.com/agentskills/agentskills@69ef37e9424c0a7ea9dd2293b559e43ec8176379#subdirectory=skills-ref"
+          skills-ref validate skills/circa-quote-check

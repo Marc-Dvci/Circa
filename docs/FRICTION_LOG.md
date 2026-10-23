@@ -1,6 +1,6 @@
 # Friction log
 
-Seven entries. Every claim about a documented behaviour was re-read on the live
+Eight entries. Every claim about a documented behaviour was re-read on the live
 documentation page before this file was written, and every claim about code
 points at a file in this repository that a reader can open. Where I could not
 establish what a product does, the entry says that rather than guessing, because
@@ -330,6 +330,59 @@ construction rather than at the first write that happens to carry one. The error
 names the option and not the field, so on a record of any size the next question
 is "which one", and the answer is a `JSON.stringify` replacer written at the
 moment you least want to write one.
+
+---
+
+## 8. The MCP conformance suite passes two scenarios whose fixture is missing, and scores optional capabilities as failures
+
+**Severity: medium.**
+
+**Task.** Run the official MCP conformance suite against CIRCA, to have a
+client I did not write check the transport and the protocol.
+
+**Steps.**
+
+```bash
+npx -y @modelcontextprotocol/conformance@0.2.0-alpha.12 server   --url http://127.0.0.1:<port>/mcp --requirements 2025-11-25 -o <dir>
+```
+
+(`pnpm conformance` starts the server and runs this.)
+
+**Expected.** A verdict on the server's conformance to 2025-11-25, with
+scenarios that do not apply to it either skipped or labelled as such.
+
+**Actual.** The suite found two real defects, which is what it is for:
+`dns-rebinding-protection` (the endpoint accepted `Host: evil.example.com`) and
+`server-session-lifecycle` (400 where the specification says 404 for an ended
+session). Both are fixed. Around them:
+
+- `tools-call-simple-text` and `tools-call-error` report **SUCCESS** when the
+  only thing recorded is an isError result saying `Tool test_simple_text not
+  found`. A product server that lacks the fixture passes the scenario that is
+  meant to check tool output.
+- Twelve scenarios call fixtures a reference test server carries
+  (`test_image_content`, `test://static-text`), and ten exercise capabilities
+  the server never declared (prompts, logging, completions, resource
+  subscriptions). All 22 report FAILURE with the same weight as the DNS
+  rebinding hole, and the run exits 1. The fixture names are not printed for
+  most of them; I read them from the suite's source.
+- `--requirements` is in the README on `main` but only in the alpha; the
+  `latest` tag (0.1.16) has `--spec-version` instead, so an unpinned `npx`
+  runs a different interface from the one documented.
+
+**Workaround.** `tools/external/src/conformance.ts` runs the suite pinned,
+records every scenario as the suite returned it in `docs/conformance/suite.json`,
+and gates CI on the seven scenarios that apply to a server with CIRCA's
+declared capabilities and no fixtures. It names a missing fixture only after
+checking against the live server that the fixture is absent, and flags the two
+passes that rest on a "not found".
+
+**Suggestion.** Skip, rather than fail, a scenario whose capability the server
+did not declare in `initialize`, since the suite has just read that response.
+Treat "fixture not found" as a separate outcome, never as SUCCESS. A
+`--product-server` mode that runs only what applies without fixtures would let
+every server put the suite in CI, which is where the DNS rebinding finding
+belongs.
 
 ---
 

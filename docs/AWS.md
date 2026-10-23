@@ -1,9 +1,38 @@
 # AWS
 
-**DynamoDB, Bedrock and S3 run against AWS.** This document has the transcripts,
+**DynamoDB, Bedrock, S3 and Lambda run against AWS.** This document has the transcripts,
 the measurements, and the design decision each run settled. Textract reads
 uploaded photos and PDFs through the same path, and the CDK stack synthesises on
 a clean clone with its permission shape asserted in CI.
+
+---
+
+## What was actually run: Lambda and DynamoDB, 2026-10-23, for today's Alexa
+
+The classic custom skill (`docs/ALEXA_SKILL.md`) is an AWS Lambda,
+`circa-alexa-skill` in `us-east-1`: Node.js 22 on arm64, 1024 MB, one ES-module
+bundle of 3.3 MB with the AWS SDK inside (`pnpm alexa:build`). Each request
+builds the same `McpServer` the Streamable HTTP endpoint serves and calls it
+through the MCP SDK client over an in-memory transport. Cases live in the
+DynamoDB table `circa-alexa`, same key schema as the case store above, with the
+`byUser` index. The function's role may `GetItem`, `PutItem`, `Query` and
+`DeleteItem` on that table and its index, and nothing else.
+
+`pnpm alexa:run --lambda --write` sent the 18-turn conversation, each envelope
+built by Virtual Alexa from the sentence, to the deployed function:
+
+| | |
+|---|---|
+| turns as expected | 18 of 18, the intent each sentence resolved to and the answer it got |
+| cold start | init 231 ms, then 139 ms for the first turn |
+| warm turns | p50 29 ms, slowest 104 ms (the turn that opens the case), from Lambda's own REPORT lines |
+| across sessions | turn 12 is a new session with no attributes, and found the repair in DynamoDB |
+| afterwards | the last two turns deleted the case; the table scan count is 0 |
+
+The DynamoDB-in-region point from the September run shows up here directly:
+the same `GetItem` that took p50 102 ms from Europe sits inside a 29 ms turn
+when the function and the table share a region. `docs/alexa/RUN.md` has every
+turn; `docs/alexa/run.json` has every envelope and response.
 
 ---
 

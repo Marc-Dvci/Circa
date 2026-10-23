@@ -10,7 +10,10 @@ measured against it.
 
 It is a self-hosted MCP server, protocol **2025-11-25** over Streamable HTTP,
 with six MCP Apps views for screen devices and a spoken answer that is complete
-without any of them.
+without any of them. The same server answers on today's Alexa through a
+[classic custom skill](docs/ALEXA_SKILL.md) on AWS Lambda, and ships as an
+[Agent Skill](skills/circa-quote-check/SKILL.md) that any coding agent with a
+shell can load.
 
 I audit for a living, and the first rule of an audit finding is that two numbers
 are not comparable until their scopes match. CIRCA applies that rule to a
@@ -22,7 +25,9 @@ contractor's quote.
 
 | Criterion | Where to look |
 |---|---|
-| Tech implementation | The MCP server in `apps/mcp-server/` (sixteen tools, six MCP Apps views, OAuth 2.1), negotiated by a real SDK client in `tests/mcp-conformance.test.ts`; DynamoDB, S3 and Bedrock runs in `docs/AWS.md` |
+| Tech implementation | The MCP server in `apps/mcp-server/` (sixteen tools, six MCP Apps views, OAuth 2.1), driven by four clients I did not write ([`docs/conformance`](docs/conformance/README.md)): the MCP Inspector, the official MCP conformance suite (which found two transport defects, now fixed), Virtual Alexa against the deployed skill Lambda, and the Agent Skills validator; DynamoDB, S3, Lambda and Bedrock runs in `docs/AWS.md` |
+| Today's Alexa | A classic custom skill, `apps/alexa-skill/`: each intent calls one of the same MCP tools through the SDK client, on AWS Lambda with DynamoDB. [18 of 18 turns](docs/alexa/RUN.md) against the deployed function, warm p50 29 ms |
+| Agent Skill | [`skills/circa-quote-check/SKILL.md`](skills/circa-quote-check/SKILL.md), valid under `skills-ref`; its worked example runs line by line in CI |
 | Design | One payload for voice and screen: the spoken answer is complete without a card, and the card draws the same rows |
 | Potential impact | Home-repair decisions made at the door; [Measured](#measured): 0 of 24 ordinary repairs flagged, 94.6 % of priced lines read on held-out estimates |
 | Quality of the idea | A price gap is not a finding until the scopes align, so CIRCA says "not yet" and asks for line items; [What it refuses to do](#what-it-refuses-to-do) |
@@ -75,6 +80,7 @@ pnpm install
 
 pnpm demo          # the whole three-minute arc, 14 real MCP tool calls, ~50 ms
 pnpm simulator:dev # the Alexa+ simulator, at http://localhost:5173
+pnpm alexa:run     # the classic skill's 18 turns, resolved by Virtual Alexa
 ```
 
 No AWS account, no credentials, no API keys. `pnpm simulator:dev` starts the MCP
@@ -85,7 +91,7 @@ two sides negotiated, so it can be read rather than taken on trust.
 Everything else:
 
 ```bash
-pnpm verify        # typecheck, 121 tests, three evaluation corpora, two transfer sets
+pnpm verify        # typecheck, 143 tests, three evaluation corpora, two transfer sets
 pnpm eval          # the corpora on their own, with the metrics below
 pnpm bench         # latency per tool against the 500 ms Alexa+ budget
 pnpm check         # what is actually live here: store, credentials, optional paths
@@ -94,6 +100,9 @@ pnpm circa help    # the same repair record from a terminal
 pnpm demo --tour   # the demo, slowed down, with the reasoning printed
 pnpm cdk:synth     # the CloudFormation this would deploy to
 pnpm check:citations  # fetch every URL the rules cite and expect 200
+pnpm inspector     # the demo through MCP Inspector 2.12.0, a client this repo did not write
+pnpm conformance   # the official MCP conformance suite, 2025-11-25 requirements
+pnpm --silent tool start_repair_case '{"issueSummary":"..."}'   # one MCP tool call, as JSON (the Agent Skill's door)
 ```
 
 ---
@@ -153,9 +162,12 @@ Every number below comes from a command in this repository.
 
 | | | how |
 |---|---|---|
-| tests | 121 | `pnpm test` |
+| tests | 143 | `pnpm test` |
 | typecheck | clean | `pnpm typecheck` |
-| protocol negotiated | **2025-11-25** | `tests/mcp-conformance.test.ts`, a real SDK client on a real socket |
+| protocol negotiated | **2025-11-25** | `tests/mcp-conformance.test.ts`, a real SDK client on a real socket; MCP Inspector 2.12.0, `docs/conformance/INSPECTOR.md` |
+| MCP conformance suite, scenarios that apply | **7 of 7** pass, 2 of them after fixes it prompted | `pnpm conformance`, `docs/conformance/suite.json` |
+| classic skill, deployed Lambda | **18 of 18** turns, warm p50 29 ms, one cold start 231 ms init | `pnpm alexa:run --lambda`, `docs/alexa/RUN.md` |
+| Agent Skill | valid, worked example of 14 calls passes | `skills-ref validate`, `tests/agent-skill.test.ts` |
 | MCP tools | 16 | `pnpm eval`, `/health` |
 | MCP Apps views | 6 | `/health` |
 | scenario corpus | 48 repairs, 24 of them ordinary | `pnpm eval --scenarios` |
@@ -184,27 +196,29 @@ did not. `docs/EVAL.md` names each one.
 ## How it is put together
 
 ```
-        voice / screen                    a terminal
-              │                                │
-    ┌─────────┴──────────┐                     │
-    │  Alexa+ simulator  │  Streamable HTTP    │
-    │  (host, SEP-1865)  │──────┐              │
-    └────────────────────┘      │              │
-                                ▼              ▼
-                    ┌───────────────────┐  ┌────────┐
-                    │  MCP server       │  │  CLI   │
-                    │  16 tools, 6 views│  │        │
-                    └─────────┬─────────┘  └───┬────┘
-                              │                │
-                    ┌─────────▼────────────────▼─────┐
-                    │  present()  one place that     │
-                    │  decides what a result says    │
-                    └─────────────┬──────────────────┘
-                                  │
-    ┌─────────────────────────────▼──────────────────────────────┐
-    │  engine: schema · taxonomy · normaliser · comparison ·      │
-    │  verification · case service · memory / file / DynamoDB     │
-    └─────────────────────────────────────────────────────────────┘
+   voice / screen      today's Alexa      a coding agent      a terminal
+         │                   │                  │                   │
+ ┌───────┴────────┐  ┌───────┴────────┐ ┌───────┴────────┐          │
+ │Alexa+ simulator│  │ classic skill  │ │  Agent Skill   │          │
+ │(host, SEP-1865)│  │  (AWS Lambda)  │ │  (pnpm tool)   │          │
+ └───────┬────────┘  └───────┬────────┘ └───────┬────────┘          │
+  Streamable HTTP      in-memory MCP      in-memory MCP             │
+         └───────────────────┼──────────────────┘                   │
+                             ▼                                      ▼
+                   ┌───────────────────┐                       ┌─────────┐
+                   │  MCP server       │                       │   CLI   │
+                   │  16 tools, 6 views│                       │         │
+                   └─────────┬─────────┘                       └────┬────┘
+                             │                                      │
+                   ┌─────────▼──────────────────────────────────────▼──┐
+                   │  present()  one place that decides what a result  │
+                   │  says: the sentence to speak and the rows to draw │
+                   └─────────────────────────┬─────────────────────────┘
+                                             │
+             ┌───────────────────────────────▼───────────────────────────────┐
+             │  engine: schema · taxonomy · normaliser · comparison ·        │
+             │  verification · case service · memory / file / DynamoDB       │
+             └───────────────────────────────────────────────────────────────┘
 ```
 
 Three surfaces read a case, and a fourth, voice, is the one that matters. If each
@@ -230,6 +244,9 @@ caller that would notice if it stopped being true: `pnpm circa` reaches the same
 | `apps/mcp-server` | The server, the 16 tools, the 6 views, Streamable HTTP, and OAuth 2.1 with PKCE. |
 | `apps/agent` | `present()`, the deterministic planner, the voice check, and the Bedrock paths. |
 | `apps/simulator` | The Alexa+ host: React, the SEP-1865 host half, an Echo Show card and the transcript side by side. |
+| `apps/alexa-skill` | The classic custom skill: the skill package, the host that maps each intent to MCP tools, and the Lambda. |
+| `skills/circa-quote-check` | The Agent Skill: `SKILL.md` and the two example documents its worked example sends. |
+| `tools/external` | The MCP Inspector and conformance-suite runs. |
 | `infrastructure/cdk` | The stack this would deploy to. Synthesised, never applied. |
 
 ---
@@ -246,8 +263,10 @@ caller that would notice if it stopped being true: `pnpm circa` reaches the same
 | [`docs/AUTH.md`](docs/AUTH.md) | Account linking: OAuth 2.1, PKCE S256, and one deliberate RFC deviation |
 | [`docs/PRIVACY.md`](docs/PRIVACY.md) | What is stored, for how long, and how to delete it |
 | [`docs/AWS.md`](docs/AWS.md) | DynamoDB, Bedrock and S3 run against AWS, Textract, and the CDK stack |
+| [`docs/ALEXA_SKILL.md`](docs/ALEXA_SKILL.md) | The classic custom skill on today's Alexa: intents, the Lambda, the run |
+| [`docs/conformance/README.md`](docs/conformance/README.md) | Four clients I did not write, what they ran, and the two defects the conformance suite found |
 | [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) | The [video](https://youtu.be/6z9R3HqnxAs), beat by beat, generated from the script the demo runs |
-| [`docs/FRICTION_LOG.md`](docs/FRICTION_LOG.md) | Seven entries against Alexa+, MCP, MCP Apps and AWS |
+| [`docs/FRICTION_LOG.md`](docs/FRICTION_LOG.md) | Eight entries against Alexa+, MCP, MCP Apps and AWS |
 | [`docs/PRODUCT_FEEDBACK.md`](docs/PRODUCT_FEEDBACK.md) | Every tool, API and SDK used, and whether I would build with it again |
 | [`docs/JUDGE.md`](docs/JUDGE.md) | Five minutes, in order |
 | [`docs/TERMS.md`](docs/TERMS.md) | Terms of use, referenced by the add-on manifest |

@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { Server as HttpServer } from "node:http";
-import express, { type Express } from "express";
+import express, { type Express, type RequestHandler } from "express";
+import { hostHeaderValidation } from "@modelcontextprotocol/sdk/server/middleware/hostHeaderValidation.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import type { ServerContext } from "./context.js";
@@ -55,6 +56,12 @@ export function createApp(context: ServerContext, options: HttpOptions = {}): { 
   const sessions = new Map<string, Session>();
 
   app.use(express.json({ limit: "2mb" }));
+
+  // DNS rebinding protection on the MCP endpoint, which the official
+  // conformance suite found missing: a request naming any other host, or a
+  // browser origin on any other host, is refused before it reaches a session.
+  const allowed = allowedHostnames(options);
+  app.use(mcpPath, hostHeaderValidation(allowed), originValidation(allowed));
 
   if (options.auth) {
     const issuer = options.publicUrl ?? `http://localhost:${options.port ?? 8787}`;
@@ -111,6 +118,12 @@ export function createApp(context: ServerContext, options: HttpOptions = {}): { 
       await existing.transport.handleRequest(req, res, req.body);
       return;
     }
+    if (sessionId) {
+      // A session id this server did not issue, or one that has ended: the
+      // spec's answer is 404, which tells the client to initialize again.
+      res.status(404).json({ jsonrpc: "2.0", error: { code: -32001, message: "Session not found" }, id: null });
+      return;
+    }
 
     if (!isInitializeRequest(req.body)) {
       res.status(400).json({
@@ -156,7 +169,7 @@ export function createApp(context: ServerContext, options: HttpOptions = {}): { 
     const sessionId = req.headers["mcp-session-id"] as string | undefined;
     const session = sessionId ? sessions.get(sessionId) : undefined;
     if (!session) {
-      res.status(400).send("Unknown or missing session id");
+      res.status(sessionId ? 404 : 400).send(sessionId ? "Session not found" : "Missing session id");
       return;
     }
     await session.transport.handleRequest(req, res);
@@ -176,6 +189,36 @@ export function createApp(context: ServerContext, options: HttpOptions = {}): { 
   };
 
   return { app, sessions, closeAll };
+}
+
+/**
+ * The hostnames the MCP endpoint answers to: loopback, the public URL when one
+ * is configured, the hostname Render assigns, and any listed in
+ * `CIRCA_ALLOWED_HOSTS`.
+ */
+export function allowedHostnames(options: HttpOptions, env: NodeJS.ProcessEnv = process.env): string[] {
+  const hosts = new Set(["localhost", "127.0.0.1", "[::1]"]);
+  if (options.publicUrl) hosts.add(new URL(options.publicUrl).hostname);
+  if (env["RENDER_EXTERNAL_HOSTNAME"]) hosts.add(env["RENDER_EXTERNAL_HOSTNAME"]);
+  for (const host of (env["CIRCA_ALLOWED_HOSTS"] ?? "").split(",")) if (host.trim()) hosts.add(host.trim());
+  return [...hosts];
+}
+
+/** An `Origin` header, when a browser sends one, must name an allowed host too (403, as the spec asks). */
+function originValidation(allowed: readonly string[]): RequestHandler {
+  return (req, res, next) => {
+    const origin = req.headers.origin;
+    if (origin === undefined) return next();
+    let hostname: string | undefined;
+    try {
+      hostname = new URL(origin).hostname;
+    } catch {
+      hostname = undefined;
+    }
+    // URL keeps the brackets on an IPv6 hostname, which is the form the list uses.
+    if (hostname && allowed.includes(hostname)) return next();
+    res.status(403).json({ jsonrpc: "2.0", error: { code: -32000, message: `Origin not allowed: ${origin}` }, id: null });
+  };
 }
 
 export async function startHttpServer(context: ServerContext, options: HttpOptions = {}): Promise<RunningServer> {

@@ -1,0 +1,144 @@
+import { spawnSync } from "node:child_process";
+import { readFileSync, writeFileSync } from "node:fs";
+import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { MemoryCaseRepository } from "#store";
+import { connect, handleEnvelope } from "../../../apps/alexa-skill/src/lambda.js";
+import type { AlexaRequestEnvelope, AlexaResponseEnvelope } from "../../../apps/alexa-skill/src/skill.js";
+import { runVirtual, type VirtualTurn } from "../../../apps/alexa-skill/src/virtual.js";
+
+/**
+ * `pnpm alexa:run [--lambda] [--write]`
+ *
+ * The demonstrated conversation, sentence by sentence, through Virtual Alexa.
+ * Without `--lambda` the skill runs in-process on a memory store. With it, each
+ * request envelope Virtual Alexa builds is sent to the deployed AWS Lambda
+ * (`circa-alexa-skill`, us-east-1) with the AWS CLI, the case lives in the
+ * DynamoDB table, and Lambda's own report line (duration, billed duration,
+ * cold-start init) is kept for each turn. `--write` records the run in
+ * `docs/alexa/run.json` and `docs/alexa/RUN.md`.
+ */
+
+const LAMBDA = process.argv.includes("--lambda");
+const WRITE = process.argv.includes("--write");
+const FUNCTION = process.env["CIRCA_ALEXA_FUNCTION"] ?? "circa-alexa-skill";
+const REGION = process.env["AWS_REGION"] ?? "us-east-1";
+
+interface LambdaReport {
+  requestId?: string;
+  durationMs?: number;
+  billedMs?: number;
+  initMs?: number;
+  maxMemoryMb?: number;
+}
+
+const reports: LambdaReport[] = [];
+const scratch = await mkdtemp(path.join(tmpdir(), "circa-alexa-"));
+
+function invokeLambda(envelope: AlexaRequestEnvelope): AlexaResponseEnvelope {
+  const payload = path.join(scratch, "event.json");
+  const out = path.join(scratch, "out.json");
+  writeFileSync(payload, JSON.stringify(envelope));
+  const result = spawnSync(
+    "aws",
+    [
+      "lambda", "invoke", "--region", REGION, "--function-name", FUNCTION,
+      "--cli-binary-format", "raw-in-base64-out", "--payload", `fileb://${payload}`,
+      "--log-type", "Tail", "--output", "json", out,
+    ],
+    { encoding: "utf8", shell: process.platform === "win32" },
+  );
+  if (result.status !== 0) throw new Error(`aws lambda invoke failed: ${result.stderr}`);
+  const meta = JSON.parse(result.stdout) as { StatusCode: number; FunctionError?: string; LogResult?: string };
+  const log = Buffer.from(meta.LogResult ?? "", "base64").toString("utf8");
+  const report = /REPORT RequestId: (\S+)\s+Duration: ([\d.]+) ms\s+Billed Duration: (\d+) ms\s+Memory Size: \d+ MB\s+Max Memory Used: (\d+) MB(?:\s+Init Duration: ([\d.]+) ms)?/.exec(log);
+  reports.push({
+    ...(report?.[1] ? { requestId: report[1] } : {}),
+    ...(report?.[2] ? { durationMs: Number(report[2]) } : {}),
+    ...(report?.[3] ? { billedMs: Number(report[3]) } : {}),
+    ...(report?.[4] ? { maxMemoryMb: Number(report[4]) } : {}),
+    ...(report?.[5] ? { initMs: Number(report[5]) } : {}),
+  });
+  if (meta.FunctionError) throw new Error(`the function failed: ${readFileSync(out, "utf8")}`);
+  return JSON.parse(readFileSync(out, "utf8")) as AlexaResponseEnvelope;
+}
+
+const repository = new MemoryCaseRepository();
+const handle = LAMBDA
+  ? async (envelope: AlexaRequestEnvelope) => invokeLambda(envelope)
+  : async (envelope: AlexaRequestEnvelope) =>
+      (await handleEnvelope(envelope, (userId) => connect(userId, { repository, env: {} as NodeJS.ProcessEnv }))).response;
+
+const ranAt = new Date().toISOString();
+const turns = await runVirtual(handle);
+await rm(scratch, { recursive: true, force: true });
+
+turns.forEach((t, i) => {
+  const report = reports[i];
+  const timing = report?.durationMs !== undefined ? `${report.durationMs.toFixed(0)} ms${report.initMs ? ` (cold, init ${report.initMs.toFixed(0)} ms)` : ""}` : `${t.ms} ms`;
+  console.log(`${t.problems.length ? "x " : "ok"} ${t.resolved.padEnd(22)} ${timing.padEnd(26)} ${t.turn.said}`);
+  for (const problem of t.problems) console.log(`      ${problem}`);
+});
+const failed = turns.filter((t) => t.problems.length > 0).length;
+console.log(`${turns.length - failed} of ${turns.length} turns as expected${LAMBDA ? `, against ${FUNCTION} in ${REGION}` : ", in-process"}`);
+
+function scrub(envelope: AlexaRequestEnvelope): unknown {
+  // Virtual Alexa's ids are random, but a run log has no use for them.
+  return JSON.parse(JSON.stringify(envelope), (key, value) =>
+    ["userId", "deviceId", "sessionId", "requestId", "apiAccessToken"].includes(key) && typeof value === "string" ? "<id>" : value,
+  );
+}
+
+function markdown(): string {
+  const warm = reports.filter((r) => r.durationMs !== undefined && !r.initMs).map((r) => r.durationMs!).sort((a, b) => a - b);
+  const p50 = warm[Math.max(0, Math.ceil(0.5 * warm.length) - 1)];
+  const max = warm.at(-1);
+  const cold = reports.find((r) => r.initMs);
+  return [
+    "# CIRCA's classic custom skill: a run against the deployed Lambda",
+    "",
+    `Generated by \`pnpm alexa:run --lambda --write\` on ${ranAt.slice(0, 16).replace("T", " ")} UTC.`,
+    "",
+    `Each sentence was resolved against the skill's interaction model (\`apps/alexa-skill/skill-package/interactionModels/custom/en-US.json\`) by Bespoken's [Virtual Alexa](https://github.com/bespoken/virtual-alexa) 0.7.8, which built the Alexa request envelope, session attributes included. ` +
+      `The envelope went to the AWS Lambda \`${FUNCTION}\` in ${REGION} (Node.js 22, arm64), which runs CIRCA's MCP server in-process and calls its tools through the MCP SDK client. The case lived in the DynamoDB table \`circa-alexa\`, and the last two turns deleted it.`,
+    "",
+    `${turns.length} turns, ${turns.length - failed} as expected. Lambda durations are Lambda's own REPORT lines: ${
+      cold ? `one cold start (init ${cold.initMs!.toFixed(0)} ms, then ${cold.durationMs!.toFixed(0)} ms), ` : ""
+    }warm turns p50 ${p50?.toFixed(0)} ms, slowest ${max?.toFixed(0)} ms. Every envelope and response is in [\`run.json\`](run.json).`,
+    "",
+    "| # | session | said | intent | Lambda ms |",
+    "|---|---|---|---|---|",
+    ...turns.map((t, i) => {
+      const r = reports[i];
+      return `| ${i + 1} | ${t.turn.newSession ? "new" : "same"} | ${t.turn.said} | \`${t.resolved}\` | ${r?.durationMs?.toFixed(0) ?? ""}${r?.initMs ? " (cold)" : ""} |`;
+    }),
+    "",
+    "## What the skill said",
+    "",
+    ...turns.flatMap((t, i) => [`**${i + 1}. ${t.turn.said}**`, "", `> ${t.speech}`, ""]),
+  ].join("\n");
+}
+
+if (WRITE) {
+  await mkdir(path.resolve("docs/alexa"), { recursive: true });
+  const record = {
+    client: "virtual-alexa@0.7.8",
+    target: LAMBDA ? { function: FUNCTION, region: REGION, runtime: "nodejs22.x", table: "circa-alexa" } : "in-process",
+    ranAt,
+    turns: turns.map((t: VirtualTurn, i) => ({
+      said: t.turn.said,
+      resolved: t.resolved,
+      slots: t.slots,
+      speech: t.speech,
+      card: t.response.response?.card ?? null,
+      lambda: reports[i] ?? null,
+      request: scrub(t.request),
+      response: t.response,
+    })),
+  };
+  await writeFile(path.resolve("docs/alexa/run.json"), `${JSON.stringify(record, null, 2)}\n`);
+  if (LAMBDA) await writeFile(path.resolve("docs/alexa/RUN.md"), `${markdown()}\n`);
+  console.log("wrote docs/alexa/run.json");
+}
+if (failed > 0) process.exit(1);

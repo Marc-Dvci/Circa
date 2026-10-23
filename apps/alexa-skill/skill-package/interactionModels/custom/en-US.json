@@ -1,0 +1,254 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "circa quote check",
+      "intents": [
+        { "name": "AMAZON.CancelIntent", "samples": [] },
+        { "name": "AMAZON.HelpIntent", "samples": [] },
+        { "name": "AMAZON.StopIntent", "samples": [] },
+        { "name": "AMAZON.NavigateHomeIntent", "samples": [] },
+        { "name": "AMAZON.FallbackIntent", "samples": [] },
+        { "name": "AMAZON.YesIntent", "samples": [] },
+        { "name": "AMAZON.NoIntent", "samples": [] },
+        {
+          "name": "CheckRepairIntent",
+          "slots": [{ "name": "issue", "type": "AMAZON.SearchQuery" }],
+          "samples": [
+            "check a repair {issue}",
+            "check a repair for me {issue}",
+            "check a repair for me a roofer says {issue}",
+            "a roofer says {issue}",
+            "a plumber says {issue}",
+            "an electrician says {issue}",
+            "a contractor says {issue}",
+            "someone is here about {issue}",
+            "i got a quote for {issue}"
+          ]
+        },
+        {
+          "name": "DoorKnockIntent",
+          "slots": [{ "name": "issue", "type": "AMAZON.SearchQuery" }],
+          "samples": [
+            "a roofer knocked on the door and says {issue}",
+            "a roofer knocked on the door and said {issue}",
+            "a contractor knocked on the door and says {issue}",
+            "someone knocked on the door and says {issue}",
+            "a roofer came to the door and says {issue}",
+            "check a repair for me a roofer knocked on the door and says {issue}"
+          ]
+        },
+        {
+          "name": "OfferIntent",
+          "slots": [{ "name": "offer", "type": "AMAZON.SearchQuery" }],
+          "samples": [
+            "they want {offer}",
+            "they are asking for {offer}",
+            "they quoted {offer}",
+            "they quoted me {offer}",
+            "the quote is {offer}",
+            "it is going to be {offer}"
+          ]
+        },
+        {
+          "name": "ScopeChangeIntent",
+          "slots": [{ "name": "change", "type": "AMAZON.SearchQuery" }],
+          "samples": [
+            "they want another {change}",
+            "now they want another {change}",
+            "they are asking for another {change}",
+            "they want more money {change}",
+            "they found {change}"
+          ]
+        },
+        {
+          "name": "AnswerIntent",
+          "slots": [
+            { "name": "shown", "type": "SHOWN_ANSWER" },
+            { "name": "written", "type": "WRITTEN_ANSWER" }
+          ],
+          "samples": [
+            "no {shown}",
+            "no {shown} and {written}",
+            "no {shown} and there is {written}",
+            "{shown} and {written}",
+            "{shown} and there is {written}",
+            "no {written}",
+            "there is {written}",
+            "yes {shown}",
+            "yes {shown} and {written}"
+          ]
+        },
+        {
+          "name": "SecondOpinionIntent",
+          "samples": [
+            "get me another opinion",
+            "get me a second opinion",
+            "i want a second opinion",
+            "i want another opinion",
+            "find someone independent",
+            "get someone else to look at it"
+          ]
+        },
+        {
+          "name": "SendRequestIntent",
+          "samples": [
+            "send it to the first one",
+            "send it",
+            "send the request",
+            "book the first one",
+            "use the first one"
+          ]
+        },
+        {
+          "name": "AssessmentBackIntent",
+          "samples": [
+            "the assessment came back",
+            "the second opinion came back",
+            "the independent quote came back",
+            "the assessor sent their quote"
+          ]
+        },
+        {
+          "name": "RequoteIntent",
+          "samples": [
+            "they sent it again broken down",
+            "they sent it again itemised",
+            "they sent the itemised quote",
+            "the itemised quote came in",
+            "they broke it down"
+          ]
+        },
+        {
+          "name": "CompareIntent",
+          "samples": [
+            "compare the two quotes",
+            "compare the quotes",
+            "compare them",
+            "compare them again",
+            "how do they compare",
+            "what is the difference"
+          ]
+        },
+        {
+          "name": "AcceptIntent",
+          "slots": [{ "name": "which", "type": "QUOTE_CHOICE" }],
+          "samples": [
+            "i will go with the {which} one",
+            "i'll go with the {which} one",
+            "go with the {which} one",
+            "accept the {which} quote",
+            "i will take the {which} one"
+          ]
+        },
+        {
+          "name": "PutInWritingIntent",
+          "samples": [
+            "ask them to put it in writing",
+            "put it in writing",
+            "they need to put it in writing",
+            "get it in writing",
+            "they put it in writing"
+          ]
+        },
+        {
+          "name": "StatusIntent",
+          "samples": [
+            "what have you found",
+            "what do you know",
+            "where do we stand",
+            "where are we",
+            "run the checks"
+          ]
+        },
+        {
+          "name": "DossierIntent",
+          "samples": [
+            "show me the whole thing",
+            "read me the whole record",
+            "what did i agree to",
+            "show me the record"
+          ]
+        },
+        {
+          "name": "ListRepairsIntent",
+          "samples": [
+            "what repairs do i have",
+            "list my repairs",
+            "which repairs are on record"
+          ]
+        },
+        {
+          "name": "DeleteRepairIntent",
+          "samples": [
+            "delete this repair",
+            "delete the record",
+            "forget this repair",
+            "remove my record"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "name": "SHOWN_ANSWER",
+          "values": [
+            {
+              "id": "NOT_SHOWN",
+              "name": {
+                "value": "i have not seen it",
+                "synonyms": [
+                  "i haven't seen it",
+                  "i have not seen the damage",
+                  "i haven't seen the damage",
+                  "i did not see it",
+                  "i didn't see it",
+                  "they did not show me",
+                  "they didn't show me",
+                  "not seen it"
+                ]
+              }
+            },
+            {
+              "id": "SHOWN",
+              "name": {
+                "value": "i have seen it",
+                "synonyms": ["i saw it", "they showed me", "they showed me a photo", "i have seen the damage"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "WRITTEN_ANSWER",
+          "values": [
+            {
+              "id": "NOT_WRITTEN",
+              "name": {
+                "value": "nothing in writing",
+                "synonyms": ["nothing written down", "no written quote", "no paperwork", "they did not write anything down"]
+              }
+            },
+            {
+              "id": "WRITTEN",
+              "name": {
+                "value": "it is in writing",
+                "synonyms": ["a written quote", "they left a written quote", "they gave me a written quote", "it's in writing"]
+              }
+            }
+          ]
+        },
+        {
+          "name": "QUOTE_CHOICE",
+          "values": [
+            {
+              "id": "FIRST",
+              "name": { "value": "first", "synonyms": ["original", "contractor's", "first contractor's"] }
+            },
+            {
+              "id": "SECOND",
+              "name": { "value": "second", "synonyms": ["independent", "other", "assessor's", "cheaper"] }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

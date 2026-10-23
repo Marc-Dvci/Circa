@@ -40,13 +40,23 @@ made it small enough to test exhaustively.
   add-on's own round trip, or does it include the model turn that decided to call
   the tool? The measurement I built assumes the former, and says so, but a server
   author sizing a database call would like to know which.
-- There is no way to exercise a tool surface against Alexa+ itself without
-  publishing. A conformance target, even a strict offline validator for the
-  manifest and the tool schemas, would remove a whole class of submission-day
-  surprises. I ended up writing my own for the manifest
-  (`tests/addon.test.ts`), which checks the documented character limits so that a
-  description that grew past 123 characters fails a test rather than a
-  submission.
+- A development stage and a web simulator exist, and the simulator can route a
+  session to a physical device, but both sit behind the Private Preview. The
+  [development stages](https://developer.amazon.com/docs/alexaplus/add-ons/alexa-plus-add-on-development-stages.html)
+  page says "you request access to the Private Preview" and "After approval, you
+  receive credentials and install the tooling", and the Alexa AI CLI installs
+  from a private CodeArtifact registry through a role assumed from "the AWS
+  account that you provided to the Alexa Solutions Architect"
+  ([setup](https://developer.amazon.com/docs/alexaplus/add-ons/set-up-your-development-environment.html)).
+  A developer without that approval cannot exercise a tool surface against
+  Alexa+ before submitting. A conformance target open to everyone, even a strict
+  offline validator for the manifest and the tool schemas, would remove a whole
+  class of submission-day surprises. I wrote my own for the manifest
+  (`tests/addon.test.ts`), which checks the documented character limits so that
+  a description that grew past 123 characters fails a test rather than a
+  submission, and I tested the server with the open MCP tools as well: the MCP
+  Inspector and the official conformance suite (`docs/conformance/`), which
+  found two defects my own client could not.
 
 **Onboarding.** Good. From the requirements page to a server negotiating
 2025-11-25 with the SDK's own client took under an hour, and most of that was
@@ -187,9 +197,76 @@ remaining questions were about product rather than protocol.
 
 ---
 
+## MCP Inspector 2.12.0 and the MCP conformance suite
+
+**Used for:** testing the server with clients I did not write.
+`pnpm inspector` runs the whole demo through the Inspector CLI, one process
+per call; `pnpm conformance` runs `@modelcontextprotocol/conformance`
+0.2.0-alpha.12 with `--requirements 2025-11-25`. Both run in CI.
+
+**What worked well.** The Inspector's CLI mode is exactly what CI needs:
+`--format json` prints one object, `--tool-args-json` passes arguments
+verbatim, exit code 5 means a tool returned an error, and `--method initialize`
+reports the negotiated protocol version. The conformance suite found two real
+defects in an afternoon (no DNS rebinding protection, 400 instead of 404 for an
+ended session), neither of which a client built on the same SDK as the server
+would ever see. That is the case for an independent suite in one sentence.
+
+**What needs work.** The suite treats a missing fixture and an undeclared
+capability as failures with the same weight as a security hole, and passes two
+scenarios on a "not found". Friction log entry 8. The Inspector writes a
+"Schema portability" summary to stderr on `tools/list` without saying which
+schemas or why.
+
+**Would I build with them again.** Yes, both, in CI from the first day.
+
+---
+
+## Agent Skills and `skills-ref`
+
+**Used for:** `skills/circa-quote-check/SKILL.md`, an Agent Skill that gives a
+coding agent with a shell CIRCA's sixteen tools through `pnpm --silent tool`,
+validated with the specification's reference validator.
+
+**What worked well.** The format is small enough to hold in one's head: two
+required fields, a body under 500 lines, folders for references. `skills-ref
+validate` is one command, which made it a CI step rather than a checklist.
+
+**What needs work.** The reference validator needs Python 3.11 or later and is
+installed from the specification's repository rather than a package index, so a
+CI job has to pin a commit. A published package would make the pin a version.
+
+---
+
+## Alexa Skills Kit interaction model
+
+**Used for:** the classic custom skill in `apps/alexa-skill`, whose intents each
+call one of the same MCP tools.
+
+**What worked well.** Custom slot types with entity-resolution ids turn several
+ways of saying the same answer ("I haven't seen it", "they didn't show me")
+into one id, which is exactly the shape `answer_verification_question` wants.
+
+**What needs work.** An `AMAZON.SearchQuery` slot cannot share a sample with any
+other slot, so "they want six thousand five hundred, three thousand of it today"
+cannot carry its amounts in `AMAZON.NUMBER` slots beside the words. The skill
+reads them from the SearchQuery text instead, and that is where a missing comma
+once made 509,000 of it (`docs/ALEXA_SKILL.md`). A SearchQuery that could expose
+the numbers Alexa recognised inside it would remove that whole class of parser.
+
+---
+
 ## AWS services
 
-Four, all off by default, all behind an opt-in flag.
+Four in the add-on, all off by default, all behind an opt-in flag, and AWS
+Lambda for the classic skill.
+
+**AWS Lambda** held up its end without comment: one 3.3 MB ES-module bundle on
+Node.js 22 arm64, a cold start of 231 ms init, warm turns at p50 29 ms with the
+DynamoDB table in the same region (`docs/AWS.md`). The one surprise was local:
+Git Bash rewrote `/var/task/providers.json` in `--environment` into a Windows
+path, and the function read a file that did not exist until
+`MSYS_NO_PATHCONV=1`.
 
 **DynamoDB, Bedrock and S3 run against AWS.** DynamoDB held a real case in a
 real table on 2026-09-17, a model on Bedrock rephrased the comparison answer

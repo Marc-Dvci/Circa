@@ -1,0 +1,1749 @@
+{
+  "client": "virtual-alexa@0.7.8",
+  "target": {
+    "function": "circa-alexa-skill",
+    "region": "us-east-1",
+    "runtime": "nodejs22.x",
+    "table": "circa-alexa"
+  },
+  "ranAt": "2026-10-23T14:58:44.857Z",
+  "turns": [
+    {
+      "said": "open circa quote check",
+      "resolved": "LaunchRequest",
+      "slots": {},
+      "speech": "This is CIRCA. Tell me what a contractor has offered, and I will check what can be checked before money moves.",
+      "card": null,
+      "lambda": {
+        "requestId": "4c12a73d-37c1-471b-8403-25397d216669",
+        "durationMs": 139.35,
+        "billedMs": 371,
+        "maxMemoryMb": 120,
+        "initMs": 231.44
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:58:46Z",
+          "type": "LaunchRequest"
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": true,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {}
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>This is CIRCA. Tell me what a contractor has offered, and I will check what can be checked before money moves.</speak>"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "a roofer knocked on the door and says the flashing round the chimney has failed",
+      "resolved": "DoorKnockIntent",
+      "slots": {
+        "issue": "the flashing round the chimney has failed"
+      },
+      "speech": "I have opened a record for this repair. Tell me what you have been offered, and what they want for it.",
+      "card": {
+        "type": "Simple",
+        "title": "Roofing · not yet quoted",
+        "content": "Second opinion: Not established\nPhotographs: Not established"
+      },
+      "lambda": {
+        "requestId": "431ba346-5c65-4c95-b898-1c6646520dd7",
+        "durationMs": 104.14,
+        "billedMs": 105,
+        "maxMemoryMb": 123
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:58:47Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "DoorKnockIntent",
+            "slots": {
+              "issue": {
+                "name": "issue",
+                "value": "the flashing round the chimney has failed",
+                "confirmationStatus": "NONE"
+              }
+            }
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {}
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY",
+            "issue": "The flashing round the chimney has failed.",
+            "foundBy": "DOOR_KNOCK"
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>I have opened a record for this repair. Tell me what you have been offered, and what they want for it.</speak>"
+          },
+          "card": {
+            "type": "Simple",
+            "title": "Roofing · not yet quoted",
+            "content": "Second opinion: Not established\nPhotographs: Not established"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "they want six thousand five hundred, three thousand of it today, and they say water could get in tonight",
+      "resolved": "OfferIntent",
+      "slots": {
+        "offer": "six thousand five hundred three thousand of it today and they say water could get in tonight"
+      },
+      "speech": "I can't tell you whether this contractor is trustworthy, and I am not going to try. What I can tell you is that 2 conditions here are worth knowing about: unsolicited approach and deposit size. And 13 things are not established yet before you decide. Nothing here has to be decided at the door. A written estimate can be looked at later.",
+      "card": {
+        "type": "Simple",
+        "title": "Roofing · $6,500",
+        "content": "! Unsolicited approach: Worth knowing\n! Deposit size: Worth knowing\nBusiness name: Not established\nLicence number: Not established\n! Deposit asked for: $3,000\nQuoted: $6,500"
+      },
+      "lambda": {
+        "requestId": "076d9178-ad1c-4971-aaf6-175543248c25",
+        "durationMs": 32.45,
+        "billedMs": 33,
+        "maxMemoryMb": 124
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:58:48Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "OfferIntent",
+            "slots": {
+              "offer": {
+                "name": "offer",
+                "value": "six thousand five hundred three thousand of it today and they say water could get in tonight",
+                "confirmationStatus": "NONE"
+              }
+            }
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {
+              "caseId": "case_RNJUGY",
+              "issue": "The flashing round the chimney has failed.",
+              "foundBy": "DOOR_KNOCK"
+            }
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY",
+            "issue": "The flashing round the chimney has failed.",
+            "foundBy": "DOOR_KNOCK",
+            "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight"
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>I can't tell you whether this contractor is trustworthy, and I am not going to try. What I can tell you is that 2 conditions here are worth knowing about: unsolicited approach and deposit size. And 13 things are not established yet before you decide. Nothing here has to be decided at the door. A written estimate can be looked at later.</speak>"
+          },
+          "card": {
+            "type": "Simple",
+            "title": "Roofing · $6,500",
+            "content": "! Unsolicited approach: Worth knowing\n! Deposit size: Worth knowing\nBusiness name: Not established\nLicence number: Not established\n! Deposit asked for: $3,000\nQuoted: $6,500"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "no, I have not seen it, and there is nothing in writing",
+      "resolved": "AnswerIntent",
+      "slots": {
+        "shown": "I have not seen it",
+        "written": "nothing in writing"
+      },
+      "speech": "Nothing has been put in writing. The damage has not been shown to you. A decision was asked for by a set time. 3 conditions here are worth knowing about: unsolicited approach, immediate decision and deposit size. And 14 things are not established yet before you decide. Nothing here has to be decided at the door. A written estimate can be looked at later.",
+      "card": {
+        "type": "Simple",
+        "title": "Roofing · $6,500",
+        "content": "! Unsolicited approach: Worth knowing\n! Immediate decision: Worth knowing\n! Deposit size: Worth knowing\nBusiness name: Not established\n! Deposit asked for: $3,000\nQuoted: $6,500"
+      },
+      "lambda": {
+        "requestId": "11aff4f7-d237-4f01-80e8-416f9e252530",
+        "durationMs": 59.84,
+        "billedMs": 60,
+        "maxMemoryMb": 131
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:58:49Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "AnswerIntent",
+            "slots": {
+              "shown": {
+                "name": "shown",
+                "value": "I have not seen it",
+                "confirmationStatus": "NONE",
+                "resolutions": {
+                  "resolutionsPerAuthority": [
+                    {
+                      "authority": "amzn1.er-authority.echo-sdk.amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b.SHOWN_ANSWER",
+                      "values": [
+                        {
+                          "value": {
+                            "id": "NOT_SHOWN",
+                            "name": "i have not seen it"
+                          }
+                        }
+                      ],
+                      "status": {
+                        "code": "ER_SUCCESS_MATCH"
+                      }
+                    }
+                  ]
+                }
+              },
+              "written": {
+                "name": "written",
+                "value": "nothing in writing",
+                "confirmationStatus": "NONE",
+                "resolutions": {
+                  "resolutionsPerAuthority": [
+                    {
+                      "authority": "amzn1.er-authority.echo-sdk.amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b.WRITTEN_ANSWER",
+                      "values": [
+                        {
+                          "value": {
+                            "id": "NOT_WRITTEN",
+                            "name": "nothing in writing"
+                          }
+                        }
+                      ],
+                      "status": {
+                        "code": "ER_SUCCESS_MATCH"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {
+              "caseId": "case_RNJUGY",
+              "issue": "The flashing round the chimney has failed.",
+              "foundBy": "DOOR_KNOCK",
+              "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight"
+            }
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY",
+            "issue": "The flashing round the chimney has failed.",
+            "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight",
+            "foundBy": "DOOR_KNOCK"
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>Nothing has been put in writing. The damage has not been shown to you. A decision was asked for by a set time. 3 conditions here are worth knowing about: unsolicited approach, immediate decision and deposit size. And 14 things are not established yet before you decide. Nothing here has to be decided at the door. A written estimate can be looked at later.</speak>"
+          },
+          "card": {
+            "type": "Simple",
+            "title": "Roofing · $6,500",
+            "content": "! Unsolicited approach: Worth knowing\n! Immediate decision: Worth knowing\n! Deposit size: Worth knowing\nBusiness name: Not established\n! Deposit asked for: $3,000\nQuoted: $6,500"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "get me another opinion",
+      "resolved": "SecondOpinionIntent",
+      "slots": {},
+      "speech": "I have written the request so it says what to look at and not what to conclude. It asks for chimney flashing, roof decking, shingles and more, and it leaves out 2 things that would have told the assessor what the first contractor already decided. There are 3 who could look at this. Nine Elms Exterior Surveys, $245, tomorrow, assessment only. That one sells assessments and not repairs, so the fee is the same whatever they find.",
+      "card": {
+        "type": "Simple",
+        "title": "3 available",
+        "content": "There are 3 who could look at this. Nine Elms Exterior Surveys, $245, tomorrow, assessment only. That one sells assessments and not repairs, so the fee is the same whatever they find."
+      },
+      "lambda": {
+        "requestId": "834ec274-7759-4e4c-aba9-493ead1442df",
+        "durationMs": 51.64,
+        "billedMs": 52,
+        "maxMemoryMb": 134
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:58:50Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "SecondOpinionIntent",
+            "slots": {}
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {
+              "caseId": "case_RNJUGY",
+              "issue": "The flashing round the chimney has failed.",
+              "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight",
+              "foundBy": "DOOR_KNOCK"
+            }
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY",
+            "issue": "The flashing round the chimney has failed.",
+            "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight",
+            "foundBy": "DOOR_KNOCK",
+            "providerId": "pro_ma_r2"
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>I have written the request so it says what to look at and not what to conclude. It asks for chimney flashing, roof decking, shingles and more, and it leaves out 2 things that would have told the assessor what the first contractor already decided. There are 3 who could look at this. Nine Elms Exterior Surveys, $245, tomorrow, assessment only. That one sells assessments and not repairs, so the fee is the same whatever they find.</speak>"
+          },
+          "card": {
+            "type": "Simple",
+            "title": "3 available",
+            "content": "There are 3 who could look at this. Nine Elms Exterior Surveys, $245, tomorrow, assessment only. That one sells assessments and not repairs, so the fee is the same whatever they find."
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "send it to the first one",
+      "resolved": "SendRequestIntent",
+      "slots": {},
+      "speech": "Sent to Nine Elms Exterior Surveys. They usually respond within 4 hours, and their next availability is tomorrow. The request does not mention the first quote. Their assessment fee is $245.",
+      "card": {
+        "type": "Simple",
+        "title": "Roofing · $6,500",
+        "content": "! Unsolicited approach: Worth knowing\n! Immediate decision: Worth knowing\n! Deposit size: Worth knowing\nBusiness name: Not established\n! Deposit asked for: $3,000\nQuoted: $6,500"
+      },
+      "lambda": {
+        "requestId": "d97af2aa-acab-4f2d-bfe7-306f4b4e130d",
+        "durationMs": 72.48,
+        "billedMs": 73,
+        "maxMemoryMb": 139
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:58:52Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "SendRequestIntent",
+            "slots": {}
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {
+              "caseId": "case_RNJUGY",
+              "issue": "The flashing round the chimney has failed.",
+              "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight",
+              "foundBy": "DOOR_KNOCK",
+              "providerId": "pro_ma_r2"
+            }
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY",
+            "providerId": "pro_ma_r2",
+            "issue": "The flashing round the chimney has failed.",
+            "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight",
+            "foundBy": "DOOR_KNOCK"
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>Sent to Nine Elms Exterior Surveys. They usually respond within 4 hours, and their next availability is tomorrow. The request does not mention the first quote. Their assessment fee is $245.</speak>"
+          },
+          "card": {
+            "type": "Simple",
+            "title": "Roofing · $6,500",
+            "content": "! Unsolicited approach: Worth knowing\n! Immediate decision: Worth knowing\n! Deposit size: Worth knowing\nBusiness name: Not established\n! Deposit asked for: $3,000\nQuoted: $6,500"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "the assessment came back",
+      "resolved": "AssessmentBackIntent",
+      "slots": {},
+      "speech": "Added Nine Elms Exterior Surveys at $1,850, itemised across 3 lines. Say compare the quotes when you are ready.",
+      "card": {
+        "type": "Simple",
+        "title": "Roofing · $6,500",
+        "content": "! Unsolicited approach: Worth knowing\n! Immediate decision: Worth knowing\n! Deposit size: Worth knowing\nBusiness name: Not established\n! Deposit asked for: $3,000\nQuoted: $6,500"
+      },
+      "lambda": {
+        "requestId": "2660c0c6-92c2-461f-9385-0756dd1a64ee",
+        "durationMs": 99.95,
+        "billedMs": 100,
+        "maxMemoryMb": 142
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:58:53Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "AssessmentBackIntent",
+            "slots": {}
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {
+              "caseId": "case_RNJUGY",
+              "providerId": "pro_ma_r2",
+              "issue": "The flashing round the chimney has failed.",
+              "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight",
+              "foundBy": "DOOR_KNOCK"
+            }
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY",
+            "providerId": "pro_ma_r2",
+            "issue": "The flashing round the chimney has failed.",
+            "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight",
+            "foundBy": "DOOR_KNOCK"
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>Added Nine Elms Exterior Surveys at $1,850, itemised across 3 lines. Say compare the quotes when you are ready.</speak>"
+          },
+          "card": {
+            "type": "Simple",
+            "title": "Roofing · $6,500",
+            "content": "! Unsolicited approach: Worth knowing\n! Immediate decision: Worth knowing\n! Deposit size: Worth knowing\nBusiness name: Not established\n! Deposit asked for: $3,000\nQuoted: $6,500"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "compare the two quotes",
+      "resolved": "CompareIntent",
+      "slots": {},
+      "speech": "The first quote is $6,500. Nine Elms Exterior Surveys is $1,850. That is a difference of $4,650. I cannot set these side by side, because one of these is a single price for everything it describes, so there is no way to tell which part of the money belongs to which piece of work. That is a property of the document, not of the roof.",
+      "card": {
+        "type": "Simple",
+        "title": "One price for everything",
+        "content": "! Line by line: Cannot be aligned\n! Where the money sits: Cannot be said\n\nAsk for the same quote itemised, with a price against each line. Then the same comparison can answer it."
+      },
+      "lambda": {
+        "requestId": "9cef13a4-4bd7-4bc1-881f-9bca4657ef44",
+        "durationMs": 59.74,
+        "billedMs": 60,
+        "maxMemoryMb": 143
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:58:54Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "CompareIntent",
+            "slots": {}
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {
+              "caseId": "case_RNJUGY",
+              "providerId": "pro_ma_r2",
+              "issue": "The flashing round the chimney has failed.",
+              "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight",
+              "foundBy": "DOOR_KNOCK"
+            }
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY",
+            "providerId": "pro_ma_r2",
+            "issue": "The flashing round the chimney has failed.",
+            "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight",
+            "foundBy": "DOOR_KNOCK"
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>The first quote is $6,500. Nine Elms Exterior Surveys is $1,850. That is a difference of $4,650. I cannot set these side by side, because one of these is a single price for everything it describes, so there is no way to tell which part of the money belongs to which piece of work. That is a property of the document, not of the roof.</speak>"
+          },
+          "card": {
+            "type": "Simple",
+            "title": "One price for everything",
+            "content": "! Line by line: Cannot be aligned\n! Where the money sits: Cannot be said\n\nAsk for the same quote itemised, with a price against each line. Then the same comparison can answer it."
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "they sent it again, broken down",
+      "resolved": "RequoteIntent",
+      "slots": {},
+      "speech": "Added Apex Exteriors at $6,500, itemised across 5 lines. Say compare the quotes when you are ready.",
+      "card": {
+        "type": "Simple",
+        "title": "Roofing · $6,500",
+        "content": "! Unsolicited approach: Worth knowing\n! Immediate decision: Worth knowing\n! Deposit size: Worth knowing\nBusiness name: Not established\n! Deposit asked for: $3,000\nQuoted: $6,500"
+      },
+      "lambda": {
+        "requestId": "8de715a0-dc20-4c47-af8f-ae5f772aa939",
+        "durationMs": 30.93,
+        "billedMs": 31,
+        "maxMemoryMb": 143
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:58:55Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "RequoteIntent",
+            "slots": {}
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {
+              "caseId": "case_RNJUGY",
+              "providerId": "pro_ma_r2",
+              "issue": "The flashing round the chimney has failed.",
+              "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight",
+              "foundBy": "DOOR_KNOCK"
+            }
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY",
+            "providerId": "pro_ma_r2",
+            "issue": "The flashing round the chimney has failed.",
+            "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight",
+            "foundBy": "DOOR_KNOCK"
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>Added Apex Exteriors at $6,500, itemised across 5 lines. Say compare the quotes when you are ready.</speak>"
+          },
+          "card": {
+            "type": "Simple",
+            "title": "Roofing · $6,500",
+            "content": "! Unsolicited approach: Worth knowing\n! Immediate decision: Worth knowing\n! Deposit size: Worth knowing\nBusiness name: Not established\n! Deposit asked for: $3,000\nQuoted: $6,500"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "compare them again",
+      "resolved": "CompareIntent",
+      "slots": {},
+      "speech": "Apex Exteriors is $6,500. Nine Elms Exterior Surveys is $1,850. That is a difference of $4,650. They overlap on 3 of 4 pieces of work, which is 75 per cent. The largest difference is roof decking: Apex Exteriors includes it, priced at $4,030, and Nine Elms Exterior Surveys does not. Of the $4,650 gap, $4,030 is work one includes and the other does not, and $420 is the same work at a different price. $200 is not accounted for by either, and all of it sits on one line I could not classify: \"Seal penetrations\". That is the line to ask about.",
+      "card": {
+        "type": "Simple",
+        "title": "Roof decking: in one quote only",
+        "content": "Same work in both: 3 of 4\n! Roof decking: First quote only\nDifferent scope: $4,030\nSame work, different price: $420\n! Unaccounted for: $200"
+      },
+      "lambda": {
+        "requestId": "7c2837ff-8587-4254-9921-ae3ee3dba274",
+        "durationMs": 25.89,
+        "billedMs": 26,
+        "maxMemoryMb": 144
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:58:56Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "CompareIntent",
+            "slots": {}
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {
+              "caseId": "case_RNJUGY",
+              "providerId": "pro_ma_r2",
+              "issue": "The flashing round the chimney has failed.",
+              "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight",
+              "foundBy": "DOOR_KNOCK"
+            }
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY",
+            "providerId": "pro_ma_r2",
+            "issue": "The flashing round the chimney has failed.",
+            "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight",
+            "foundBy": "DOOR_KNOCK"
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>Apex Exteriors is $6,500. Nine Elms Exterior Surveys is $1,850. That is a difference of $4,650. They overlap on 3 of 4 pieces of work, which is 75 per cent. The largest difference is roof decking: Apex Exteriors includes it, priced at $4,030, and Nine Elms Exterior Surveys does not. Of the $4,650 gap, $4,030 is work one includes and the other does not, and $420 is the same work at a different price. $200 is not accounted for by either, and all of it sits on one line I could not classify: \"Seal penetrations\". That is the line to ask about.</speak>"
+          },
+          "card": {
+            "type": "Simple",
+            "title": "Roof decking: in one quote only",
+            "content": "Same work in both: 3 of 4\n! Roof decking: First quote only\nDifferent scope: $4,030\nSame work, different price: $420\n! Unaccounted for: $200"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "I will go with the second one",
+      "resolved": "AcceptIntent",
+      "slots": {
+        "which": "second"
+      },
+      "speech": "Recorded. You accepted $1,850 covering 3 pieces of work, with 2 written exclusions. If anyone asks for more money later, ask me and I will tell you whether it was in this.",
+      "card": {
+        "type": "Simple",
+        "title": "Roofing · $6,500",
+        "content": "The contractor: $6,500 · lump sum\nNine Elms Exterior Surveys: $1,850 · itemised\nApex Exteriors: $6,500 · itemised\nAccepted: $1,850\n! Worth knowing about: 3\nNot established yet: 13\nSettled: 1"
+      },
+      "lambda": {
+        "requestId": "04c7cbda-2a5c-4eed-9c9e-212b777a2202",
+        "durationMs": 17.36,
+        "billedMs": 18,
+        "maxMemoryMb": 144
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:58:57Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "AcceptIntent",
+            "slots": {
+              "which": {
+                "name": "which",
+                "value": "second",
+                "confirmationStatus": "NONE",
+                "resolutions": {
+                  "resolutionsPerAuthority": [
+                    {
+                      "authority": "amzn1.er-authority.echo-sdk.amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b.QUOTE_CHOICE",
+                      "values": [
+                        {
+                          "value": {
+                            "id": "SECOND",
+                            "name": "second"
+                          }
+                        }
+                      ],
+                      "status": {
+                        "code": "ER_SUCCESS_MATCH"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {
+              "caseId": "case_RNJUGY",
+              "providerId": "pro_ma_r2",
+              "issue": "The flashing round the chimney has failed.",
+              "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight",
+              "foundBy": "DOOR_KNOCK"
+            }
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY",
+            "providerId": "pro_ma_r2",
+            "issue": "The flashing round the chimney has failed.",
+            "offer": "they want six thousand five hundred three thousand of it today and they say water could get in tonight",
+            "foundBy": "DOOR_KNOCK"
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>Recorded. You accepted $1,850 covering 3 pieces of work, with 2 written exclusions. If anyone asks for more money later, ask me and I will tell you whether it was in this.</speak>"
+          },
+          "card": {
+            "type": "Simple",
+            "title": "Roofing · $6,500",
+            "content": "The contractor: $6,500 · lump sum\nNine Elms Exterior Surveys: $1,850 · itemised\nApex Exteriors: $6,500 · itemised\nAccepted: $1,850\n! Worth knowing about: 3\nNot established yet: 13\nSettled: 1"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "open circa quote check",
+      "resolved": "LaunchRequest",
+      "slots": {},
+      "speech": "This is CIRCA. 1 repair: The flashing round the chimney, decision recorded. Tell me what has happened since, or ask where we stand.",
+      "card": null,
+      "lambda": {
+        "requestId": "22c5aeed-3d65-4cac-ac05-d569511e0694",
+        "durationMs": 25.51,
+        "billedMs": 26,
+        "maxMemoryMb": 144
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:58:59Z",
+          "type": "LaunchRequest"
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": true,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY"
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>This is CIRCA. 1 repair: The flashing round the chimney, decision recorded. Tell me what has happened since, or ask where we stand.</speak>"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "where do we stand",
+      "resolved": "StatusIntent",
+      "slots": {},
+      "speech": "3 conditions here are worth knowing about: unsolicited approach, immediate decision and deposit size. And 13 things are not established yet before you decide. Nothing here has to be decided at the door. A written estimate can be looked at later.",
+      "card": {
+        "type": "Simple",
+        "title": "Roofing · $6,500",
+        "content": "! Unsolicited approach: Worth knowing\n! Immediate decision: Worth knowing\n! Deposit size: Worth knowing\nBusiness name: Not established\n! Deposit asked for: $3,000\nQuoted: $6,500"
+      },
+      "lambda": {
+        "requestId": "56e19b37-c448-4e81-befa-5afc0c1a2ffe",
+        "durationMs": 3.35,
+        "billedMs": 4,
+        "maxMemoryMb": 144
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:59:00Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "StatusIntent",
+            "slots": {}
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {
+              "caseId": "case_RNJUGY"
+            }
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY"
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>3 conditions here are worth knowing about: unsolicited approach, immediate decision and deposit size. And 13 things are not established yet before you decide. Nothing here has to be decided at the door. A written estimate can be looked at later.</speak>"
+          },
+          "card": {
+            "type": "Simple",
+            "title": "Roofing · $6,500",
+            "content": "! Unsolicited approach: Worth knowing\n! Immediate decision: Worth knowing\n! Deposit size: Worth knowing\nBusiness name: Not established\n! Deposit asked for: $3,000\nQuoted: $6,500"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "they want another two thousand two hundred for decking",
+      "resolved": "ScopeChangeIntent",
+      "slots": {
+        "change": "two thousand two hundred for decking"
+      },
+      "speech": "Roof decking is not in the scope you accepted on 2026-10-23. I have recorded this as a proposed change, not as approved work. Before you agree: Ask for the additional work and its price in writing before it starts.",
+      "card": {
+        "type": "Simple",
+        "title": "Not in what you accepted",
+        "content": "! Against your agreement: Not in what you accepted\nNew work: Roof decking\nAccepted total: $1,850\n! Increase: 119%\n! Inside the accepted scope: No\nWritten change order: Not yet\nThe condition documented: Not yet\nRevised completion date: Not yet\nConcealed-work clause: Not yet"
+      },
+      "lambda": {
+        "requestId": "f13d8a07-83e2-494f-b936-3c57f5218111",
+        "durationMs": 23.42,
+        "billedMs": 24,
+        "maxMemoryMb": 144
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:59:02Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "ScopeChangeIntent",
+            "slots": {
+              "change": {
+                "name": "change",
+                "value": "two thousand two hundred for decking",
+                "confirmationStatus": "NONE"
+              }
+            }
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {
+              "caseId": "case_RNJUGY"
+            }
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY",
+            "changeId": "change_E8V9CE"
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>Roof decking is not in the scope you accepted on 2026-10-23. I have recorded this as a proposed change, not as approved work. Before you agree: Ask for the additional work and its price in writing before it starts.</speak>"
+          },
+          "card": {
+            "type": "Simple",
+            "title": "Not in what you accepted",
+            "content": "! Against your agreement: Not in what you accepted\nNew work: Roof decking\nAccepted total: $1,850\n! Increase: 119%\n! Inside the accepted scope: No\nWritten change order: Not yet\nThe condition documented: Not yet\nRevised completion date: Not yet\nConcealed-work clause: Not yet"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "ask them to put it in writing",
+      "resolved": "PutInWritingIntent",
+      "slots": {},
+      "speech": "Noted as documented. Roof decking is not in the scope you accepted on 2026-10-23. I have recorded this as a proposed change, not as approved work. Before you agree: Ask for the additional work and its price in writing before it starts.",
+      "card": {
+        "type": "Simple",
+        "title": "Not in what you accepted",
+        "content": "! Against your agreement: Not in what you accepted\nNew work: Roof decking\nAccepted total: $1,850\n! Increase: 119%\n! Inside the accepted scope: No\nWritten change order: Not yet\nThe condition documented: Not yet\nRevised completion date: Not yet\nConcealed-work clause: Not yet"
+      },
+      "lambda": {
+        "requestId": "3ac553f5-d83c-439c-bdbe-9fb504b78b9a",
+        "durationMs": 20.92,
+        "billedMs": 21,
+        "maxMemoryMb": 144
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:59:03Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "PutInWritingIntent",
+            "slots": {}
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {
+              "caseId": "case_RNJUGY",
+              "changeId": "change_E8V9CE"
+            }
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY",
+            "changeId": "change_E8V9CE"
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>Noted as documented. Roof decking is not in the scope you accepted on 2026-10-23. I have recorded this as a proposed change, not as approved work. Before you agree: Ask for the additional work and its price in writing before it starts.</speak>"
+          },
+          "card": {
+            "type": "Simple",
+            "title": "Not in what you accepted",
+            "content": "! Against your agreement: Not in what you accepted\nNew work: Roof decking\nAccepted total: $1,850\n! Increase: 119%\n! Inside the accepted scope: No\nWritten change order: Not yet\nThe condition documented: Not yet\nRevised completion date: Not yet\nConcealed-work clause: Not yet"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "show me the whole thing",
+      "resolved": "DossierIntent",
+      "slots": {},
+      "speech": "You accepted $1,850 covering 3 pieces of work, on 2026-10-23. There are 3 quotes on file, and of the checks, 3 worth knowing about, 13 not established yet and 1 settled.",
+      "card": {
+        "type": "Simple",
+        "title": "Roofing · $6,500",
+        "content": "The contractor: $6,500 · lump sum\nNine Elms Exterior Surveys: $1,850 · itemised\nApex Exteriors: $6,500 · itemised\nAccepted: $1,850\n! Worth knowing about: 3\nNot established yet: 13\nSettled: 1"
+      },
+      "lambda": {
+        "requestId": "4b63dead-284f-4cf1-b608-bac2f493ba61",
+        "durationMs": 43.9,
+        "billedMs": 44,
+        "maxMemoryMb": 145
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:59:04Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "DossierIntent",
+            "slots": {}
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {
+              "caseId": "case_RNJUGY",
+              "changeId": "change_E8V9CE"
+            }
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY",
+            "changeId": "change_E8V9CE"
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>You accepted $1,850 covering 3 pieces of work, on 2026-10-23. There are 3 quotes on file, and of the checks, 3 worth knowing about, 13 not established yet and 1 settled.</speak>"
+          },
+          "card": {
+            "type": "Simple",
+            "title": "Roofing · $6,500",
+            "content": "The contractor: $6,500 · lump sum\nNine Elms Exterior Surveys: $1,850 · itemised\nApex Exteriors: $6,500 · itemised\nAccepted: $1,850\n! Worth knowing about: 3\nNot established yet: 13\nSettled: 1"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "delete this repair",
+      "resolved": "DeleteRepairIntent",
+      "slots": {},
+      "speech": "That deletes the record of this repair: the quotes, the accepted scope and the whole timeline, and I cannot get it back. Shall I delete it?",
+      "card": null,
+      "lambda": {
+        "requestId": "ef2e4b6e-c6cc-4287-909e-f8811b0f8a0c",
+        "durationMs": 28.53,
+        "billedMs": 29,
+        "maxMemoryMb": 145
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:59:05Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "DeleteRepairIntent",
+            "slots": {}
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {
+              "caseId": "case_RNJUGY",
+              "changeId": "change_E8V9CE"
+            }
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {
+            "caseId": "case_RNJUGY",
+            "changeId": "change_E8V9CE",
+            "pendingDelete": true
+          }
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>That deletes the record of this repair: the quotes, the accepted scope and the whole timeline, and I cannot get it back. Shall I delete it?</speak>"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>Shall I delete it? Say yes or no.</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    },
+    {
+      "said": "yes",
+      "resolved": "AMAZON.YesIntent",
+      "slots": {},
+      "speech": "Deleted. The quotes, the accepted scope and the whole timeline are gone, and I cannot get them back.",
+      "card": null,
+      "lambda": {
+        "requestId": "fb972eeb-9074-4b30-b54c-95eed737cd42",
+        "durationMs": 12.07,
+        "billedMs": 13,
+        "maxMemoryMb": 145
+      },
+      "request": {
+        "context": {
+          "System": {
+            "application": {
+              "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+            },
+            "device": {
+              "supportedInterfaces": {
+                "AudioPlayer": {}
+              }
+            },
+            "user": {
+              "userId": "<id>"
+            }
+          },
+          "AudioPlayer": {
+            "playerActivity": "IDLE"
+          }
+        },
+        "request": {
+          "locale": "en-US",
+          "requestId": "<id>",
+          "timestamp": "2026-10-23T14:59:06Z",
+          "type": "IntentRequest",
+          "intent": {
+            "confirmationStatus": "NONE",
+            "name": "AMAZON.YesIntent",
+            "slots": {}
+          }
+        },
+        "version": "1.0",
+        "session": {
+          "application": {
+            "applicationId": "amzn1.echo-sdk-ams.app.144e56d1-d6f0-409d-934a-13de023ab68b"
+          },
+          "new": false,
+          "sessionId": "<id>",
+          "user": {
+            "userId": "<id>"
+          },
+          "attributes": {
+            "circa": {
+              "caseId": "case_RNJUGY",
+              "changeId": "change_E8V9CE",
+              "pendingDelete": true
+            }
+          }
+        }
+      },
+      "response": {
+        "version": "1.0",
+        "sessionAttributes": {
+          "circa": {}
+        },
+        "response": {
+          "outputSpeech": {
+            "type": "SSML",
+            "ssml": "<speak>Deleted. The quotes, the accepted scope and the whole timeline are gone, and I cannot get them back.</speak>"
+          },
+          "reprompt": {
+            "outputSpeech": {
+              "type": "SSML",
+              "ssml": "<speak>What would you like to do next?</speak>"
+            }
+          },
+          "shouldEndSession": false
+        }
+      }
+    }
+  ]
+}
